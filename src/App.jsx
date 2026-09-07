@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createGame, loadGame } from './engine.js';
 import Home from './screens/Home.jsx';
 import Setup from './screens/Setup.jsx';
+import Deal from './screens/Deal.jsx';
 import Game from './screens/Game.jsx';
 import EndScreen from './screens/EndScreen.jsx';
 
@@ -29,6 +30,15 @@ export default function App() {
         initial={S.meta ? S.meta.players : null}
         onBack={() => setS({ ...S, screen: 'home' })}
         onStart={(metas, missions) => setS(createGame({ players: metas, missionsOn: missions !== false }))}
+      />
+    );
+  }
+
+  if (S.screen === 'deal') {
+    return (
+      <Deal
+        S={S}
+        onStart={() => setS({ ...S, screen: 'game' })}
       />
     );
   }

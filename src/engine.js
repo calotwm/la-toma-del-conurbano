@@ -157,7 +157,7 @@ export function createGame(meta) {
   for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
 
   const s = {
-    gid: uid(), screen: 'game', missionsOn: meta.missionsOn !== false, meta,
+    gid: uid(), screen: 'deal', missionsOn: meta.missionsOn !== false, meta,
     players, terr, deck: buildDeck(), deckPos: 0,
     order, tidx: 0, round: 1, phase: 'reinforce', pool: 0,
     turnFlags: { conquered: false, cardEarned: false, moved: false },

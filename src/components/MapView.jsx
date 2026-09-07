@@ -86,6 +86,26 @@ export default function MapView({ S, sel, onTerr }) {
         {/* tierra (continente) */}
         <rect x="0" y="0" width="920" height="760" fill="url(#landGrad)"/>
 
+        {/* delimitaciones geográficas por zona (regiones suaves) */}
+        <g pointerEvents="none" opacity="0.5">
+          {/* NORTE: Tigre-San Fernando-San Isidro-Vicente López-San Martín-San Miguel-José C Paz-Malvinas */}
+          <path d="M 60,60 Q 300,10 500,40 L 560,80 L 540,160 L 480,180 L 430,220 L 400,290 L 330,280 L 250,220 L 150,200 L 70,200 Z"
+            fill="#7bd0ff" fillOpacity="0.05" stroke="#7bd0ff" strokeWidth="1" strokeDasharray="4,4"/>
+          <text x="280" y="60" fill="#7bd0ff" opacity="0.7" fontSize="13" fontWeight="800" letterSpacing="3" fontFamily="'Archivo', sans-serif">ZONA NORTE</text>
+          {/* OESTE: Moreno-Merlo-Ituzaingó-Morón-Hurlingham-Tres de Febrero-Ciudadela-Ramos Mejía */}
+          <path d="M 40,300 L 180,320 L 300,300 L 420,280 L 450,320 L 400,400 L 340,420 L 260,400 L 180,410 L 90,380 Z"
+            fill="#f9c03d" fillOpacity="0.05" stroke="#f9c03d" strokeWidth="1" strokeDasharray="4,4"/>
+          <text x="200" y="330" fill="#f9c03d" opacity="0.7" fontSize="13" fontWeight="800" letterSpacing="3" fontFamily="'Archivo', sans-serif">ZONA OESTE</text>
+          {/* MATANZA */}
+          <path d="M 180,460 L 340,440 L 460,450 L 520,500 L 470,560 L 340,560 L 230,540 Z"
+            fill="#ff6b6b" fillOpacity="0.05" stroke="#ff6b6b" strokeWidth="1" strokeDasharray="4,4"/>
+          <text x="350" y="540" fill="#ff6b6b" opacity="0.7" fontSize="13" fontWeight="800" letterSpacing="3" fontFamily="'Archivo', sans-serif">LA MATANZA</text>
+          {/* SUR: Avellaneda-Lanús-Lomas-Brown-Ezeiza-Echeverría-Quilmes-Berazategui-Varela */}
+          <path d="M 420,430 L 640,420 L 760,470 L 840,520 L 820,640 L 700,640 L 560,600 L 480,620 L 440,540 Z"
+            fill="#c77dff" fillOpacity="0.05" stroke="#c77dff" strokeWidth="1" strokeDasharray="4,4"/>
+          <text x="620" y="700" fill="#c77dff" opacity="0.7" fontSize="13" fontWeight="800" letterSpacing="3" fontFamily="'Archivo', sans-serif">ZONA SUR</text>
+        </g>
+
         {/* etiqueta del río */}
         <text x="640" y="640" transform="rotate(35 640 640)" fill="#5fa8d3" opacity="0.6" fontSize="20" letterSpacing="6" fontStyle="italic" fontFamily="'Archivo', sans-serif">RÍO DE LA PLATA</text>
         <text x="735" y="150" fill="#5fa8d3" opacity="0.5" fontSize="13" letterSpacing="4" fontStyle="italic" fontFamily="'Archivo', sans-serif">BANCO SANTAMARINA</text>

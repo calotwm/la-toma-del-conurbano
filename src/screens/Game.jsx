@@ -165,18 +165,21 @@ export default function Game({ S, setS }) {
       s.lastBattle = { o, t, conquered: true, capital: capC, aRoll, dRoll, al, dl };
       if (capC) {
         flashOn(); Sound.epic();
-        showBanner(prevOwner == null ? '¡MANDE! ¡LA TOMASTE, BOLUDO!' : `${playerName(s, prevOwner)} se quedó sin la joya`, false);
+        showBanner(prevOwner == null ? pick(PHRASES.capitalWin) : pick(PHRASES.capitalLose) + ' — ' + playerName(s, prevOwner), false);
       } else {
         Sound.conquest();
+        showBanner(`${tName(t)} ES TUYO. ${pick(PHRASES.territoryWin)}`, false);
       }
     } else {
       s.stat[pid].bl++;
       s.lastBattle = { o, t, conquered: false, capital: isCap, aRoll, dRoll, al, dl };
       if (isCap) {
         Sound.defendCapital();
+        showBanner(pick(PHRASES.capDefense), false);
         log(s, `» ${pick(PHRASES.capDefense)} — La Capital aguanta el ataque de ${playerName(s, pid)}.`, 'capital');
       } else {
         Sound.lose();
+        showBanner(pick(PHRASES.battleLose), false);
         log(s, `» ${playerName(s, pid)} pierde ${al} en ${tName(o)} contra ${tName(t)}. ${pick(PHRASES.battleLose)}`, 'lose');
       }
     }
@@ -315,26 +318,15 @@ export default function Game({ S, setS }) {
               ALERTA METROPOLITANA: <span className="code-red">CÓDIGO ROJO GENERALIZADO</span>
             </div>
             <div style={{ flex: 1 }}></div>
-            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>apartment</span>La Capital: <b style={{ color: 'var(--tertiary)' }}>{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
+            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>apartment</span>La Capital: <b className="owner">{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
           </div>
         </div>
 
-        {/* Pasos */}
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {['REFUERZO', 'ATAQUE', 'REAGRUPO'].map((name, i) => {
-            const active = (i === 0 && S.phase === 'reinforce') || (i === 1 && S.phase === 'attack') || (i === 2 && S.phase === 'fortify');
-            const done = (i === 0 && S.phase !== 'reinforce') || (i === 1 && S.phase === 'fortify') || (i === 2 && S.turnFlags && S.turnFlags.moved);
-            return <span key={name} className="phase-pill" style={{ borderColor: active ? 'var(--pink, #ff2e88)' : done ? 'rgba(134,239,172,.5)' : 'var(--line)', background: active ? '#241018' : '#060912' }}>
-              <span className="lbl" style={{ color: active ? '#ff9dbb' : done ? 'var(--ok)' : 'var(--muted)' }}>{i + 1} · {name}</span>
-            </span>;
-          })}
-        </div>
-
-        {/* Columnas */}
-        <div className="grid">
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {/* Layout 3 columnas: jugador | mapa | acciones+log */}
+        <div className="game-fit">
+          <div className="col">
             <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
-            <div className="frame panel">
+            <div className="frame panel" style={{ flex: 1, minHeight: 0 }}>
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
               <span className="corner corner-bl"></span><span className="corner corner-br"></span>
               <div className="panel-title"><h3>Elenco de facciones</h3></div>
@@ -356,15 +348,15 @@ export default function Game({ S, setS }) {
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div className="frame map-frame">
+          <div className="col map-wrap">
+            <div className="frame map-frame map-fit">
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
               <span className="corner corner-bl"></span><span className="corner corner-br"></span>
               <div className="map-ribbon">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>radar</span>
                   <h3>Cartografía Estratégica AMBA</h3>
-                  <span className="scale">· ESCALA 1:50.000</span>
+                  <span className="scale">· 29 distritos</span>
                 </div>
                 <div className="map-tools">
                   <button onClick={() => showBanner('CABA: la joya del conurbano, +10 de refuerzo', true)}><span className="mat" style={{ fontSize: 17 }}>filter_center_focus</span></button>
@@ -374,7 +366,9 @@ export default function Game({ S, setS }) {
                 <MapView S={S} sel={sel} onTerr={onTerr}/>
               </div>
             </div>
+          </div>
 
+          <div className="col col-right">
             <ActionBar
               S={S} sel={sel} setSel={setSel} me={me} humanTurn={humanTurn}
               dn={dn} setDn={setDn} amt={amt} setAmt={setAmt} maxD={maxD} isCapT={isCapT}
@@ -407,12 +401,10 @@ export default function Game({ S, setS }) {
                 setS(s);
               }}
             />
+            <LogPanel S={S}/>
           </div>
-
-          <LogPanel S={S}/>
         </div>
 
-        <div className="hint">Consejo: la General Paz es la línea de la muerte. Dueño de La Capital cobra +10 por ronda… y se la quieren afanar todos.</div>
         <Copyright/>
       </main>
 
