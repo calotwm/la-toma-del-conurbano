@@ -397,7 +397,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   main.game { padding: 4px; gap: 4px; }
   /* layout en columna: mapa arriba, sección activa abajo */
   .game-fit { display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; }
-  .map-wrap { grid-area: auto; width: 100%; height: 48vh; flex: none; }
+  .map-wrap { grid-area: auto; width: 100%; height: 48vh; flex: none; background: #0b0e14; border-radius: 10px; overflow: hidden; }
   .map-wrap .map-frame { height: 100%; }
   .map-ribbon { padding: 6px 8px; }
   .map-ribbon h3 { font-size: 11px; }
@@ -422,6 +422,14 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   /* botones táctiles */
   .btn, .btn-gold, .btn-red, .btn-dark, .btn-big { min-height: 44px; }
   .dice-slot { width: 52px; height: 52px; }
+  /* acomodar las acciones en móvil */
+  .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 8px; }
+  .panel-actions .subhud > div:last-child { width: 100%; justify-content: center; }
+  .panel-actions .btn { flex: 1; min-width: 0; justify-content: center; }
+  .panel-actions .dice-picker { flex-wrap: wrap; }
+  .panel-actions .dice-picker .btn { flex: 1 1 auto; }
+  .panel-actions .btns { flex-direction: column; }
+  .panel-actions .btns .btn { width: 100%; }
 }
 
 /* ============================================================
