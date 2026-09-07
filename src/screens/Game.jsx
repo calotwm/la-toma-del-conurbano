@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PHRASES, ADJ, TIDS, pick } from '../data.js';
 import {
   advanceTurn, aiPlacementPlan, aiPickAttack, aiFortifyPlan, canAttack,
