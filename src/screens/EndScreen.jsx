@@ -11,7 +11,7 @@ export default function EndScreen({ S, onAgain, onHome }) {
   return (
     <div className="screen">
       <div className="medallion" style={{ width: 84, height: 84 }}>
-        <div className="medallion-in"><span className="mat" style={{ fontSize: 46, color: 'var(--gold-light)' }}>emoji_events</span></div>
+        <div className="medallion-in"><span className="mat" style={{ fontSize: 46, color: 'var(--celeste)' }}>emoji_events</span></div>
       </div>
       <h1 className="logo embossed" style={{ fontSize: 40 }}>
         {mkName ? 'MISIÓN CUMPLIDA' : '¡TERRITORIO CONQUISTADO!'}

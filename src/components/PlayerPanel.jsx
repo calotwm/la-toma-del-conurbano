@@ -29,7 +29,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
       {/* perfil */}
       <div className="panel-title">
         <span className="minitag" style={{ background: curP.color + '22', border: `1px solid ${curP.color}88`, color: curP.color }}>Facción {curP.name}</span>
-        {isMyTurn ? <span className="minitag" style={{ color: 'var(--gold-light)' }}>TURNO EN CURSO</span> : null}
+        {isMyTurn ? <span className="minitag" style={{ color: 'var(--celeste)' }}>TURNO EN CURSO</span> : null}
       </div>
       <div className="crest-row">
         <div className="crest">
@@ -53,18 +53,18 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
       </div>
 
       {/* próximo refuerzo */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
         <span>REFUERZO PRÓXIMO</span>
-        <strong style={{ color: 'var(--gold-light)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 1 c/u{info.comps ? ' · +' + info.comps + ' grupos' : ''}{info.zones ? ' · +' + info.zones * 5 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
+        <strong style={{ color: 'var(--celeste)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 1 c/u{info.zones ? ' · +' + info.zones * 3 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
       </div>
       {S.phase === 'reinforce' && isMyTurn && (
         <div className="bastion" style={{ borderColor: 'var(--gold-ornate)', background: 'linear-gradient(90deg,#1f2410,#121826,#1f2410)' }}>
           <div className="bastion-ic"><span className="mat">payments</span></div>
           <div style={{ flex: 1 }}>
             <div className="bastion-t" style={{ fontSize: 13 }}>A COLOCAR AHORA</div>
-            <div className="bastion-s" style={{ color: 'var(--gold-light)', fontWeight: 800, fontSize: 20 }}>{S.pool} tropas</div>
+            <div className="bastion-s" style={{ color: 'var(--celeste)', fontWeight: 800, fontSize: 20 }}>{S.pool} tropas</div>
           </div>
-          <div className="mat" style={{ fontSize: 28, color: 'var(--gold-light)' }}>group_add</div>
+          <div className="mat" style={{ fontSize: 28, color: 'var(--celeste)' }}>group_add</div>
         </div>
       )}
 
@@ -100,7 +100,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
       {misDef && (
         <div style={{ background: '#080d19', border: '1px solid var(--line)', borderLeft: '3px solid var(--pink, #ff2e88)', borderRadius: '0 10px 10px 0', padding: 10 }}>
           <div className="mission-op"><span className="mat" style={{ fontSize: 16, color: 'var(--warn)' }}>verified_user</span>Misión Confidencial</div>
-          <div style={{ fontFamily: "'Cinzel Decorative', serif", fontSize: 12, color: 'var(--gold-light)', margin: '4px 0' }}>{misDef.name}</div>
+          <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 12, color: 'var(--celeste)', margin: '4px 0' }}>{misDef.name}</div>
           <div className="mission-desc">{misDef.desc}</div>
         </div>
       )}
@@ -109,7 +109,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
       <div>
         <div className="panel-title">
           <h3>Mazo de Naipes</h3>
-          <span className="minitag" style={{ background: '#1f1704', color: 'var(--gold-light)', border: '1px solid rgba(212,175,55,.6)' }}>{curP.hand.length} EN MANO</span>
+          <span className="minitag" style={{ background: '#1f1704', color: 'var(--celeste)', border: '1px solid rgba(212,175,55,.6)' }}>{curP.hand.length} EN MANO</span>
         </div>
         {curP.hand.length
           ? <div className="naipes-grid">
@@ -122,7 +122,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
                     onClick={canTrade ? () => setSelCards(prev => prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]) : undefined}
                     title={nm}>
                     <div className={'naipe-suit ' + s.cls}><span className="mat">{s.icon}</span></div>
-                    <div className="suit-name" style={{ color: s.cls === 'cañon' ? 'var(--warn)' : s.cls === 'caballeria' ? 'var(--tertiary)' : s.cls === 'comodin' ? '#d8b4fe' : 'var(--gold-light)' }}>{s.name}</div>
+                    <div className="suit-name" style={{ color: s.cls === 'cañon' ? 'var(--warn)' : s.cls === 'caballeria' ? 'var(--tertiary)' : s.cls === 'comodin' ? '#d8b4fe' : 'var(--celeste)' }}>{s.name}</div>
                     <div className="e-name">{nm}</div>
                     <div className="e-meta">{nm === 'La Capital' ? 'Comodín · ★' : nm === 'Bragado' ? 'Comodín · +2' : 'Distrito · +1'}</div>
                   </div>
@@ -133,10 +133,10 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
 
         {canTrade && selCount >= 3 && (
           <div className="trade-banner" style={{ marginTop: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--gold-light)', fontFamily: "'Cinzel Decorative', serif", fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--celeste)', fontFamily: "'Archivo', sans-serif", fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>
               <span className="mat" style={{ fontSize: 17 }}>workspace_premium</span>Canje Habilitado
             </div>
-            <button className="btn-gold" style={{ width: '100%', marginTop: 8, padding: '9px 12px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", fontWeight: 900, fontSize: 11, textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => {
+            <button className="btn-gold" style={{ width: '100%', marginTop: 8, padding: '9px 12px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 11, textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => {
               const s = clone(S);
               const p = s.players.find(x => x.id === me);
               const cards = selected.map(i => p.hand[i]);

@@ -12,7 +12,7 @@ export default function ActionBar(props) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <span className="win-ic"><span className="mat">{S.lastBattle.conquered ? (S.lastBattle.capital ? 'emoji_events' : 'military_tech') : 'block'}</span></span>
         <div>
-          <div className="outcome-title" style={{ color: S.lastBattle.conquered ? 'var(--gold-light)' : 'var(--warn)' }}>
+          <div className="outcome-title" style={{ color: S.lastBattle.conquered ? 'var(--celeste)' : 'var(--warn)' }}>
             {S.lastBattle.conquered ? (S.lastBattle.capital ? '¡LA CAPITAL ES TUYA!' : tName(S.lastBattle.t) + ' CONQUISTADO') : 'ASALTO RECHAZADO'}
           </div>
           <div className="outcome-body">{S.lastBattle.conquered
@@ -37,7 +37,7 @@ export default function ActionBar(props) {
           </div>
         </div>
         <div style={{ flex: 1 }}></div>
-        <button className="btn-gold" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAutoPlace}>
+        <button className="btn-gold" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAutoPlace}>
           <span className="mat" style={{ fontSize: 18 }}>bolt</span>Reparto automático
         </button>
       </div>
@@ -71,12 +71,12 @@ export default function ActionBar(props) {
 
         {sel && sel.o && sel.t && (
           <div className="dice-picker" style={{ margin: '10px 0' }}>
-            <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>DADOS ATACANTE:</span>
+            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>DADOS ATACANTE:</span>
             {opts.filter(n => n >= minD).map(n => (
               <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
             ))}
             <div style={{ flex: 1 }}></div>
-            <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '12px 26px', borderRadius: 10, fontFamily: "'Cinzel Decorative', serif", fontWeight: 900, fontSize: 14, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAttack}>
+            <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '12px 26px', borderRadius: 10, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 14, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAttack}>
               <span className="mat" style={{ fontSize: 18 }}>gps_fixed</span>¡A DARLE!
             </button>
           </div>
@@ -97,7 +97,7 @@ export default function ActionBar(props) {
             <div className="dice-box def">
               <div className="dice-box-hdr">
                 <div className="who"><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d4d', boxShadow: '0 0 8px #ff4d4d' }}></span>Defensor</div>
-                <span className="n" style={{ background: '#2e2104', color: 'var(--gold-light)', border: '1px solid rgba(212,175,55,.5)' }}>{S.dice.dN} DADOS</span>
+                <span className="n" style={{ background: '#2e2104', color: 'var(--celeste)', border: '1px solid rgba(212,175,55,.5)' }}>{S.dice.dN} DADOS</span>
               </div>
               <div className="dice-row">
                 {S.dice.d.map((v, i) => <span key={i} className={'dice-slot gold' + (S.busy ? ' rolling' : '')}><span className="pip">{S.busy ? '?' : v}</span>{i === 0 && !S.busy ? <span className="cap">EMPATA</span> : null}</span>)}
@@ -109,11 +109,11 @@ export default function ActionBar(props) {
 
         {lastBattleChip()}
         <div className="btns" style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-          <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
+          <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
             <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span>Cortar ataque → reagrupar
           </button>
           <div style={{ flex: 1 }}></div>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
+          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
             <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
           </button>
         </div>
@@ -145,15 +145,15 @@ export default function ActionBar(props) {
 
       {sel && sel.o && sel.t && (
         <div className="dice-picker" style={{ margin: '10px 0' }}>
-          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>MOVER:</span>
+          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>MOVER:</span>
           <button className="btn-dark" onClick={() => setAmt(Math.max(1, amt - 1))}>−</button>
-          <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--gold-light)' }}>{amt}</b>
+          <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--celeste)' }}>{amt}</b>
           <button className="btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
-          <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
+          <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
             <span className="mat" style={{ fontSize: 17 }}>local_shipping</span>Mover
           </button>
           <div style={{ flex: 1 }}></div>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
+          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
             <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
           </button>
         </div>
@@ -162,7 +162,7 @@ export default function ActionBar(props) {
       {lastBattleChip()}
       {(!sel || !sel.o || !sel.t) && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Cinzel Decorative', serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
+          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
             <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
           </button>
         </div>

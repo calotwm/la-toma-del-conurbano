@@ -1,76 +1,104 @@
 // ============================================================
-// DATA — el Conurbano Bonaerense en mapa geográfico estilizado
-// (Río de la Plata al este, CABA como bastión central)
+// DATA — el Conurbano Bonaerense con COORDENADAS GEOGRÁFICAS REALES
+// Proyección equirectangular de lat/lon reales de cada partido.
+// El Río de la Plata corre por el NORTE/ESTE: la costa va desde
+// Tigre-San Fernando-San Isidro-Vicente López (norte) bajando por
+// Avellaneda-Quilmes-Berazategui (este). Nada de Quilmes en el mar.
 // ============================================================
 
-export const CX = 545, CY = 322; // centro de La Capital
+export const CX = 602, CY = 281; // La Capital (CABA)
 
 export const TERR = [
-  { id:'capital', name:'La Capital', full:'La Capital (CABA)', x:CX, y:CY, r:60, zone:'capital', special:true,
+  { id:'capital', name:'La Capital', full:'La Capital (CABA)', x:602, y:281, r:52, zone:'capital', special:true,
     flavor:'La joya del conurbano: Casa Rosada, Obelisco y la 9 de Julio. El que la tiene, cobra. El que la pierde, llora.' },
-  { id:'sanmiguel',   name:'San Miguel',      x:200, y:152, r:24, zone:'norte', flavor:'Tranquilo, arbolado... hasta que llega un ejército.' },
-  { id:'josecpaz',    name:'José C. Paz',     x:296, y:96,  r:24, zone:'norte', flavor:'Ciudad dormitorio: si dormís, perdés territorios.' },
-  { id:'sanmartin',   name:'San Martín',      x:415, y:238, r:24, zone:'norte', flavor:'Parque industrial y peronismo de ley.' },
-  { id:'vicentelopez',name:'Vicente López',   x:452, y:168, r:24, zone:'norte', flavor:'La costa del poder: la Quinta de Olivos está acá.' },
-  { id:'sanisidro',   name:'San Isidro',      x:515, y:128, r:24, zone:'norte', flavor:'Hipódromo, catedral y chetos que huyen del caos.' },
-  { id:'sanfernando', name:'San Fernando',    x:600, y:96,  r:24, zone:'norte', flavor:'Astilleros e islas: el que domina el río domina la joda.' },
-  { id:'tigre',       name:'Tigre',           x:672, y:58,  r:25, zone:'norte', flavor:'Delta, paseo en lancha y casas sobre el agua.' },
-  { id:'moreno',      name:'Moreno',          x:118, y:296, r:24, zone:'oeste', flavor:'Punta de riel del Sarmiento: llegar acá ya es conquista.' },
-  { id:'ituzaingo',   name:'Ituzaingó',       x:232, y:318, r:24, zone:'oeste', flavor:'Residencial y prolijo: el caos se viste de traje.' },
-  { id:'moron',       name:'Morón',           x:326, y:298, r:24, zone:'oeste', flavor:'Catedral, plaza y base aérea: el centro neurálgico del oeste.' },
-  { id:'tresdefebrero',name:'Tres de Febrero',x:426, y:272, r:24, zone:'oeste', flavor:'Caseros, Ciudad Jardín, El Palomar: gente laburante.' },
-  { id:'ciudadela',   name:'Ciudadela',       x:452, y:322, r:24, zone:'oeste', flavor:'Fábricas y ferias: el olor a pan es de terror.' },
-  { id:'ramosmejia',  name:'Ramos Mejía',     x:296, y:388, r:24, zone:'oeste', flavor:'Shopping Oeste y el tren atestado: rinde en dólares.' },
-  { id:'hurlingham',  name:'Hurlingham',      x:204, y:478, r:24, zone:'oeste', flavor:'Tierra de clubes de rugby: barras que te comen crudo.' },
-  { id:'merlo',       name:'Merlo',           x:148, y:420, r:24, zone:'oeste', flavor:'Trenes, bandas de rock y quilombo garantizado.' },
-  { id:'lamatanza',   name:'La Matanza',      x:298, y:548, r:58, zone:'matanza', big:true,
-    flavor:'El partido más picante del país. Virrey del Pino te mira feo.' },
-  { id:'sanjusto',    name:'San Justo',       x:378, y:512, r:24, zone:'matanza', flavor:'Cabecera de La Matanza: el palacio municipal es la joya.' },
-  { id:'flores',      name:'Flores',          x:470, y:386, r:24, zone:'matanza', flavor:'Barrio porteño “liberado” al otro lado de la General Paz. Cuna del rock.' },
-  { id:'ezeiza',      name:'Ezeiza',          x:188, y:678, r:24, zone:'sur', flavor:'Aeropuerto internacional: controlás quién entra y sale.' },
-  { id:'lomas',       name:'Lomas de Zamora', x:498, y:584, r:24, zone:'sur', flavor:'La Salada, reina de las ferias: guita, punga y estrategia.' },
-  { id:'lanus',       name:'Lanús',           x:598, y:490, r:24, zone:'sur', flavor:'Granate, obreros y Dock Sud: orgullo del sur profundo.' },
-  { id:'avellaneda',  name:'Avellaneda',      x:598, y:404, r:24, zone:'sur', flavor:'Racing vs. Independiente: el clásico más picante se juega acá.' },
-  { id:'quilmes',     name:'Quilmes',         x:700, y:500, r:24, zone:'sur', flavor:'La cerveza que tomaba el abuelo: botella llena, territorio sano.' },
-  { id:'berazategui', name:'Berazategui',     x:752, y:586, r:24, zone:'sur', flavor:'La ciudad del vidrio: todo se ve transparente (menos las alianzas).' },
-  { id:'varela',      name:'Florencio Varela',x:622, y:690, r:24, zone:'sur', flavor:'Kilómetro 30 y pico: donde la gamba se estira.' },
-  { id:'brown',       name:'Almirante Brown', x:468, y:700, r:24, zone:'sur', flavor:'Adrogué, ciudad jardín: parece paz... hasta que atacan.' },
+  { id:'tigre',       name:'Tigre',           x:325, y:23,  r:26, zone:'norte', flavor:'Delta del Paraná, lanchas, Nordelta y mosquitos que no perdonan.' },
+  { id:'sanfernando', name:'San Fernando',    x:371, y:46,  r:23, zone:'norte', flavor:'Astilleros e islas: el que domina el río domina la joda.' },
+  { id:'sanisidro',   name:'San Isidro',      x:439, y:92,  r:24, zone:'norte', flavor:'Hipódromo, catedral y la costa más cheta del conurbano.' },
+  { id:'vicentelopez',name:'Vicente López',   x:462, y:184, r:23, zone:'norte', flavor:'La costa del poder: la Quinta de Olivos está acá.' },
+  { id:'sanmartin',   name:'San Martín',      x:394, y:253, r:24, zone:'norte', flavor:'Parque industrial y peronismo de ley.' },
+  { id:'sanmiguel',   name:'San Miguel',      x:142, y:184, r:24, zone:'norte', flavor:'Tranquilo, arbolado... hasta que llega un ejército.' },
+  { id:'josecpaz',    name:'José C. Paz',     x:73,  y:184, r:24, zone:'norte', flavor:'Ciudad dormitorio: si dormís, perdés territorios.' },
+  { id:'malvinas',    name:'Malvinas Argentinas', x:228, y:120, r:23, zone:'norte', flavor:'Polo industrial y del peronismo profundo del oeste norteño.' },
+  { id:'moreno',      name:'Moreno',          x:50,  y:345, r:24, zone:'oeste', flavor:'Punta de riel del Sarmiento: llegar acá ya es conquista.' },
+  { id:'merlo',       name:'Merlo',           x:142, y:345, r:24, zone:'oeste', flavor:'Trenes, bandas de rock y quilombo garantizado.' },
+  { id:'ituzaingo',   name:'Ituzaingó',       x:211, y:369, r:23, zone:'oeste', flavor:'Residencial y prolijo: el caos se viste de traje.' },
+  { id:'moron',       name:'Morón',           x:279, y:345, r:24, zone:'oeste', flavor:'Catedral, plaza y base aérea: el centro neurálgico del oeste.' },
+  { id:'tresdefebrero',name:'Tres de Febrero',x:348, y:276, r:24, zone:'oeste', flavor:'Caseros, Ciudad Jardín, El Palomar: gente laburante.' },
+  { id:'hurlingham',  name:'Hurlingham',      x:256, y:253, r:23, zone:'oeste', flavor:'Tierra de clubes de rugby: barras que te comen crudo.' },
+  { id:'ciudadela',   name:'Ciudadela',       x:371, y:322, r:23, zone:'oeste', flavor:'Fábricas y ferias: el olor a pan es de terror.' },
+  { id:'ramosmejia',  name:'Ramos Mejía',     x:348, y:375, r:23, zone:'oeste', flavor:'Shopping Oeste y el tren atestado: rinde en dólares.' },
+  { id:'flores',      name:'Flores',          x:485, y:322, r:23, zone:'matanza', flavor:'Barrio porteño “liberado” al otro lado de la General Paz. Cuna del rock.' },
+  { id:'sanjusto',    name:'San Justo',       x:371, y:430, r:23, zone:'matanza', flavor:'Cabecera de La Matanza: el palacio municipal es la joya.' },
+  { id:'lamatanza',   name:'La Matanza',      x:256, y:505, r:56, zone:'matanza', big:true,
+    flavor:'El partido más picante y poblado del país. Virrey del Pino te mira feo.' },
+  { id:'avellaneda',  name:'Avellaneda',      x:645, y:369, r:24, zone:'sur', flavor:'Racing vs. Independiente y el puente Pueyrredón: la puerta del sur.' },
+  { id:'lanus',       name:'Lanús',           x:577, y:415, r:24, zone:'sur', flavor:'Granate, obreros y Dock Sud: orgullo del sur profundo.' },
+  { id:'lomas',       name:'Lomas de Zamora', x:577, y:507, r:24, zone:'sur', flavor:'La Salada, reina de las ferias: guita, punga y estrategia.' },
+  { id:'brown',       name:'Almirante Brown', x:577, y:553, r:24, zone:'sur', flavor:'Adrogué, ciudad jardín: parece paz... hasta que atacan.' },
+  { id:'ezeiza',      name:'Ezeiza',          x:416, y:622, r:24, zone:'sur', flavor:'Aeropuerto internacional: controlás quién entra y sale.' },
+  { id:'echeverria',  name:'Esteban Echeverría', x:477, y:576, r:23, zone:'sur', flavor:'Monte Grande y la cuna del cuento del tío.' },
+  { id:'quilmes',     name:'Quilmes',         x:760, y:438, r:25, zone:'sur', flavor:'Sobre la costa del Plata. La cerveza que tomaba el abuelo: botella llena, territorio sano.' },
+  { id:'berazategui', name:'Berazategui',     x:833, y:508, r:24, zone:'sur', flavor:'La ciudad del vidrio, sobre el río: todo se ve transparente (menos las alianzas).' },
+  { id:'varela',      name:'Florencio Varela',x:737, y:576, r:24, zone:'sur', flavor:'Kilómetro 30 y pico: donde la gamba se estira.' },
 ];
 
 export const TIDS = TERR.map(t => t.id);
 
 export const ZONES = {
-  norte:   { label:'Zona Norte', color:'#7bd0ff',   ids:['sanmiguel','josecpaz','sanmartin','vicentelopez','sanisidro','sanfernando','tigre'] },
-  oeste:   { label:'Zona Oeste', color:'#f9c03d',   ids:['moreno','ituzaingo','moron','tresdefebrero','ciudadela','ramosmejia','hurlingham','merlo'] },
+  norte:   { label:'Zona Norte', color:'#7bd0ff',   ids:['tigre','sanfernando','sanisidro','vicentelopez','sanmartin','sanmiguel','josecpaz','malvinas'] },
+  oeste:   { label:'Zona Oeste', color:'#f9c03d',   ids:['moreno','merlo','ituzaingo','moron','tresdefebrero','hurlingham','ciudadela','ramosmejia'] },
   matanza: { label:'La Matanza y alrededores', color:'#ff6b6b', ids:['lamatanza','sanjusto','flores'] },
-  sur:     { label:'Zona Sur', color:'#c77dff',     ids:['ezeiza','lomas','lanus','avellaneda','quilmes','berazategui','varela','brown'] },
+  sur:     { label:'Zona Sur', color:'#c77dff',     ids:['avellaneda','lanus','lomas','brown','ezeiza','echeverria','quilmes','berazategui','varela'] },
 };
 export const ZKEYS = ['norte','oeste','matanza','sur'];
 
+// Adyacencias geográficamente reales (partidos limítrofes)
 export const ADJ_PAIRS = [
-  ['capital','tresdefebrero'],['capital','ciudadela'],['capital','flores'],['capital','vicentelopez'],
-  ['capital','lanus'],['capital','avellaneda'],['capital','sanisidro'],
-  ['sanmiguel','josecpaz'],['sanmiguel','sanmartin'],['sanmiguel','moreno'],
-  ['josecpaz','sanmartin'],['josecpaz','moreno'],['sanmartin','vicentelopez'],['sanmartin','tresdefebrero'],
-  ['vicentelopez','sanisidro'],['sanisidro','sanfernando'],['sanfernando','tigre'],
-  ['moreno','ituzaingo'],['moreno','merlo'],['ituzaingo','moron'],['ituzaingo','hurlingham'],['ituzaingo','merlo'],
-  ['moron','tresdefebrero'],['moron','ciudadela'],['moron','ramosmejia'],['moron','hurlingham'],
-  ['tresdefebrero','ciudadela'],['ciudadela','flores'],['ramosmejia','lamatanza'],['ramosmejia','sanjusto'],
-  ['merlo','lamatanza'],['lamatanza','sanjusto'],['lamatanza','flores'],['lamatanza','ezeiza'],
-  ['sanjusto','flores'],['ezeiza','lomas'],['lomas','lanus'],['lomas','brown'],['lanus','avellaneda'],
-  ['lanus','quilmes'],['quilmes','berazategui'],['berazategui','varela'],['varela','brown'],
+  // CABA con la primera corona
+  ['capital','vicentelopez'],['capital','sanmartin'],['capital','tresdefebrero'],['capital','ciudadela'],
+  ['capital','flores'],['capital','avellaneda'],['capital','lanus'],
+  // Norte
+  ['tigre','sanfernando'],['tigre','sanisidro'],['sanfernando','sanisidro'],['sanisidro','vicentelopez'],
+  ['vicentelopez','sanmartin'],['sanmartin','tresdefebrero'],['sanmartin','sanmiguel'],['sanmiguel','josecpaz'],
+  ['sanmiguel','josecpaz'],['sanmiguel','hurlingham'],['sanmiguel','moreno'],['josecpaz','moreno'],
+  ['malvinas','sanmiguel'],['malvinas','josecpaz'],['malvinas','moreno'],['malvinas','hurlingham'],
+  // Oeste
+  ['moreno','merlo'],['moreno','josecpaz'],['moreno','malvinas'],['merlo','ituzaingo'],['merlo','lamatanza'],
+  ['ituzaingo','merlo'],['ituzaingo','moron'],['ituzaingo','hurlingham'],
+  ['moron','hurlingham'],['moron','ituzaingo'],['moron','tresdefebrero'],['moron','lamatanza'],
+  ['hurlingham','sanmiguel'],['hurlingham','malvinas'],['hurlingham','ituzaingo'],['hurlingham','moron'],['hurlingham','tresdefebrero'],
+  ['tresdefebrero','sanmartin'],['tresdefebrero','hurlingham'],['tresdefebrero','moron'],['tresdefebrero','ciudadela'],
+  ['ciudadela','tresdefebrero'],['ciudadela','flores'],['ciudadela','ramosmejia'],
+  ['ramosmejia','ciudadela'],['ramosmejia','moron'],['ramosmejia','sanjusto'],['ramosmejia','lamatanza'],
+  // Matanza
+  ['lamatanza','moreno'],['lamatanza','merlo'],['lamatanza','moron'],['lamatanza','ramosmejia'],
+  ['lamatanza','sanjusto'],['lamatanza','flores'],['lamatanza','ezeiza'],['lamatanza','echeverria'],
+  ['sanjusto','lamatanza'],['sanjusto','ramosmejia'],['sanjusto','flores'],
+  ['flores','capital'],['flores','ciudadela'],['flores','sanjusto'],['flores','avellaneda'],
+  // Sur
+  ['avellaneda','capital'],['avellaneda','flores'],['avellaneda','lanus'],['avellaneda','quilmes'],
+  ['lanus','capital'],['lanus','avellaneda'],['lanus','lomas'],['lanus','quilmes'],
+  ['lomas','lanus'],['lomas','sanjusto'],['lomas','lamatanza'],['lomas','echeverria'],['lomas','brown'],
+  ['echeverria','lamatanza'],['echeverria','lomas'],['echeverria','ezeiza'],['echeverria','brown'],
+  ['brown','lomas'],['brown','echeverria'],['brown','varela'],['brown','quilmes'],
+  ['ezeiza','lamatanza'],['ezeiza','echeverria'],['ezeiza','brown'],
+  ['quilmes','avellaneda'],['quilmes','lanus'],['quilmes','brown'],['quilmes','berazategui'],
+  ['berazategui','quilmes'],['berazategui','varela'],
+  ['varela','berazategui'],['varela','brown'],
 ];
 
 export const ADJ = {};
 TIDS.forEach(id => ADJ[id] = []);
 ADJ_PAIRS.forEach(p => { ADJ[p[0]].push(p[1]); ADJ[p[1]].push(p[0]); });
 
-export const PLAYER_COLORS = ['#ff4d4d','#0284c7','#22c55e','#eab308','#a855f7','#f97316'];
+export const PLAYER_COLORS = ['#1d4ed8','#dc2626','#059669','#d97706','#7c3aed','#db2777'];
+// El Estado (territorios neutrales) — celeste claro, distintivo de los jugadores
+export const STATE_COLOR = '#75a6d9';
 export const BOT_NAMES = ['Ringo','Cacho','La Tota','Bocha','El Pity','Chiche','Tute','Turco','Pela','Colo','Firu','El Ruso'];
 export const REP_TITLES = [
-  [0,'Punga'], [4,'Chorro de barrio'], [8,'Aguantador'], [12,'Manejador'], [16,'Titular del Conurbano'], [21,'Dueño absoluto'],
+  [0,'Vecino'], [4,'Barra brava'], [8,'Referente'], [12,'Caudillo'], [16,'Patrón del Conurbano'], [21,'Dueño absoluto'],
 ];
-export const MISSION_KEYS = ['matanza','capital','doble','el10'];
+export const MISSION_KEYS = ['capital','oeste','sur','eliminar'];
 
 // Frases argentinas
 export const PHRASES = {

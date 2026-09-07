@@ -44,10 +44,11 @@ export function repTitleFor(terrCount, ownsCap) {
 
 // ---------- Misiones ----------
 export const MISSION_DEFS = {
-  matanza: { name: 'Asegurar La Matanza', desc: 'Controlar La Matanza, San Justo y Ramos Mejía a la vez.', check: (s, p) => ['lamatanza', 'sanjusto', 'ramosmejia'].every(t => s.terr[t].owner === p) },
-  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital + al menos 5 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 6 },
-  doble:   { name: 'El Doble Comando', desc: 'Controlar TODA la Zona Norte y TODA la Zona Sur.', check: (s, p) => ['norte', 'sur'].every(k => ZONES[k].ids.every(t => s.terr[t].owner === p)) },
-  el10:    { name: 'El 10', desc: 'Dominar 20+ territorios, incluida La Capital.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 20 },
+  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital + al menos 8 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 9 },
+  norte:   { name: 'Conquistar el Norte', desc: 'Controlar 6 territorios de la Zona Norte.', check: (s, p) => ZONES.norte.ids.filter(t => s.terr[t].owner === p).length >= 6 },
+  oeste:   { name: 'Conquistar el Oeste', desc: 'Controlar 6 territorios de la Zona Oeste.', check: (s, p) => ZONES.oeste.ids.filter(t => s.terr[t].owner === p).length >= 6 },
+  sur:     { name: 'Conquistar el Sur', desc: 'Controlar 7 territorios de la Zona Sur.', check: (s, p) => ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 7 },
+  eliminar:{ name: 'El Intocable', desc: 'Eliminar por completo a un jugador rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
 };
 
 // ---------- Eventos del Informe Metropolitano ----------
@@ -80,12 +81,11 @@ function componentsOf(s, pid) {
 }
 export function reinforceInfo(s, pid) {
   const own = ownersCount(s, pid);
-  const comps = componentsOf(s, pid).filter(c => c.length >= 2).length;
   const zones = ZKEYS.filter(k => ZONES[k].ids.every(t => s.terr[t].owner === pid)).length;
   const cap = (s.terr.capital.owner === pid) ? 1 : 0;
-  let total = own + comps + zones * 5 + cap * 10;
+  let total = own + zones * 3 + cap * 10;
   if (total < 3) total = 3;
-  return { total, own, comps, zones, cap };
+  return { total, own, zones, cap };
 }
 
 // ---------- Cartas ----------
@@ -188,8 +188,7 @@ export function startTurn(s, pid) {
     }
   }
   let bonusText = `+${info.own} territorios`;
-  if (info.comps) bonusText += `, +${info.comps} grupos conectados`;
-  if (info.zones) bonusText += `, +${info.zones * 5} zonas metropolitanas`;
+  if (info.zones) bonusText += `, +${info.zones * 3} zonas completas`;
   if (info.cap) bonusText += ', +10 La Capital';
   log(s, `» Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
 }
@@ -261,8 +260,10 @@ export function aiPlacementPlan(s, pid) {
     let sc = terr[o].troops * 3 + ADJ[o].length;
     if (ADJ[o].includes('capital') && terr.capital.owner !== pid) sc += (p.level === 'capo' ? 14 : 6);
     if (terr.capital.owner === pid && ADJ[o].includes('capital')) sc += 8;
-    if (p.mission === 'matanza' && ['lamatanza', 'sanjusto', 'ramosmejia'].includes(o)) sc += 6;
-    if (p.mission === 'capital' || p.mission === 'el10') sc += (ADJ[o].includes('capital') ? 10 : 0);
+    if (p.mission === 'capital' && ADJ[o].includes('capital')) sc += 10;
+    if (p.mission === 'oeste' && ZONES.oeste.ids.includes(o)) sc += 5;
+    if (p.mission === 'sur' && ZONES.sur.ids.includes(o)) sc += 5;
+    if (p.mission === 'norte' && ZONES.norte.ids.includes(o)) sc += 5;
     if (p.level === 'defensa' && ADJ[o].some(t => terr[t].owner !== pid && terr[t].troops >= terr[o].troops)) sc += 5;
     return sc;
   };
@@ -304,11 +305,12 @@ export function aiPickAttack(s, pid) {
   const score = m => {
     let sc = m.margin * 3;
     if (m.isCap) sc += 18 + (m.tt <= 6 ? 12 : 0);
-    if (p.mission === 'matanza' && ['lamatanza', 'sanjusto', 'ramosmejia'].includes(m.t)) sc += 9;
-    if (p.mission === 'capital' || p.mission === 'el10') sc += (m.isCap ? 12 : 0);
+    if (p.mission === 'capital') sc += (m.isCap ? 12 : 0);
+    if (p.mission === 'oeste' && ZONES.oeste.ids.includes(m.t)) sc += 4;
+    if (p.mission === 'sur' && ZONES.sur.ids.includes(m.t)) sc += 4;
+    if (p.mission === 'norte' && ZONES.norte.ids.includes(m.t)) sc += 4;
     if (m.margin >= -1) sc += 2;
     if (m.ot >= 5) sc += 2;
-    if (p.mission === 'doble' && (ZONES.norte.ids.includes(m.t) || ZONES.sur.ids.includes(m.t))) sc += 3;
     return sc;
   };
   moves.sort((a, b) => score(b) - score(a));

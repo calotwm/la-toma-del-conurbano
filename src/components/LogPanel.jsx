@@ -12,7 +12,7 @@ export default function LogPanel({ S }) {
       <span className="corner corner-bl"></span><span className="corner corner-br"></span>
       <div className="panel-title">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span className="mat" style={{ fontSize: 18, color: 'var(--gold-light)' }}>record_voice_over</span>
+          <span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>record_voice_over</span>
           <h3>Bitácora en Lunfardo</h3>
         </div>
         <span className="minitag" style={{ background: '#4d0707', color: 'var(--warn)', border: '1px solid rgba(255,107,107,.4)' }}>EN VIVO</span>

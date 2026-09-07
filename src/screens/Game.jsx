@@ -18,10 +18,10 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 const TICKER = [
   ['[ALERTA TÁCTICA]', 'var(--warn)'], ['Movilización masiva en Puente Pueyrredón', null],
   ['[CABA]', 'var(--tertiary)'], ['Cacerolazo estruendoso en Recoleta por suba de peajes', null],
-  ['[COMBATE]', 'var(--gold-light)'], ['¡La Matanza profunda en pie de guerra! 11 divisiones sobre la Ruta 3', null],
+  ['[COMBATE]', 'var(--celeste)'], ['¡La Matanza profunda en pie de guerra! 11 divisiones sobre la Ruta 3', null],
   ['[ZONA NORTE]', 'var(--tertiary)'], ['San Isidro blinda el cruce de Panamericana', null],
   ['[SUR]', 'var(--warn)'], ['Furia en Quilmes Centro: se rompió el acuerdo del polo cervecero', null],
-  ['[CLIMA]', 'var(--gold-light)'], ['Niebla espesa en el Delta del Tigre, lanchas en alerta', null],
+  ['[CLIMA]', 'var(--celeste)'], ['Niebla espesa en el Delta del Tigre, lanchas en alerta', null],
 ];
 
 export default function Game({ S, setS }) {
@@ -264,7 +264,7 @@ export default function Game({ S, setS }) {
             </div>
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
-                <h1 className="logo-title embossed">T.E.G. CONURBANO</h1>
+                <h1 className="logo-title embossed">LA TOMA DEL CONURBANO</h1>
                 <span className="tag-edicion">Edición Beligerante</span>
               </div>
               <p className="logo-sub">Tácticas y Estrategias del Gran Buenos Aires · 1ra Sección Táctica Electoral</p>
@@ -275,8 +275,8 @@ export default function Game({ S, setS }) {
             <div className="turn-crest">
               <span className="turn-dot"></span>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--gold-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>RONDA {S.round}</div>
-                <div style={{ fontFamily: "'Lora', serif", fontSize: 11, color: '#c4d0e5' }}>Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{curP && curP.human ? ' (vos)' : curP && !curP.human ? ` · ${LEVEL_LABELS[curP.level]}` : ''}</div>
+                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: 'var(--celeste)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>RONDA {S.round}</div>
+                <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 11, color: '#c4d0e5' }}>Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{curP && curP.human ? ' (vos)' : curP && !curP.human ? ` · ${LEVEL_LABELS[curP.level]}` : ''}</div>
               </div>
             </div>
 
@@ -311,11 +311,11 @@ export default function Game({ S, setS }) {
               <span className="lbl">Fase activa:</span>
               <span className="val">{S.phase === 'reinforce' ? 'Despliegue de Refuerzos' : S.phase === 'attack' ? 'Asalto Territorial' : 'Reagrupamiento'}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
               ALERTA METROPOLITANA: <span className="code-red">CÓDIGO ROJO GENERALIZADO</span>
             </div>
             <div style={{ flex: 1 }}></div>
-            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--gold-light)' }}>apartment</span>La Capital: <b style={{ color: 'var(--tertiary)' }}>{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
+            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>apartment</span>La Capital: <b style={{ color: 'var(--tertiary)' }}>{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
           </div>
         </div>
 
@@ -362,7 +362,7 @@ export default function Game({ S, setS }) {
               <span className="corner corner-bl"></span><span className="corner corner-br"></span>
               <div className="map-ribbon">
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span className="mat" style={{ fontSize: 18, color: 'var(--gold-light)' }}>radar</span>
+                  <span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>radar</span>
                   <h3>Cartografía Estratégica AMBA</h3>
                   <span className="scale">· ESCALA 1:50.000</span>
                 </div>
