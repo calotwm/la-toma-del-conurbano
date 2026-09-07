@@ -38,7 +38,7 @@ export default function App() {
     return (
       <Deal
         S={S}
-        onStart={() => setS({ ...S, screen: 'game' })}
+        setS={setS}
       />
     );
   }

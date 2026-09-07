@@ -49,9 +49,8 @@ function otherZones(s, p, excl) { return ZKEYS.filter(k => k !== excl && k !== '
 export const MISSION_DEFS = {
   capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 16 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 17 },
   norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 6 },
+  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 4 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 4 },
   sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
-  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 6 },
-  suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar TODA la Zona Suroeste y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'suroeste') && otherZones(s, p, 'suroeste') >= 6 },
   eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
 };
 // Objetivo común (TEG real): ocupar 25 de los 29 territorios
@@ -281,7 +280,6 @@ export function aiPlacementPlan(s, pid) {
     if (p.mission === 'oeste' && ZONES.oeste.ids.includes(o)) sc += 5;
     if (p.mission === 'sur' && ZONES.sur.ids.includes(o)) sc += 5;
     if (p.mission === 'norte' && ZONES.norte.ids.includes(o)) sc += 5;
-    if (p.mission === 'suroeste' && ZONES.suroeste.ids.includes(o)) sc += 5;
     if (p.level === 'defensa' && ADJ[o].some(t => terr[t].owner !== pid && terr[t].troops >= terr[o].troops)) sc += 5;
     return sc;
   };
@@ -334,7 +332,6 @@ export function aiPickAttack(s, pid) {
     if (p.mission === 'oeste' && ZONES.oeste.ids.includes(m.t)) sc += 4;
     if (p.mission === 'sur' && ZONES.sur.ids.includes(m.t)) sc += 4;
     if (p.mission === 'norte' && ZONES.norte.ids.includes(m.t)) sc += 4;
-    if (p.mission === 'suroeste' && ZONES.suroeste.ids.includes(m.t)) sc += 4;
     if (m.margin >= -1) sc += 2;
     if (m.ot >= 5) sc += 2;
     return sc;

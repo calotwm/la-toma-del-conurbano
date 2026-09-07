@@ -6,8 +6,7 @@ import { playerColor, playerName } from '../engine.js';
 // Mapa estilo TEG: territorios como REGIONES CONTIGUAS (diagrama de Voronoi),
 // con fronteras compartidas y divididos por zonas. El Río de la Plata (mar) al este,
 // recortado contra la costa real.
-const SF = 1.18;          // escala: "menos zoom", más separación
-const W = 1100, H = 900;  // viewBox
+const W = 1180, H = 950;  // viewBox
 
 export default function MapView({ S, sel, onTerr }) {
   const phase = S.phase;
@@ -16,9 +15,9 @@ export default function MapView({ S, sel, onTerr }) {
   const myTurn = me != null && !S.busy;
   const [hover, setHover] = useState(null);
 
-  // polígonos de Voronoi por territorio (escalados)
+  // polígonos de Voronoi por territorio
   const polys = useMemo(() => {
-    const pts = TERR.map(t => [t.x * SF, t.y * SF]);
+    const pts = TERR.map(t => [t.x, t.y]);
     const voronoi = Delaunay.from(pts).voronoi([0, 0, W, H]);
     return TERR.map((_, i) => {
       const poly = voronoi.cellPolygon(i);
@@ -26,11 +25,11 @@ export default function MapView({ S, sel, onTerr }) {
     });
   }, []);
   const centroids = useMemo(() => {
-    const pts = TERR.map(t => [t.x * SF, t.y * SF]);
+    const pts = TERR.map(t => [t.x, t.y]);
     const voronoi = Delaunay.from(pts).voronoi([0, 0, W, H]);
     return TERR.map((_, i) => {
       const poly = voronoi.cellPolygon(i);
-      if (!poly) return { x: TERR[i].x * SF, y: TERR[i].y * SF };
+      if (!poly) return { x: TERR[i].x, y: TERR[i].y };
       let x = 0, y = 0, n = 0;
       poly.forEach(p => { x += p[0]; y += p[1]; n++; });
       return { x: x / n, y: y / n };
@@ -42,7 +41,7 @@ export default function MapView({ S, sel, onTerr }) {
     ZKEYS.forEach(k => {
       const ids = ZONES[k].ids;
       let x = 0, y = 0, n = 0;
-      ids.forEach(id => { const t = TERR.find(t => t.id === id); x += t.x * SF; y += t.y * SF; n++; });
+      ids.forEach(id => { const t = TERR.find(t => t.id === id); x += t.x; y += t.y; n++; });
       out[k] = { x: x / n, y: y / n };
     });
     return out;
@@ -111,13 +110,16 @@ export default function MapView({ S, sel, onTerr }) {
           {TERR.map((t, i) => {
             const tt = S.terr[t.id];
             const owner = tt.owner;
-            const col = owner == null ? STATE_COLOR : playerColor(S, owner);
             const dimm = dim(t.id) ? 1 : 0;
             const cand = isCandidate(t.id);
             const isSel = sel && sel.o === t.id;
+            // la celda se colorea por ZONA (como continentes del TEG), no por dueño
             const zc = ZONES[t.zone]?.color || '#55637f';
             const poly = polys[i];
             if (!poly) return null;
+            // círculo de tropas: color del dueño (o gris Estado), número en el medio
+            const troopCol = owner == null ? '#5a6882' : playerColor(S, owner);
+            const rT = t.special ? 24 : 17;
             return (
               <g key={t.id}
                 className={'node' + (dimm ? ' dim' : '')}
@@ -126,39 +128,40 @@ export default function MapView({ S, sel, onTerr }) {
                 onClick={() => onTerr(t.id)}
                 onMouseEnter={() => setHover(t.id)}
                 onMouseLeave={() => setHover(null)}>
-                <polygon points={poly} fill={col} stroke={zc} strokeWidth={t.special ? 4 : 2.5} strokeOpacity={t.special ? 1 : 0.8}
-                  fillOpacity={t.special ? 0.95 : 0.9}/>
-                {/* frontera interna más oscura para separar territorios */}
-                <polygon points={poly} fill="none" stroke="#0a0c12" strokeWidth="0.8" opacity="0.5"/>
+                <polygon points={poly} fill={zc} fillOpacity={0.16} stroke={zc} strokeWidth={t.special ? 3 : 2} strokeOpacity={0.9}/>
+                <polygon points={poly} fill="none" stroke="#0a0c12" strokeWidth="0.8" opacity="0.45"/>
                 {isSel && <polygon points={poly} fill="none" stroke="var(--celeste)" strokeWidth="4"/>}
                 {cand && <polygon points={poly} fill="none" stroke="#fff" strokeWidth="3" strokeDasharray="6,4" opacity="0.9"/>}
-                <text className="count" x={centroids[i].x} y={centroids[i].y + 5} fontSize={t.special ? 20 : t.big ? 17 : 13}>{tt.troops}</text>
+                {/* círculo con número de tropas (color = dueño) */}
+                <circle cx={centroids[i].x} cy={centroids[i].y} r={rT} fill={troopCol} stroke="#0a0c12" strokeWidth={t.special ? 3 : 2}/>
+                <circle cx={centroids[i].x} cy={centroids[i].y} r={rT} fill="none" stroke={owner == null ? '#fff' : '#fff'} strokeOpacity="0.35" strokeWidth="1"/>
+                <text className="count" x={centroids[i].x} y={centroids[i].y + (t.special ? 6 : 4)} fontSize={t.special ? 15 : 11}>{tt.troops}</text>
               </g>
             );
           })}
         </g>
 
-        {/* etiquetas de territorio (dentro de cada celda, bajo el conteo) */}
+        {/* etiquetas de territorio (debajo del círculo de tropas) */}
         <g pointerEvents="none">
           {TERR.map((t, i) => (
-            <text key={t.id} className="label" x={centroids[i].x} y={centroids[i].y + (t.special ? 26 : 18)} textAnchor="middle" fontSize={t.special ? 13 : 10}>
+            <text key={t.id} className="label" x={centroids[i].x} y={centroids[i].y + (t.special ? 40 : 30)} textAnchor="middle" fontSize={t.special ? 13 : 10}>
               {t.special ? 'LA CAPITAL' : t.name}
             </text>
           ))}
         </g>
 
-        {/* etiquetas de zona */}
+        {/* etiquetas de zona (Norte/Oeste/Sur; Capital se muestra aparte) */}
         <g pointerEvents="none" opacity="0.85">
-          {ZKEYS.map(k => {
+          {ZKEYS.filter(k => k !== 'capital').map(k => {
             const c = zoneCentroids[k];
-            return <text key={k} x={c.x} y={c.y + (k === 'sur' ? 8 : -8)} textAnchor="middle" fill={ZONES[k].color} fontSize="14" fontWeight="800" letterSpacing="4" fontFamily="'Archivo', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.8)', strokeWidth: 3 }}>
+            return <text key={k} x={c.x} y={c.y + (k === 'sur' ? 8 : -8)} textAnchor="middle" fill={ZONES[k].color} fontSize="15" fontWeight="800" letterSpacing="5" fontFamily="'Archivo', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.85)', strokeWidth: 3 }}>
               {ZONES[k].label.toUpperCase()}
             </text>;
           })}
         </g>
 
         {/* CABA glow */}
-        <circle cx={capital.x * SF} cy={capital.y * SF} r={70} fill="#eab308" fillOpacity="0.12"/>
+        <circle cx={capital.x} cy={capital.y} r={70} fill="#eab308" fillOpacity="0.12"/>
       </svg>
 
       {/* inspector */}
@@ -181,12 +184,14 @@ export default function MapView({ S, sel, onTerr }) {
   );
 }
 
-// Costa del Río de la Plata al este (escalada). Define el mar y el clip del continente.
+// Costa del Río de la Plata al este. Define el mar y el clip del continente.
+// La costa corre por el este: Tigre (norte) -> San Fernando -> San Isidro ->
+// Avellaneda -> Quilmes -> Berazategui (sudeste).
 function coastPath() {
   const pts = [
-    [440, 0], [480, 60], [520, 120], [560, 200], [600, 300],
-    [660, 380], [720, 410], [800, 470], [850, 560], [880, 700], [900, H],
+    [700, 0], [780, 90], [760, 210], [690, 340], [700, 470],
+    [810, 600], [930, 720], [1000, 800], [1000, H],
   ];
-  const p = pts.map(q => `${(q[0] * SF).toFixed(0)},${(q[1] * SF).toFixed(0)}`);
+  const p = pts.map(q => `${q[0].toFixed(0)},${q[1].toFixed(0)}`);
   return `M${p[0]} L${p.slice(1).join(' L')} L${W},${H} L0,${H} Z`;
 }
