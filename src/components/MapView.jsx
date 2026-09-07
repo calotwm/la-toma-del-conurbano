@@ -4,7 +4,7 @@ import { playerColor, playerName } from '../engine.js';
 
 // Mapa estilo TEG con geografía real del AMBA (grilla 1000x800).
 // Capas: 1) regiones de zona (bgPath), 2) conexiones, 3) nodos interactivos.
-const W = 1200, H = 800, OX = 100;
+const W = 1200, H = 800, OX = 150;
 
 export default function MapView({ S, sel, battle, onTerr }) {
   const phase = S.phase;

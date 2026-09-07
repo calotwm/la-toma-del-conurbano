@@ -37,12 +37,14 @@ export default function ActionBar(props) {
           </div>
         </div>
         <div style={{ flex: 1 }}></div>
-        <button className="btn-gold" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAutoPlace}>
-          <span className="mat" style={{ fontSize: 18 }}>bolt</span>Reparto automático
-        </button>
-        <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onSkipReinforce}>
-          <span className="mat" style={{ fontSize: 18 }}>swords</span>Ir a atacar
-        </button>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button className="btn-gold" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, lineHeight: 1 }} onClick={onAutoPlace}>
+            <span className="mat" style={{ fontSize: 17 }}>auto_awesome</span>Reparto automático
+          </button>
+          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, lineHeight: 1 }} onClick={onSkipReinforce}>
+            <span className="mat" style={{ fontSize: 18 }}>swords</span>Ir a atacar
+          </button>
+        </div>
       </div>
     );
   }
