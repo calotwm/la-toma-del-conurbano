@@ -12,7 +12,7 @@ import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
 import { Copyright } from '../components/common.jsx';
 
-const LEVEL_LABELS = { chorro: 'Chorro (fácil)', defensa: 'Defensa (medio)', capo: 'Capo (difícil)' };
+const LEVEL_LABELS = { chorro: 'Chorro (fácil)', defensa: 'Tibio (medio)', capo: 'Capo (difícil)' };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
 const TICKER = [

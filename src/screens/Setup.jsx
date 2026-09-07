@@ -5,7 +5,7 @@ import { Copyright } from '../components/common.jsx';
 // Niveles de bot con su explicación
 const LEVELS = [
   { key: 'chorro',   label: 'Chorro',   desc: 'Ataca sin pensar, se la juega. Ideal para aprender.' },
-  { key: 'defensa',  label: 'Defensa',  desc: 'Prioriza proteger sus territorios y La Capital.' },
+  { key: 'defensa',  label: 'Tibio',  desc: 'Juega a las escondidas: protege sus territorios y La Capital sin arriesgar.' },
   { key: 'capo',     label: 'Capo',     desc: 'Estratégico: va por La Capital y cumple su misión.' },
 ];
 
