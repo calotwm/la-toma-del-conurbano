@@ -52,6 +52,15 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
         <div className="counter red"><b>{curP.hand.length}</b><span>Naipes</span></div>
       </div>
 
+      {/* misión (prominente, arriba) */}
+      {misDef && (
+        <div style={{ background: '#160d1f', border: '1px solid rgba(255,46,136,.4)', borderLeft: '4px solid var(--pink)', borderRadius: '0 10px 10px 0', padding: 10 }}>
+          <div className="mission-op"><span className="mat" style={{ fontSize: 16, color: 'var(--warn)' }}>verified_user</span>Tu misión</div>
+          <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 13, color: '#fff', margin: '4px 0', fontWeight: 800 }}>{misDef.name}</div>
+          <div className="mission-desc">{misDef.desc}</div>
+        </div>
+      )}
+
       {/* próximo refuerzo */}
       <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
         <span>REFUERZO PRÓXIMO</span>
@@ -95,15 +104,6 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
           );
         })}
       </div>
-
-      {/* misión */}
-      {misDef && (
-        <div style={{ background: '#080d19', border: '1px solid var(--line)', borderLeft: '3px solid var(--pink, #ff2e88)', borderRadius: '0 10px 10px 0', padding: 10 }}>
-          <div className="mission-op"><span className="mat" style={{ fontSize: 16, color: 'var(--warn)' }}>verified_user</span>Misión Confidencial</div>
-          <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 12, color: 'var(--celeste)', margin: '4px 0' }}>{misDef.name}</div>
-          <div className="mission-desc">{misDef.desc}</div>
-        </div>
-      )}
 
       {/* naipes */}
       <div>
