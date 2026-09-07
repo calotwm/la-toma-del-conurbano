@@ -103,7 +103,7 @@ export const BOT_NAMES = ['Ringo','Cacho','La Tota','Bocha','El Pity','Chiche','
 export const REP_TITLES = [
   [0,'Vecino'], [4,'Barra brava'], [8,'Referente'], [12,'Caudillo'], [16,'Patrón del Conurbano'], [21,'Dueño absoluto'],
 ];
-export const MISSION_KEYS = ['capital','oeste','sur','eliminar'];
+export const MISSION_KEYS = ['capital','oeste','sur','eliminar','norte','suroeste','contorno','el10','triple'];
 
 // Frases argentinas
 export const PHRASES = {

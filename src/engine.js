@@ -47,11 +47,15 @@ function zoneOwned(s, p, k) { return ZONES[k].ids.every(t => s.terr[t].owner ===
 function otherZones(s, p, excl) { return ZKEYS.filter(k => k !== excl && k !== 'capital').reduce((acc, k) => acc + ZONES[k].ids.filter(t => s.terr[t].owner === p).length, 0); }
 
 export const MISSION_DEFS = {
-  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 16 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 17 },
+  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 13 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 14 },
   norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 6 },
   oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 4 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 4 },
   sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
   eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
+  suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
+  contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) },
+  el10:    { name: 'El 10 del Sur', desc: 'Tener La Capital y 10 territorios de la Zona Sur.', check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 10 },
+  triple:  { name: 'La Triple Corona', desc: 'Controlar 3 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 3) },
 };
 // Objetivo común (TEG real): ocupar 25 de los 29 territorios
 export const COMMON_GOAL = 25;
@@ -211,7 +215,16 @@ export function advanceTurn(s) {
   const n = s.order.length;
   for (let k = 1; k <= n; k++) {
     const idx = (s.tidx + k) % n;
-    if (idx === 0) { s.round++; applyEvent(s); }
+    if (idx === 0) {
+      s.round++;
+      // La Capital (Estado) se fortalece progresivamente mientras avanzan las rondas
+      if (s.terr.capital.owner == null) {
+        const gain = 1 + Math.floor(s.round / 2);
+        s.terr.capital.troops += gain;
+        log(s, `🏛️ El Estado refuerza La Capital: +${gain} tropas (ahora ${s.terr.capital.troops}).`, 'capital');
+      }
+      applyEvent(s);
+    }
     const pid = s.order[idx];
     if (ownersCount(s, pid) > 0) { startTurn(s, pid); return pid; }
   }
@@ -280,6 +293,10 @@ export function aiPlacementPlan(s, pid) {
     if (p.mission === 'oeste' && ZONES.oeste.ids.includes(o)) sc += 5;
     if (p.mission === 'sur' && ZONES.sur.ids.includes(o)) sc += 5;
     if (p.mission === 'norte' && ZONES.norte.ids.includes(o)) sc += 5;
+    if (p.mission === 'suroeste' && ['lamatanza','sanjusto','flores','ezeiza'].includes(o)) sc += 6;
+    if (p.mission === 'contorno' && ADJ[o].includes('capital')) sc += 6;
+    if (p.mission === 'el10' && ZONES.sur.ids.includes(o)) sc += 5;
+    if (p.mission === 'triple') sc += 2;
     if (p.level === 'defensa' && ADJ[o].some(t => terr[t].owner !== pid && terr[t].troops >= terr[o].troops)) sc += 5;
     return sc;
   };
@@ -332,6 +349,10 @@ export function aiPickAttack(s, pid) {
     if (p.mission === 'oeste' && ZONES.oeste.ids.includes(m.t)) sc += 4;
     if (p.mission === 'sur' && ZONES.sur.ids.includes(m.t)) sc += 4;
     if (p.mission === 'norte' && ZONES.norte.ids.includes(m.t)) sc += 4;
+    if (p.mission === 'suroeste' && ['lamatanza','sanjusto','flores','ezeiza'].includes(m.t)) sc += 6;
+    if (p.mission === 'contorno' && ADJ[m.t].includes('capital')) sc += 6;
+    if (p.mission === 'el10' && ZONES.sur.ids.includes(m.t)) sc += 5;
+    if (p.mission === 'triple') sc += 3;
     if (m.margin >= -1) sc += 2;
     if (m.ot >= 5) sc += 2;
     return sc;
