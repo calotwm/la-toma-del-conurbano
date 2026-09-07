@@ -1,12 +1,19 @@
-import { useMemo, useState } from 'react';
-import { Delaunay } from 'd3-delaunay';
-import { TERR, ADJ, CX, CY, STATE_COLOR, ZONES, ZKEYS } from '../data.js';
+import { useState } from 'react';
+import { TERR, ADJ, STATE_COLOR, ZONES, ZKEYS } from '../data.js';
 import { playerColor, playerName } from '../engine.js';
 
-// Mapa estilo TEG: territorios como REGIONES CONTIGUAS (diagrama de Voronoi),
-// con fronteras compartidas y divididos por zonas. El Río de la Plata (mar) al este,
-// recortado contra la costa real.
-const W = 1180, H = 950;  // viewBox
+// Mapa estilo TEG con geografía REAL del AMBA:
+// - Zonas como REGIONES CONTIGUAS (polígonos): Norte arriba, Oeste izquierda, Sur abajo.
+// - CABA en el centro, Río de la Plata al este.
+// - Cada territorio = círculo con número de tropas (color = dueño).
+const W = 1180, H = 950;
+
+// Polígonos aproximados de cada zona (regiones contiguas del mapa real)
+const ZONE_REGIONS = {
+  norte: [[10,10],[860,10],[1040,300],[820,410],[600,320],[300,250],[10,280]],
+  oeste: [[10,310],[290,265],[470,300],[560,450],[520,650],[420,720],[230,720],[10,650]],
+  sur:   [[10,720],[420,735],[580,700],[640,820],[660,940],[820,940],[1060,900],[10,940]],
+};
 
 export default function MapView({ S, sel, onTerr }) {
   const phase = S.phase;
@@ -14,38 +21,6 @@ export default function MapView({ S, sel, onTerr }) {
   const me = cur && cur.human ? cur.id : null;
   const myTurn = me != null && !S.busy;
   const [hover, setHover] = useState(null);
-
-  // polígonos de Voronoi por territorio
-  const polys = useMemo(() => {
-    const pts = TERR.map(t => [t.x, t.y]);
-    const voronoi = Delaunay.from(pts).voronoi([0, 0, W, H]);
-    return TERR.map((_, i) => {
-      const poly = voronoi.cellPolygon(i);
-      return poly ? poly.map(p => `${(+p[0]).toFixed(1)},${(+p[1]).toFixed(1)}`).join(' ') : '';
-    });
-  }, []);
-  const centroids = useMemo(() => {
-    const pts = TERR.map(t => [t.x, t.y]);
-    const voronoi = Delaunay.from(pts).voronoi([0, 0, W, H]);
-    return TERR.map((_, i) => {
-      const poly = voronoi.cellPolygon(i);
-      if (!poly) return { x: TERR[i].x, y: TERR[i].y };
-      let x = 0, y = 0, n = 0;
-      poly.forEach(p => { x += p[0]; y += p[1]; n++; });
-      return { x: x / n, y: y / n };
-    });
-  }, []);
-  // centroide por zona para las etiquetas
-  const zoneCentroids = useMemo(() => {
-    const out = {};
-    ZKEYS.forEach(k => {
-      const ids = ZONES[k].ids;
-      let x = 0, y = 0, n = 0;
-      ids.forEach(id => { const t = TERR.find(t => t.id === id); x += t.x; y += t.y; n++; });
-      out[k] = { x: x / n, y: y / n };
-    });
-    return out;
-  }, []);
 
   const dim = (id) => {
     const tt = S.terr[id];
@@ -77,6 +52,11 @@ export default function MapView({ S, sel, onTerr }) {
   const hovered = hover ? TERR.find(t => t.id === hover) : null;
   const hoverOwner = hovered ? S.terr[hovered.id] : null;
   const capital = TERR.find(t => t.id === 'capital');
+  const zoneLabelPos = {
+    norte: { x: 300, y: 120 },
+    oeste: { x: 150, y: 430 },
+    sur: { x: 470, y: 830 },
+  };
 
   return (
     <div style={{ position: 'relative' }}>
@@ -91,77 +71,72 @@ export default function MapView({ S, sel, onTerr }) {
             <path d="M 0 11 Q 11 5, 22 11 T 44 11" fill="none" opacity="0.3" stroke="#1c3a5c" strokeWidth="1"/>
           </pattern>
           <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#141a26"/>
+            <stop offset="0%" stopColor="#131926"/>
             <stop offset="100%" stopColor="#0a0e16"/>
           </linearGradient>
-          {/* clip del continente: recorta las celdas contra la costa (el mar queda al este) */}
-          <clipPath id="landClip">
-            <path fillRule="evenodd" d={`M0,0 H${W} V${H} H0 Z ${coastPath()}`}/>
-          </clipPath>
         </defs>
 
-        {/* MAR al este (Río de la Plata), detrás del continente */}
+        {/* MAR al este (Río de la Plata) */}
         <path d={coastPath()} fill="url(#waterGrad)"/>
         <path d={coastPath()} fill="url(#waterRipple)"/>
-        <text x={W - 90} y={H / 2} transform={`rotate(90 ${W - 90} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="22" letterSpacing="10" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
+        <text x={W - 60} y={H / 2} transform={`rotate(90 ${W - 60} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="22" letterSpacing="10" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
 
-        {/* continente (celdas de Voronoi recortadas contra la costa) */}
-        <g clipPath="url(#landClip)">
-          {TERR.map((t, i) => {
-            const tt = S.terr[t.id];
-            const owner = tt.owner;
-            const dimm = dim(t.id) ? 1 : 0;
-            const cand = isCandidate(t.id);
-            const isSel = sel && sel.o === t.id;
-            // la celda se colorea por ZONA (como continentes del TEG), no por dueño
-            const zc = ZONES[t.zone]?.color || '#55637f';
-            const poly = polys[i];
-            if (!poly) return null;
-            // círculo de tropas: color del dueño (o gris Estado), número en el medio
-            const troopCol = owner == null ? '#5a6882' : playerColor(S, owner);
-            const rT = t.special ? 24 : 17;
-            return (
-              <g key={t.id}
-                className={'node' + (dimm ? ' dim' : '')}
-                opacity={dimm ? 0.3 : 1}
-                style={{ cursor: dim(t.id) ? 'not-allowed' : 'pointer' }}
-                onClick={() => onTerr(t.id)}
-                onMouseEnter={() => setHover(t.id)}
-                onMouseLeave={() => setHover(null)}>
-                <polygon points={poly} fill={zc} fillOpacity={0.16} stroke={zc} strokeWidth={t.special ? 3 : 2} strokeOpacity={0.9}/>
-                <polygon points={poly} fill="none" stroke="#0a0c12" strokeWidth="0.8" opacity="0.45"/>
-                {isSel && <polygon points={poly} fill="none" stroke="var(--celeste)" strokeWidth="4"/>}
-                {cand && <polygon points={poly} fill="none" stroke="#fff" strokeWidth="3" strokeDasharray="6,4" opacity="0.9"/>}
-                {/* círculo con número de tropas (color = dueño) */}
-                <circle cx={centroids[i].x} cy={centroids[i].y} r={rT} fill={troopCol} stroke="#0a0c12" strokeWidth={t.special ? 3 : 2}/>
-                <circle cx={centroids[i].x} cy={centroids[i].y} r={rT} fill="none" stroke={owner == null ? '#fff' : '#fff'} strokeOpacity="0.35" strokeWidth="1"/>
-                <text className="count" x={centroids[i].x} y={centroids[i].y + (t.special ? 6 : 4)} fontSize={t.special ? 15 : 11}>{tt.troops}</text>
-              </g>
-            );
-          })}
-        </g>
+        {/* tierra */}
+        <rect x="0" y="0" width={W} height={H} fill="url(#landGrad)"/>
 
-        {/* etiquetas de territorio (debajo del círculo de tropas) */}
+        {/* REGIONES DE ZONA (delimitación clara por color) */}
+        {ZKEYS.filter(k => k !== 'capital').map(k => {
+          const region = ZONE_REGIONS[k];
+          if (!region) return null;
+          const c = ZONES[k].color;
+          const pts = region.map(p => p.join(',')).join(' ');
+          return (
+            <g key={k} pointerEvents="none">
+              <polygon points={pts} fill={c} fillOpacity="0.20" stroke={c} strokeWidth="3" strokeOpacity="0.9"/>
+              <polygon points={pts} fill="none" stroke="#0a0c12" strokeWidth="1.2" opacity="0.4"/>
+              <text x={zoneLabelPos[k].x} y={zoneLabelPos[k].y} textAnchor="middle" fill={c} fontSize="20" fontWeight="800" letterSpacing="5" fontFamily="'Archivo', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.85)', strokeWidth: 3 }}>
+                {ZONES[k].label.toUpperCase()}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* círculos de tropas (color = dueño) */}
+        {TERR.map(t => {
+          const tt = S.terr[t.id];
+          const owner = tt.owner;
+          const dimm = dim(t.id) ? 1 : 0;
+          const cand = isCandidate(t.id);
+          const isSel = sel && sel.o === t.id;
+          const troopCol = owner == null ? '#5a6882' : playerColor(S, owner);
+          const rT = t.special ? 26 : 18;
+          const rO = t.special ? 34 : 25;
+          return (
+            <g key={t.id}
+              className={'node' + (dimm ? ' dim' : '')}
+              opacity={dimm ? 0.3 : 1}
+              style={{ cursor: dim(t.id) ? 'not-allowed' : 'pointer' }}
+              onClick={() => onTerr(t.id)}
+              onMouseEnter={() => setHover(t.id)}
+              onMouseLeave={() => setHover(null)}>
+              {t.special && <circle cx={t.x} cy={t.y} r={46} fill="#eab308" fillOpacity="0.15"/>}
+              {isSel && <circle cx={t.x} cy={t.y} r={rO + 6} fill="none" stroke="var(--celeste)" strokeWidth="4"/>}
+              {cand && <circle cx={t.x} cy={t.y} r={rO + 7} fill="none" stroke="#fff" strokeWidth="3" strokeDasharray="6,4" opacity="0.9"/>}
+              <circle cx={t.x} cy={t.y} r={rO} fill={ZONES[t.zone]?.color || '#55637f'} fillOpacity="0.14"/>
+              <circle cx={t.x} cy={t.y} r={rT} fill={troopCol} stroke="#0a0c12" strokeWidth={t.special ? 3 : 2}/>
+              <text className="count" x={t.x} y={t.y + (t.special ? 6 : 4)} fontSize={t.special ? 15 : 11}>{tt.troops}</text>
+            </g>
+          );
+        })}
+
+        {/* etiquetas de territorio (debajo del círculo) */}
         <g pointerEvents="none">
-          {TERR.map((t, i) => (
-            <text key={t.id} className="label" x={centroids[i].x} y={centroids[i].y + (t.special ? 40 : 30)} textAnchor="middle" fontSize={t.special ? 13 : 10}>
+          {TERR.map(t => (
+            <text key={t.id} className="label" x={t.x} y={t.y + (t.special ? 50 : 40)} textAnchor="middle" fontSize={t.special ? 13 : 10}>
               {t.special ? 'LA CAPITAL' : t.name}
             </text>
           ))}
         </g>
-
-        {/* etiquetas de zona (Norte/Oeste/Sur; Capital se muestra aparte) */}
-        <g pointerEvents="none" opacity="0.85">
-          {ZKEYS.filter(k => k !== 'capital').map(k => {
-            const c = zoneCentroids[k];
-            return <text key={k} x={c.x} y={c.y + (k === 'sur' ? 8 : -8)} textAnchor="middle" fill={ZONES[k].color} fontSize="15" fontWeight="800" letterSpacing="5" fontFamily="'Archivo', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.85)', strokeWidth: 3 }}>
-              {ZONES[k].label.toUpperCase()}
-            </text>;
-          })}
-        </g>
-
-        {/* CABA glow */}
-        <circle cx={capital.x} cy={capital.y} r={70} fill="#eab308" fillOpacity="0.12"/>
       </svg>
 
       {/* inspector */}
@@ -176,7 +151,7 @@ export default function MapView({ S, sel, onTerr }) {
 
       {/* leyenda */}
       <div className="legend">
-        {[['#0284c7', 'Porteños'], ['#ff4d4d', 'Sur/Matanza'], ['#22c55e', 'Norte'], ['#eab308', 'Oeste'], [STATE_COLOR, 'El Estado']].map(([c, n]) => (
+        {[['#eab308', 'Capital'], ['#ec4899', 'Norte'], ['#f97316', 'Oeste'], ['#22c55e', 'Sur'], ['#5a6882', 'El Estado']].map(([c, n]) => (
           <span key={n}><i style={{ background: c }}></i>{n}</span>
         ))}
       </div>
@@ -184,13 +159,10 @@ export default function MapView({ S, sel, onTerr }) {
   );
 }
 
-// Costa del Río de la Plata al este. Define el mar y el clip del continente.
-// La costa corre por el este: Tigre (norte) -> San Fernando -> San Isidro ->
-// Avellaneda -> Quilmes -> Berazategui (sudeste).
+// Costa del Río de la Plata al este (Tigre/San Fernando al noreste, Avellaneda/Quilmes/Berazategui al este)
 function coastPath() {
   const pts = [
-    [700, 0], [780, 90], [760, 210], [690, 340], [700, 470],
-    [810, 600], [930, 720], [1000, 800], [1000, H],
+    [950, 0], [1040, 220], [1090, 400], [1080, 600], [1050, 760], [1030, H],
   ];
   const p = pts.map(q => `${q[0].toFixed(0)},${q[1].toFixed(0)}`);
   return `M${p[0]} L${p.slice(1).join(' L')} L${W},${H} L0,${H} Z`;
