@@ -6,55 +6,54 @@
 // Avellaneda-Quilmes-Berazategui (este). Nada de Quilmes en el mar.
 // ============================================================
 
-export const CX = 585, CY = 470; // La Capital (CABA) — centro, junto al río
+export const CX = 560, CY = 380; // La Capital (CABA)
 
-// Posiciones geográficas reales del AMBA: Norte arriba, Oeste izquierda,
-// Sur abajo, CABA en el centro-este, Río de la Plata al este.
-// Cada zona es una región contigua (como en el mapa real).
+// Coordenadas normalizadas a grilla 1000x800 (geografía real del AMBA):
+// Norte arriba, Oeste izquierda, Sur abajo, CABA centro, río al este.
 export const TERR = [
-  { id:'capital', name:'La Capital', full:'La Capital (CABA)', x:585, y:470, r:52, zone:'capital', special:true,
+  { id:'capital', name:'La Capital', full:'La Capital (CABA)', x:560, y:380, r:18, zone:'capital', special:true,
     flavor:'La joya del conurbano: Casa Rosada, Obelisco y la 9 de Julio. El que la tiene, cobra. El que la pierde, llora.' },
-  // ZONA NORTE (franja superior; ribereños al noreste sobre el río)
-  { id:'sanmiguel',   name:'San Miguel',      x:350, y:100, r:24, zone:'norte', flavor:'Tranquilo, arbolado... hasta que llega un ejército.' },
-  { id:'josecpaz',    name:'José C. Paz',     x:225, y:150, r:24, zone:'norte', flavor:'Ciudad dormitorio: si dormís, perdés territorios.' },
-  { id:'malvinas',    name:'Malvinas Argentinas', x:120, y:200, r:22, zone:'norte', flavor:'Polo industrial y del peronismo profundo del oeste norteño.' },
-  { id:'sanmartin',   name:'San Martín',      x:470, y:170, r:24, zone:'norte', flavor:'Parque industrial y peronismo de ley.' },
-  { id:'vicentelopez',name:'Vicente López',   x:660, y:180, r:22, zone:'norte', flavor:'La costa del poder: la Quinta de Olivos está acá.' },
-  { id:'sanisidro',   name:'San Isidro',      x:790, y:230, r:23, zone:'norte', flavor:'Hipódromo, catedral y la costa más cheta del conurbano.' },
-  { id:'sanfernando', name:'San Fernando',    x:905, y:300, r:22, zone:'norte', flavor:'Astilleros e islas: el que domina el río domina la joda.' },
-  { id:'tigre',       name:'Tigre',           x:1015, y:360, r:24, zone:'norte', flavor:'Delta del Paraná, lanchas, Nordelta y mosquitos que no perdonan.' },
-  // ZONA OESTE (franja izquierda/media)
-  { id:'moreno',      name:'Moreno',          x:105, y:430, r:23, zone:'oeste', flavor:'Punta de riel del Sarmiento: llegar acá ya es conquista.' },
-  { id:'merlo',       name:'Merlo',           x:190, y:520, r:23, zone:'oeste', flavor:'Trenes, bandas de rock y quilombo garantizado.' },
-  { id:'ituzaingo',   name:'Ituzaingó',       x:300, y:430, r:22, zone:'oeste', flavor:'Residencial y prolijo: el caos se viste de traje.' },
-  { id:'hurlingham',  name:'Hurlingham',      x:405, y:380, r:22, zone:'oeste', flavor:'Tierra de clubes de rugby: barras que te comen crudo.' },
-  { id:'moron',       name:'Morón',           x:270, y:600, r:23, zone:'oeste', flavor:'Catedral, plaza y base aérea: el centro neurálgico del oeste.' },
-  { id:'tresdefebrero',name:'Tres de Febrero',x:460, y:320, r:22, zone:'oeste', flavor:'Caseros, Ciudad Jardín, El Palomar: gente laburante.' },
-  { id:'ciudadela',   name:'Ciudadela',       x:475, y:420, r:21, zone:'oeste', flavor:'Fábricas y ferias: el olor a pan es de terror.' },
-  { id:'ramosmejia',  name:'Ramos Mejía',     x:365, y:540, r:21, zone:'oeste', flavor:'Shopping Oeste y el tren atestado: rinde en dólares.' },
-  { id:'flores',      name:'Flores',          x:530, y:540, r:21, zone:'oeste', flavor:'Barrio porteño “liberado” al otro lado de la General Paz. Cuna del rock.' },
-  { id:'sanjusto',    name:'San Justo',       x:430, y:610, r:21, zone:'oeste', flavor:'Cabecera de La Matanza: el palacio municipal es la joya.' },
-  { id:'lamatanza',   name:'La Matanza',      x:250, y:690, r:40, zone:'oeste', big:true,
+  // ZONA NORTE
+  { id:'tigre',       name:'Tigre',           x:420, y:110, r:18, zone:'norte', flavor:'Delta del Paraná, lanchas, Nordelta y mosquitos que no perdonan.' },
+  { id:'sanfernando', name:'San Fernando',    x:470, y:150, r:18, zone:'norte', flavor:'Astilleros e islas: el que domina el río domina la joda.' },
+  { id:'sanisidro',   name:'San Isidro',      x:510, y:190, r:18, zone:'norte', flavor:'Hipódromo, catedral y la costa más cheta del conurbano.' },
+  { id:'vicentelopez',name:'Vicente López',   x:550, y:240, r:18, zone:'norte', flavor:'La costa del poder: la Quinta de Olivos está acá.' },
+  { id:'sanmartin',   name:'San Martín',      x:470, y:280, r:18, zone:'norte', flavor:'Parque industrial y peronismo de ley.' },
+  { id:'sanmiguel',   name:'San Miguel',      x:300, y:220, r:18, zone:'norte', flavor:'Tranquilo, arbolado... hasta que llega un ejército.' },
+  { id:'josecpaz',    name:'José C. Paz',     x:240, y:200, r:18, zone:'norte', flavor:'Ciudad dormitorio: si dormís, perdés territorios.' },
+  { id:'malvinas',    name:'Malvinas Argentinas', x:320, y:160, r:18, zone:'norte', flavor:'Polo industrial y del peronismo profundo del oeste norteño.' },
+  // ZONA OESTE
+  { id:'moreno',      name:'Moreno',          x:130, y:380, r:18, zone:'oeste', flavor:'Punta de riel del Sarmiento: llegar acá ya es conquista.' },
+  { id:'merlo',       name:'Merlo',           x:180, y:470, r:18, zone:'oeste', flavor:'Trenes, bandas de rock y quilombo garantizado.' },
+  { id:'ituzaingo',   name:'Ituzaingó',       x:230, y:390, r:18, zone:'oeste', flavor:'Residencial y prolijo: el caos se viste de traje.' },
+  { id:'hurlingham',  name:'Hurlingham',      x:310, y:330, r:18, zone:'oeste', flavor:'Tierra de clubes de rugby: barras que te comen crudo.' },
+  { id:'moron',       name:'Morón',           x:280, y:430, r:18, zone:'oeste', flavor:'Catedral, plaza y base aérea: el centro neurálgico del oeste.' },
+  { id:'tresdefebrero',name:'Tres de Febrero',x:410, y:330, r:18, zone:'oeste', flavor:'Caseros, Ciudad Jardín, El Palomar: gente laburante.' },
+  { id:'ciudadela',   name:'Ciudadela',       x:460, y:360, r:18, zone:'oeste', flavor:'Fábricas y ferias: el olor a pan es de terror.' },
+  { id:'ramosmejia',  name:'Ramos Mejía',     x:380, y:420, r:18, zone:'oeste', flavor:'Shopping Oeste y el tren atestado: rinde en dólares.' },
+  { id:'flores',      name:'Flores',          x:500, y:410, r:18, zone:'oeste', flavor:'Barrio porteño “liberado” al otro lado de la General Paz. Cuna del rock.' },
+  { id:'sanjusto',    name:'San Justo',       x:390, y:480, r:18, zone:'oeste', flavor:'Cabecera de La Matanza: el palacio municipal es la joya.' },
+  { id:'lamatanza',   name:'La Matanza',      x:260, y:560, r:30, zone:'oeste', big:true,
     flavor:'El partido más picante y poblado del país. Virrey del Pino te mira feo.' },
-  // ZONA SUR (franja inferior)
-  { id:'avellaneda',  name:'Avellaneda',      x:650, y:690, r:23, zone:'sur', flavor:'Racing vs. Independiente y el puente Pueyrredón: la puerta del sur.' },
-  { id:'lanus',       name:'Lanús',           x:600, y:760, r:23, zone:'sur', flavor:'Granate, obreros y Dock Sud: orgullo del sur profundo.' },
-  { id:'quilmes',     name:'Quilmes',         x:820, y:740, r:24, zone:'sur', flavor:'Sobre la costa del Plata. La cerveza que tomaba el abuelo: botella llena, territorio sano.' },
-  { id:'lomas',       name:'Lomas de Zamora', x:600, y:840, r:23, zone:'sur', flavor:'La Salada, reina de las ferias: guita, punga y estrategia.' },
-  { id:'echeverria',  name:'Esteban Echeverría', x:480, y:880, r:21, zone:'sur', flavor:'Monte Grande y la cuna del cuento del tío.' },
-  { id:'ezeiza',      name:'Ezeiza',          x:360, y:920, r:22, zone:'sur', flavor:'Aeropuerto internacional: controlás quién entra y sale.' },
-  { id:'brown',       name:'Almirante Brown', x:700, y:920, r:23, zone:'sur', flavor:'Adrogué, ciudad jardín: parece paz... hasta que atacan.' },
-  { id:'varela',      name:'Florencio Varela',x:830, y:910, r:22, zone:'sur', flavor:'Kilómetro 30 y pico: donde la gamba se estira.' },
-  { id:'berazategui', name:'Berazategui',     x:980, y:820, r:23, zone:'sur', flavor:'La ciudad del vidrio, sobre el río: todo se ve transparente (menos las alianzas).' },
+  // ZONA SUR
+  { id:'avellaneda',  name:'Avellaneda',      x:610, y:460, r:18, zone:'sur', flavor:'Racing vs. Independiente y el puente Pueyrredón: la puerta del sur.' },
+  { id:'lanus',       name:'Lanús',           x:570, y:520, r:18, zone:'sur', flavor:'Granate, obreros y Dock Sud: orgullo del sur profundo.' },
+  { id:'quilmes',     name:'Quilmes',         x:690, y:540, r:18, zone:'sur', flavor:'Sobre la costa del Plata. La cerveza que tomaba el abuelo: botella llena, territorio sano.' },
+  { id:'lomas',       name:'Lomas de Zamora', x:530, y:580, r:18, zone:'sur', flavor:'La Salada, reina de las ferias: guita, punga y estrategia.' },
+  { id:'echeverria',  name:'Esteban Echeverría', x:450, y:680, r:18, zone:'sur', flavor:'Monte Grande y la cuna del cuento del tío.' },
+  { id:'ezeiza',      name:'Ezeiza',          x:350, y:710, r:18, zone:'sur', flavor:'Aeropuerto internacional: controlás quién entra y sale.' },
+  { id:'brown',       name:'Almirante Brown', x:560, y:660, r:18, zone:'sur', flavor:'Adrogué, ciudad jardín: parece paz... hasta que atacan.' },
+  { id:'varela',      name:'Florencio Varela',x:650, y:670, r:18, zone:'sur', flavor:'Kilómetro 30 y pico: donde la gamba se estira.' },
+  { id:'berazategui', name:'Berazategui',     x:760, y:610, r:18, zone:'sur', flavor:'La ciudad del vidrio, sobre el río: todo se ve transparente (menos las alianzas).' },
 ];
 
 export const TIDS = TERR.map(t => t.id);
 
 export const ZONES = {
-  capital: { label:'Capital Federal', color:'#eab308', ids:['capital'] },
-  norte:   { label:'Zona Norte', color:'#ec4899', ids:['tigre','sanfernando','sanisidro','vicentelopez','sanmiguel','josecpaz','malvinas'] },
-  oeste:   { label:'Zona Oeste', color:'#f97316', ids:['sanmartin','tresdefebrero','hurlingham','ituzaingo','moreno','moron','merlo','ciudadela','ramosmejia','lamatanza','sanjusto','flores'] },
-  sur:     { label:'Zona Sur', color:'#22c55e', ids:['avellaneda','lanus','quilmes','lomas','brown','varela','berazategui','echeverria','ezeiza'] },
+  capital: { label:'Capital Federal', color:'#facc15', stroke:'#eab308', bgPath:'M 540,340 L 610,360 L 590,440 L 520,410 Z', ids:['capital'] },
+  norte:   { label:'Zona Norte', color:'#ec4899', stroke:'#db2777', bgPath:'M 200,160 L 430,70 L 590,220 L 520,320 L 370,300 Z', ids:['tigre','sanfernando','sanisidro','vicentelopez','sanmartin','sanmiguel','josecpaz','malvinas'] },
+  oeste:   { label:'Zona Oeste', color:'#f97316', stroke:'#ea580c', bgPath:'M 90,350 L 380,280 L 520,390 L 420,530 L 220,620 Z', ids:['moreno','merlo','ituzaingo','hurlingham','moron','tresdefebrero','ciudadela','ramosmejia','flores','sanjusto','lamatanza'] },
+  sur:     { label:'Zona Sur', color:'#22c55e', stroke:'#16a34a', bgPath:'M 540,440 L 730,500 L 810,610 L 610,740 L 310,750 Z', ids:['avellaneda','lanus','quilmes','lomas','echeverria','ezeiza','brown','varela','berazategui'] },
 };
 export const ZKEYS = ['capital','norte','oeste','sur'];
 
