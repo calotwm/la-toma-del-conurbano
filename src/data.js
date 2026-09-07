@@ -47,10 +47,10 @@ export const TIDS = TERR.map(t => t.id);
 export const ZONES = {
   norte:   { label:'Zona Norte', color:'#7bd0ff',   ids:['tigre','sanfernando','sanisidro','vicentelopez','sanmartin','sanmiguel','josecpaz','malvinas'] },
   oeste:   { label:'Zona Oeste', color:'#f9c03d',   ids:['moreno','merlo','ituzaingo','moron','tresdefebrero','hurlingham','ciudadela','ramosmejia'] },
-  matanza: { label:'La Matanza y alrededores', color:'#ff6b6b', ids:['lamatanza','sanjusto','flores'] },
+  suroeste:{ label:'Zona Suroeste', color:'#ff6b6b', ids:['lamatanza','sanjusto','flores'] },
   sur:     { label:'Zona Sur', color:'#c77dff',     ids:['avellaneda','lanus','lomas','brown','ezeiza','echeverria','quilmes','berazategui','varela'] },
 };
-export const ZKEYS = ['norte','oeste','matanza','sur'];
+export const ZKEYS = ['norte','oeste','suroeste','sur'];
 
 // Adyacencias geográficamente reales (partidos limítrofes)
 export const ADJ_PAIRS = [
