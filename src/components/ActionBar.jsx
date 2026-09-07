@@ -77,7 +77,7 @@ export default function ActionBar(props) {
             ))}
             <div style={{ flex: 1 }}></div>
             <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '12px 26px', borderRadius: 10, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 14, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAttack}>
-              <span className="mat" style={{ fontSize: 18 }}>gps_fixed</span>¡A DARLE!
+              <span className="mat" style={{ fontSize: 18 }}>casino</span>🎲 TIRAR DADOS
             </button>
           </div>
         )}

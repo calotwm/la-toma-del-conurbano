@@ -42,14 +42,19 @@ export function repTitleFor(terrCount, ownsCap) {
   return t;
 }
 
-// ---------- Misiones ----------
+// ---------- Misiones (reglas TEG reales) ----------
+function zoneOwned(s, p, k) { return ZONES[k].ids.every(t => s.terr[t].owner === p); }
+function otherZones(s, p, excl) { return ZKEYS.filter(k => k !== excl && k !== 'matanza' && k !== 'capital').reduce((acc, k) => acc + ZONES[k].ids.filter(t => s.terr[t].owner === p).length, 0); }
+
 export const MISSION_DEFS = {
-  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital + al menos 8 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 9 },
-  norte:   { name: 'Conquistar el Norte', desc: 'Controlar 6 territorios de la Zona Norte.', check: (s, p) => ZONES.norte.ids.filter(t => s.terr[t].owner === p).length >= 6 },
-  oeste:   { name: 'Conquistar el Oeste', desc: 'Controlar 6 territorios de la Zona Oeste.', check: (s, p) => ZONES.oeste.ids.filter(t => s.terr[t].owner === p).length >= 6 },
-  sur:     { name: 'Conquistar el Sur', desc: 'Controlar 7 territorios de la Zona Sur.', check: (s, p) => ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 7 },
-  eliminar:{ name: 'El Intocable', desc: 'Eliminar por completo a un jugador rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
+  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 16 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 17 },
+  norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 6 },
+  sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
+  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 6 },
+  eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
 };
+// Objetivo común (TEG real): ocupar 25 de los 29 territorios
+export const COMMON_GOAL = 25;
 
 // ---------- Eventos del Informe Metropolitano ----------
 export const EVENTS = [
@@ -81,11 +86,14 @@ function componentsOf(s, pid) {
 }
 export function reinforceInfo(s, pid) {
   const own = ownersCount(s, pid);
+  // TEG real: 50% de los países ocupados (redondeado hacia abajo), mín 3
+  let base = Math.floor(own / 2);
+  if (own < 6) base = 3;
   const zones = ZKEYS.filter(k => ZONES[k].ids.every(t => s.terr[t].owner === pid)).length;
   const cap = (s.terr.capital.owner === pid) ? 1 : 0;
-  let total = own + zones * 3 + cap * 10;
+  let total = base + zones * 4 + cap * 10;
   if (total < 3) total = 3;
-  return { total, own, zones, cap };
+  return { total, own, base, zones, cap };
 }
 
 // ---------- Cartas ----------
@@ -107,7 +115,13 @@ export function buildDeck() {
 export const emblemName = emblem => emblem === 'capital' ? 'La Capital' : emblem === 'bragado' ? 'Bragado' : tName(emblem);
 export function tradeValue(s, pid, cards) {
   const n = cards.length; if (n < 3) return 0;
-  const base = [0, 0, 0, 5, 8, 10][Math.min(n, 5)];
+  // TEG real: canje escalonado 1º=4, 2º=7, 3º=10, luego +5 por canje
+  const p = s.players.find(x => x.id === pid);
+  const t = (p && p.trades) || 0;
+  let base = 4;
+  if (t >= 1) base = 7;
+  if (t >= 2) base = 10;
+  if (t >= 3) base = 10 + (t - 2) * 5;
   let bonus = 0;
   cards.forEach(c => {
     const e = c.emblem;
@@ -137,7 +151,7 @@ export function canAttack(s, pid, o, t, diceN) {
 
 // ---------- Creación de partida ----------
 export function createGame(meta) {
-  const players = meta.players.map(m => ({ id: uid(), name: m.name, color: m.color, human: m.human, level: m.level || 'capo', mission: null, hand: [], alive: true }));
+  const players = meta.players.map(m => ({ id: uid(), name: m.name, color: m.color, human: m.human, level: m.level || 'capo', mission: null, hand: [], trades: 0, alive: true }));
   const n = players.length;
   const mk = [...MISSION_KEYS];
   for (let i = mk.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [mk[i], mk[j]] = [mk[j], mk[i]]; }
@@ -187,9 +201,9 @@ export function startTurn(s, pid) {
       log(s, `» ${p.name} canjea cartas y suma ${v} tropas.`, 'card');
     }
   }
-  let bonusText = `+${info.own} territorios`;
-  if (info.zones) bonusText += `, +${info.zones * 3} zonas completas`;
-  if (info.cap) bonusText += ', +10 La Capital';
+  let bonusText = `50% de ${info.own} países = ${info.base}`;
+  if (info.zones) bonusText += `, +${info.zones * 4} zonas`;
+  if (info.cap) bonusText += ', +10 CABA';
   log(s, `» Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
 }
 
@@ -241,6 +255,8 @@ export function applyConquest(s, pid, o, t, diceN, al, dl) {
       log(s, `» ${lost.name} quedó sin territorios: ELIMINADO. Sus cartas van para ${playerName(s, pid)}.`, 'lose');
     }
   }
+  // Objetivo común (TEG real): ocupar 25 territorios
+  if (!s.winner && ownersCount(s, pid) >= COMMON_GOAL) { s.winner = pid; s.winReason = 'common'; }
   if (s.missionsOn && !s.winner) {
     const mp = s.players.find(p => p.id === pid);
     if (mp && MISSION_DEFS[mp.mission] && MISSION_DEFS[mp.mission].check(s, pid)) {

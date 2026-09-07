@@ -147,7 +147,7 @@ export default function Game({ S, setS }) {
     if (aN < 1) return;
     if (t === 'capital' && (ot < 3 || aN < 2)) return;
     if (!canAttack(s0, pid, o, t, aN)) return;
-    const dN = Math.min(2, tt);
+    const dN = Math.min(3, tt);
     const res = await animateDice(aN, dN, t === 'capital', ctl);
     if (!res) return;
     commitBattle(pid, o, t, aN, res.aRoll, res.dRoll);
@@ -159,7 +159,7 @@ export default function Game({ S, setS }) {
     let a = Math.min(aN, ot - 1);
     if (t === 'capital') { if (ot < 3) return; a = Math.min(3, a); a = Math.max(2, a); }
     if (a < 1) return;
-    const dN = Math.min(2, s0.terr[t].troops);
+    const dN = Math.min(3, s0.terr[t].troops);
     const res = await animateDice(a, dN, t === 'capital', null);
     if (!res) return;
     commitBattle(me, o, t, a, res.aRoll, res.dRoll);

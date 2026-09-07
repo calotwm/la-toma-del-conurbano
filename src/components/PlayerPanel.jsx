@@ -61,10 +61,10 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
         </div>
       )}
 
-      {/* próximo refuerzo */}
+      {/* próximo refuerzo (TEG: 50% de países + bonus zona/CABA) */}
       <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
         <span>REFUERZO PRÓXIMO</span>
-        <strong style={{ color: 'var(--celeste)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 1 c/u{info.zones ? ' · +' + info.zones * 3 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
+        <strong style={{ color: 'var(--celeste)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 50% ({info.base}){info.zones ? ' · +' + info.zones * 4 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
       </div>
       {S.phase === 'reinforce' && isMyTurn && (
         <div className="bastion" style={{ borderColor: 'var(--gold-ornate)', background: 'linear-gradient(90deg,#1f2410,#121826,#1f2410)' }}>
@@ -136,6 +136,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
               const v = tradeValue(s, me, cards);
               if (v > 0) {
                 selected.slice().sort((a, b) => b - a).forEach(i => p.hand.splice(i, 1));
+                p.trades = (p.trades || 0) + 1;
                 s.pool += v;
                 log(s, `» ${p.name} canjea ${cards.length} naipes por +${v}. ${pick(PHRASES.trade)}`, 'card');
                 Sound.conquest();
@@ -144,7 +145,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
               setSelCards([]);
             }}>
               <span className="mat" style={{ fontSize: 17 }}>currency_exchange</span>
-              Cobrar +{tradePreview || (selCount === 3 ? 5 : selCount === 4 ? 8 : 10)} tropas
+              Cobrar +{tradePreview || (tradeValue(S, me, selected.map(i => curP.hand[i])))} tropas
             </button>
           </div>
         )}
