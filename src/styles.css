@@ -395,21 +395,18 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .medallion-in .mat { font-size: 18px; }
   .game-shell { overflow: hidden; }
   main.game { padding: 4px; gap: 4px; }
-  .game-fit { grid-template-areas: "map"; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0; }
-  .map-wrap { grid-area: map; height: 100%; }
+  /* layout en columna: mapa arriba, sección activa abajo */
+  .game-fit { display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 0; }
+  .map-wrap { grid-area: auto; width: 100%; height: 48vh; flex: none; }
+  .map-wrap .map-frame { height: 100%; }
   .map-ribbon { padding: 6px 8px; }
   .map-ribbon h3 { font-size: 11px; }
-  /* paneles como drawers */
   .panel-you, .panel-actions, .panel-log {
-    position: fixed; z-index: 40; background: #0d131f; border: 1px solid var(--line);
-    box-shadow: 0 0 40px rgba(0,0,0,.6); transition: transform .28s ease;
-    display: block; overflow-y: auto; padding: 12px;
+    width: 100%; flex: 1; min-height: 0; overflow-y: auto; padding: 10px;
+    background: #0d131f; border: 1px solid var(--line); border-radius: 10px;
+    display: none;
   }
-  .panel-you { left: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(-105%); }
-  .panel-you.show { transform: translateX(0); }
-  .panel-log { right: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(105%); }
-  .panel-log.show { transform: translateX(0); }
-  .panel-actions { left: 0; right: 0; bottom: 48px; max-height: 34vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 8px 10px; }
+  .panel-actions.show, .panel-you.show, .panel-log.show { display: block; }
   /* barra de pestañas */
   .mobile-tabs {
     display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;

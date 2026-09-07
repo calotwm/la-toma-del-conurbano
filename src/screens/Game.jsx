@@ -34,7 +34,7 @@ export default function Game({ S, setS }) {
   const [amt, setAmt] = useState(1);
   const [dn, setDn] = useState(null);
   const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
-  const [mobileTab, setMobileTab] = useState('map'); // pestaña móvil: map|you|actions|log
+  const [mobileTab, setMobileTab] = useState('actions'); // pestaña móvil: actions|you|log (el mapa siempre visible arriba)
 
   const Sref = useRef(S); Sref.current = S;
   const flashT = useRef(null), bannerT = useRef(null);
@@ -454,7 +454,7 @@ onEndTurn={endHumanTurn}
 
         {/* Barra de pestañas móvil */}
         <div className="mobile-tabs">
-          <button className={'tab' + (mobileTab === 'map' ? ' on' : '')} onClick={() => setMobileTab('map')}><span className="mat">map</span>Mapa</button>
+          <button className={'tab' + (mobileTab === 'actions' ? ' on' : '')} onClick={() => setMobileTab('actions')}><span className="mat">swords</span>Acciones</button>
           <button className={'tab' + (mobileTab === 'you' ? ' on' : '')} onClick={() => setMobileTab('you')}><span className="mat">person</span>Vos</button>
           <button className={'tab' + (mobileTab === 'log' ? ' on' : '')} onClick={() => setMobileTab('log')}><span className="mat">campaign</span>Log</button>
         </div>
