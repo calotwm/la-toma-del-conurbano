@@ -29,7 +29,11 @@
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
-  background: #0a0e16;
+  background:
+    radial-gradient(1300px 750px at 50% -10%, rgba(116,182,232,.22) 0%, transparent 60%),
+    radial-gradient(900px 600px at 100% 110%, rgba(245,247,250,.10) 0%, transparent 55%),
+    linear-gradient(180deg, #123a6b 0%, #1a4f8a 38%, #3a7fc4 62%, #74b6e8 80%, #dcebf7 100%);
+  background-attachment: fixed;
   color: var(--txt);
   font-family: 'Archivo', system-ui, sans-serif;
   min-height: 100vh;
@@ -139,7 +143,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 @media (max-width: 1280px) { .game-fit { grid-template-columns: 1fr; } }
 .game-fit .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
 .map-wrap { flex: 1; min-height: 0; }
-.map-frame { display: flex; flex-direction: column; height: 100%; }
+.map-frame { display: flex; flex-direction: column; height: 100%; background: #0b0e14; }
 .map-fit { flex: 1; min-height: 0; }
 .map-fit .map-ribbon { flex: none; }
 .map-fit .map-viewport { position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; }
@@ -203,7 +207,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .map-ribbon .scale { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--muted); }
 .map-tools button { width: 30px; height: 30px; background: #101729; border: 1px solid #2d3a57; color: var(--gold); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
 .map-tools button:hover { background: #1f2c4a; }
-.map-viewport { position: relative; background: #050913; overflow: hidden; user-select: none; }
+.map-viewport { position: relative; background: #0b0e14; overflow: hidden; user-select: none; }
 .map-viewport svg { display: block; width: 100%; height: auto; }
 .node { cursor: pointer; }
 .node .fill { stroke-width: 1.5; }

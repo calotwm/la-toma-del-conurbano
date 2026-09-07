@@ -59,8 +59,8 @@ export default function MapView({ S, sel, onTerr }) {
             <path d="M 0 11 Q 11 5, 22 11 T 44 11" fill="none" opacity="0.3" stroke="#1c3a5c" strokeWidth="1"/>
           </pattern>
           <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#101826"/>
-            <stop offset="100%" stopColor="#0a1018"/>
+            <stop offset="0%" stopColor="#13151c"/>
+            <stop offset="100%" stopColor="#0a0c10"/>
           </linearGradient>
         </defs>
 
