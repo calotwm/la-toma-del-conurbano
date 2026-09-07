@@ -50,15 +50,26 @@ export default function MapView({ S, sel, onTerr }) {
     <div style={{ position: 'relative' }}>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto select-none overflow-hidden">
         <defs>
+          <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
+            <stop offset="0%" stopColor="#10263f"/>
+            <stop offset="60%" stopColor="#0a1a2e"/>
+            <stop offset="100%" stopColor="#050e1b"/>
+          </radialGradient>
+          <pattern id="waterRipple" width="44" height="22" patternUnits="userSpaceOnUse">
+            <path d="M 0 11 Q 11 5, 22 11 T 44 11" fill="none" opacity="0.3" stroke="#1c3a5c" strokeWidth="1"/>
+          </pattern>
           <linearGradient id="landGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#101826"/>
             <stop offset="100%" stopColor="#0a1018"/>
           </linearGradient>
         </defs>
 
-        {/* fondo de tierra (sin el bloque de agua que se veía mal) */}
+        {/* fondo de tierra */}
         <rect x="0" y="0" width={W} height={H} fill="url(#landGrad)"/>
-        <text x={W - 36} y={H / 2} transform={`rotate(90 ${W - 36} ${H / 2})`} fill="#3a5f7d" opacity="0.5" fontSize="16" letterSpacing="6" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
+        {/* MAR al este (Río de la Plata), con costa suave */}
+        <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterGrad)"/>
+        <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterRipple)"/>
+        <text x={W - 34} y={H / 2} transform={`rotate(90 ${W - 34} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="18" letterSpacing="8" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
 
         {/* CAPA 1: REGIONES DE ZONA (dibujadas a mano) */}
         <g id="capa-regiones">
