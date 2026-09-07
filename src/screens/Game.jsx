@@ -419,33 +419,6 @@ export default function Game({ S, setS }) {
         <Copyright/>
       </main>
 
-      {/* Overlay de dados: dado animado girando en el centro */}
-      {S.dice && (
-        <div className="dice-overlay">
-          <div className="dice-box">
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 2 }}>Resolución de batalla</div>
-            <div className="vs-row">
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <span className="cap-big" style={{ color: 'var(--warn)' }}>Atacante</span>
-                <div className="die-big atk" style={{ width: 'auto', height: 'auto', fontSize: 40, padding: '8px 18px', gap: 6 }}>
-                  {S.dice.a.map((v, i) => <span key={i} className={S.dice.rolling ? 'spin' : ''} style={{ display: 'inline-block' }}>{v}</span>)}
-                </div>
-              </div>
-              <span className="vs" style={{ fontSize: 22 }}>VS</span>
-              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
-                <span className="cap-big" style={{ color: 'var(--gold)' }}>Defensor</span>
-                <div className="die-big def" style={{ width: 'auto', height: 'auto', fontSize: 40, padding: '8px 18px', gap: 6 }}>
-                  {S.dice.d.map((v, i) => <span key={i} className={S.dice.rolling ? 'spin' : ''} style={{ display: 'inline-block' }}>{v}</span>)}
-                </div>
-              </div>
-            </div>
-            {!S.dice.rolling && (
-              <div className="res-line">{S.lastBattle ? (S.lastBattle.conquered ? (S.lastBattle.capital ? '¡La Capital es tuya!' : 'Territorio conquistado') : 'Ataque rechazado') : ''}</div>
-            )}
-          </div>
-        </div>
-      )}
-
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>
     </div>
