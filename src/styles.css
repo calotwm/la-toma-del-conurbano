@@ -409,7 +409,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-you.show { transform: translateX(0); }
   .panel-log { right: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(105%); }
   .panel-log.show { transform: translateX(0); }
-  .panel-actions { left: 0; right: 0; bottom: 48px; max-height: 40vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 8px 10px; }
+  .panel-actions { left: 0; right: 0; bottom: 48px; max-height: 34vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 8px 10px; }
   /* barra de pestañas */
   .mobile-tabs {
     display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;

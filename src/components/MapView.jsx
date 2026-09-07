@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TERR, ADJ, ADJ_PAIRS, CX, CY, STATE_COLOR, ZONES } from '../data.js';
 import { playerColor, playerName } from '../engine.js';
 
@@ -12,6 +12,15 @@ export default function MapView({ S, sel, battle, onTerr }) {
   const me = cur && cur.human ? cur.id : null;
   const myTurn = me != null && !S.busy;
   const [hover, setHover] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // en móvil el mapa debe quedar COMPLETO (meet), en desktop puede llenar (slice)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 900);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
 
   const getCoords = (id) => { const t = TERR.find(x => x.id === id); return t ? { x: t.x, y: t.y } : { x: 0, y: 0 }; };
 
@@ -73,7 +82,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" className="w-full h-full select-none overflow-hidden">
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={isMobile ? 'xMidYMid meet' : 'xMidYMid slice'} className="w-full h-full select-none overflow-hidden">
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>
