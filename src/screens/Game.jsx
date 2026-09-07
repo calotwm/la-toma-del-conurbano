@@ -15,6 +15,15 @@ import { Copyright } from '../components/common.jsx';
 const LEVEL_LABELS = { chorro: 'Chorro (fácil)', defensa: 'Defensa (medio)', capo: 'Capo (difícil)' };
 const wait = ms => new Promise(r => setTimeout(r, ms));
 
+const TICKER = [
+  ['[ALERTA TÁCTICA]', 'var(--warn)'], ['Movilización masiva en Puente Pueyrredón', null],
+  ['[CABA]', 'var(--tertiary)'], ['Cacerolazo estruendoso en Recoleta por suba de peajes', null],
+  ['[COMBATE]', 'var(--gold-light)'], ['¡La Matanza profunda en pie de guerra! 11 divisiones sobre la Ruta 3', null],
+  ['[ZONA NORTE]', 'var(--tertiary)'], ['San Isidro blinda el cruce de Panamericana', null],
+  ['[SUR]', 'var(--warn)'], ['Furia en Quilmes Centro: se rompió el acuerdo del polo cervecero', null],
+  ['[CLIMA]', 'var(--gold-light)'], ['Niebla espesa en el Delta del Tigre, lanchas en alerta', null],
+];
+
 export default function Game({ S, setS }) {
   const [banner, setBanner] = useState(null);
   const [flash, setFlash] = useState(false);
@@ -92,7 +101,7 @@ export default function Game({ S, setS }) {
             if (mv > 0) {
               s2.terr[f.o].troops -= mv;
               s2.terr[f.t].troops += mv;
-              log(s2, `🎯 ${playerName(s2, botId)} reagrupa ${mv} tropa(s) de ${tName(f.o)} a ${tName(f.t)}.`, 'sys');
+              log(s2, `» ${playerName(s2, botId)} reagrupa ${mv} tropa(s) de ${tName(f.o)} a ${tName(f.t)}.`, 'sys');
             }
             setS(s2); await wait(550);
           } else {
@@ -156,7 +165,7 @@ export default function Game({ S, setS }) {
       s.lastBattle = { o, t, conquered: true, capital: capC, aRoll, dRoll, al, dl };
       if (capC) {
         flashOn(); Sound.epic();
-        showBanner(prevOwner == null ? '👑 ¡MANDE! ¡LA TOMASTE, BOLUDO!' : `🏛️ ¡${playerName(s, prevOwner)} se quedó sin la joya!`, false);
+        showBanner(prevOwner == null ? '¡MANDE! ¡LA TOMASTE, BOLUDO!' : `${playerName(s, prevOwner)} se quedó sin la joya`, false);
       } else {
         Sound.conquest();
       }
@@ -165,10 +174,10 @@ export default function Game({ S, setS }) {
       s.lastBattle = { o, t, conquered: false, capital: isCap, aRoll, dRoll, al, dl };
       if (isCap) {
         Sound.defendCapital();
-        log(s, `🛡️ ${pick(PHRASES.capDefense)} — La Capital aguanta el ataque de ${playerName(s, pid)}.`, 'capital');
+        log(s, `» ${pick(PHRASES.capDefense)} — La Capital aguanta el ataque de ${playerName(s, pid)}.`, 'capital');
       } else {
         Sound.lose();
-        log(s, `💥 ${playerName(s, pid)} pierde ${al} en ${tName(o)} contra ${tName(t)}. ${pick(PHRASES.battleLose)}`, 'lose');
+        log(s, `» ${playerName(s, pid)} pierde ${al} en ${tName(o)} contra ${tName(t)}. ${pick(PHRASES.battleLose)}`, 'lose');
       }
     }
 
@@ -176,7 +185,7 @@ export default function Game({ S, setS }) {
       const w = s.players.find(p => p.id === s.winner);
       const mk = w && s.winReason.startsWith('mission') ? MISSION_DEFS[w.mission] : null;
       Sound.mission();
-      showBanner(mk ? `🏆 ¡${w.name} CUMPLIÓ SU MISIÓN: ${mk.name}!` : `🏆 ¡${w.name} DOMINÓ TODO EL CONURBANO!`, false);
+      showBanner(mk ? `¡${w.name} CUMPLIÓ SU MISIÓN: ${mk.name}!` : `¡${w.name} DOMINÓ TODO EL CONURBANO!`, false);
       setS(s);
       return;
     }
@@ -191,7 +200,7 @@ export default function Game({ S, setS }) {
       if (s.terr[id].owner !== me || s.pool <= 0) return;
       const s2 = clone(s);
       s2.terr[id].troops++; s2.pool--;
-      if (s2.pool <= 0) { s2.phase = 'attack'; log(s2, '⚔️ Refuerzos listos. ¡A atacar!', 'sys'); }
+      if (s2.pool <= 0) { s2.phase = 'attack'; log(s2, '» Refuerzos listos. ¡A atacar!', 'sys'); }
       setS(s2);
       return;
     }
@@ -241,92 +250,171 @@ export default function Game({ S, setS }) {
   const isCapT = !!(sel && sel.t === 'capital');
 
   return (
-    <div style={{ padding: 10 }}>
-      <div className="hdr">
-        <div className="turnchip">RONDA {S.round}</div>
-        <div className="chip">
-          Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{' '}
-          {curP && curP.human ? '(vos)' : curP && !curP.human ? `🤖 ${LEVEL_LABELS[curP.level]}` : ''}
-        </div>
-        <div className="capchip" style={{ background: '#1c1706', border: '1px solid #8a7a3a', color: 'var(--gold)' }}>
-          🏛️ La Capital: <b>{playerName(S, S.terr.capital.owner)}</b> ({S.terr.capital.troops})
-        </div>
-        <div className="spacer"/>
-        <button className="iconbtn" onClick={() => { const n = !soundOn; setSoundOn(n); Sound.toggle(); }}>{soundOn ? '🔊 Sonido' : '🔇 Mudo'}</button>
-        <button className="iconbtn" onClick={() => { const n = Sound.toggleMusic(); setMusicOn(n); }}>{musicOn ? '🎵 Música on' : '🎵 Música off'}</button>
-        <button className="iconbtn" onClick={() => { saveGame(S); showBanner('💾 Partida guardada', true); }}>💾 Guardar</button>
-        <button className="iconbtn" onClick={() => { saveGame(S); setS(prev => ({ ...prev, screen: 'home' })); }}>🚪 Menú</button>
-      </div>
+    <div>
+      {/* ======= HEADER FILETEADO ======= */}
+      <header className="hdr">
+        <div className="gold-bar"/>
+        <div className="hdr-inner">
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div className="medallion">
+              <div className="medallion-in">
+                <span className="mat">wb_sunny</span>
+                <div className="cinta" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 4 }}></div>
+              </div>
+            </div>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+                <h1 className="logo-title embossed">T.E.G. CONURBANO</h1>
+                <span className="tag-edicion">Edición Beligerante</span>
+              </div>
+              <p className="logo-sub">Tácticas y Estrategias del Gran Buenos Aires · 1ra Sección Táctica Electoral</p>
+            </div>
+          </div>
 
-      <div className="steps">
-        <div className={'step ' + (S.phase !== 'reinforce' ? 'done' : 'now')}>1 · REFUERZO</div>
-        <div className={'step ' + (S.phase === 'fortify' ? 'done' : (S.phase !== 'attack' ? '' : 'now'))}>2 · ATAQUE</div>
-        <div className={'step ' + (S.phase === 'fortify' ? 'now' : (S.turnFlags && S.turnFlags.moved ? 'done' : ''))}>3 · REAGRUPO</div>
-      </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+            <div className="turn-crest">
+              <span className="turn-dot"></span>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 10, color: 'var(--gold-light)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>RONDA {S.round}</div>
+                <div style={{ fontFamily: "'Lora', serif", fontSize: 11, color: '#c4d0e5' }}>Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{curP && curP.human ? ' (vos)' : curP && !curP.human ? ` · ${LEVEL_LABELS[curP.level]}` : ''}</div>
+              </div>
+            </div>
 
-      <div className="grid">
-        <div className="leftcol" style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
-          <div className="panel">
-            <h3>👥 Elenco estable</h3>
-            {S.order.map(pid => {
-              const p = S.players.find(x => x.id === pid);
-              const alive = ownersCount(S, pid) > 0;
-              const isCur = pid === S.order[S.tidx];
-              return (
-                <div key={pid} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '3px 0', fontSize: 12, opacity: alive ? 1 : 0.35 }}>
-                  <span className="dot" style={{ background: p.color }}/>{' '}
-                  <span style={{ fontWeight: 800 }}>{p.name}</span>{p.human ? ' 🧑' : ' 🤖'}
-                  <span style={{ marginLeft: 'auto', color: 'var(--dim)' }}>{ownersCount(S, pid)} terr.{isCur ? ' · TURNO' : ''}</span>
+            <div className="hdr-util">
+              <button className={soundOn ? 'on' : ''} title="Sonido" onClick={() => { const n = !soundOn; setSoundOn(n); Sound.toggle(); }}><span className="mat">{soundOn ? 'volume_up' : 'volume_off'}</span></button>
+              <button className={musicOn ? 'on' : ''} title="Música" onClick={() => { const n = Sound.toggleMusic(); setMusicOn(n); }}><span className="mat">music_note</span></button>
+              <button title="Guardar" onClick={() => { saveGame(S); showBanner('Partida guardada', true); }}><span className="mat">save</span></button>
+              <button title="Menú" onClick={() => { saveGame(S); setS(prev => ({ ...prev, screen: 'home' })); }}><span className="mat">exit_to_app</span></button>
+            </div>
+          </div>
+        </div>
+
+        {/* Ticker de radio */}
+        <div className="ticker-bar">
+          <div className="ticker-label"><span className="live"></span><span className="mat" style={{ fontSize: 14, color: 'var(--warn)' }}>campaign</span>RADIO TÁCTICA</div>
+          <div className="ticker-scroll">
+            <div className="ticker-track">
+              {TICKER.map(([t, c], i) => <span key={i} style={{ color: c || 'var(--gold-ornate)', fontWeight: c ? 800 : 400, marginRight: 8 }}>{t}</span>)}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="game">
+        {/* Sub-HUD */}
+        <div className="frame subhud">
+          <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
+          <span className="corner corner-bl"></span><span className="corner corner-br"></span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
+            <div className="phase-pill">
+              <span className="mat" style={{ fontSize: 18 }}>verified</span>
+              <span className="lbl">Fase activa:</span>
+              <span className="val">{S.phase === 'reinforce' ? 'Despliegue de Refuerzos' : S.phase === 'attack' ? 'Asalto Territorial' : 'Reagrupamiento'}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+              ALERTA METROPOLITANA: <span className="code-red">CÓDIGO ROJO GENERALIZADO</span>
+            </div>
+            <div style={{ flex: 1 }}></div>
+            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--gold-light)' }}>apartment</span>La Capital: <b style={{ color: 'var(--tertiary)' }}>{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
+          </div>
+        </div>
+
+        {/* Pasos */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {['REFUERZO', 'ATAQUE', 'REAGRUPO'].map((name, i) => {
+            const active = (i === 0 && S.phase === 'reinforce') || (i === 1 && S.phase === 'attack') || (i === 2 && S.phase === 'fortify');
+            const done = (i === 0 && S.phase !== 'reinforce') || (i === 1 && S.phase === 'fortify') || (i === 2 && S.turnFlags && S.turnFlags.moved);
+            return <span key={name} className="phase-pill" style={{ borderColor: active ? 'var(--pink, #ff2e88)' : done ? 'rgba(134,239,172,.5)' : 'var(--line)', background: active ? '#241018' : '#060912' }}>
+              <span className="lbl" style={{ color: active ? '#ff9dbb' : done ? 'var(--ok)' : 'var(--muted)' }}>{i + 1} · {name}</span>
+            </span>;
+          })}
+        </div>
+
+        {/* Columnas */}
+        <div className="grid">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
+            <div className="frame panel">
+              <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
+              <span className="corner corner-bl"></span><span className="corner corner-br"></span>
+              <div className="panel-title"><h3>Elenco de facciones</h3></div>
+              {S.order.map(pid => {
+                const p = S.players.find(x => x.id === pid);
+                const alive = ownersCount(S, pid) > 0;
+                const isCur = pid === S.order[S.tidx];
+                return (
+                  <div key={pid} className="rival" style={{ opacity: alive ? 1 : 0.35 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="dot" style={{ background: p.color, color: p.color }}></span>
+                      <span className="rival-name">{p.name}</span>
+                      {p.human ? <span className="mat" style={{ fontSize: 14, color: 'var(--muted)' }}>person</span> : <span className="mat" style={{ fontSize: 14, color: 'var(--muted)' }}>smart_toy</span>}
+                    </div>
+                    <span className="rival-troops" style={{ color: p.color }}>{ownersCount(S, pid)} <span style={{ fontSize: 9, color: 'var(--muted)' }}>terr{isCur ? ' · TURNO' : ''}</span></span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <div className="frame map-frame">
+              <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
+              <span className="corner corner-bl"></span><span className="corner corner-br"></span>
+              <div className="map-ribbon">
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <span className="mat" style={{ fontSize: 18, color: 'var(--gold-light)' }}>radar</span>
+                  <h3>Cartografía Estratégica AMBA</h3>
+                  <span className="scale">· ESCALA 1:50.000</span>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+                <div className="map-tools">
+                  <button onClick={() => showBanner('CABA: la joya del conurbano, +10 de refuerzo', true)}><span className="mat" style={{ fontSize: 17 }}>filter_center_focus</span></button>
+                </div>
+              </div>
+              <div className="map-viewport">
+                <MapView S={S} sel={sel} onTerr={onTerr}/>
+              </div>
+            </div>
 
-        <div>
-          <div className="board">
-            <MapView S={S} sel={sel} onTerr={onTerr}/>
-          </div>
-          <ActionBar
-            S={S} sel={sel} setSel={setSel} me={me} humanTurn={humanTurn}
-            dn={dn} setDn={setDn} amt={amt} setAmt={setAmt} maxD={maxD} isCapT={isCapT}
-            onAttack={() => { if (sel && sel.t && sel.o && dn != null) humanBattle(sel.o, sel.t, dn); }}
-            onFortify={() => {
-              if (sel && sel.t && sel.o) {
-                const s = clone(Sref.current);
-                const mv = Math.min(amt, s.terr[sel.o].troops - 1);
-                if (mv > 0) {
-                  s.terr[sel.o].troops -= mv; s.terr[sel.t].troops += mv;
-                  s.turnFlags.moved = true;
-                  log(s, `🎯 ${playerName(s, me)} reagrupa ${mv} tropa(s): ${tName(sel.o)} → ${tName(sel.t)}`, 'sys');
+            <ActionBar
+              S={S} sel={sel} setSel={setSel} me={me} humanTurn={humanTurn}
+              dn={dn} setDn={setDn} amt={amt} setAmt={setAmt} maxD={maxD} isCapT={isCapT}
+              onAttack={() => { if (sel && sel.t && sel.o && dn != null) humanBattle(sel.o, sel.t, dn); }}
+              onFortify={() => {
+                if (sel && sel.t && sel.o) {
+                  const s = clone(Sref.current);
+                  const mv = Math.min(amt, s.terr[sel.o].troops - 1);
+                  if (mv > 0) {
+                    s.terr[sel.o].troops -= mv; s.terr[sel.t].troops += mv;
+                    s.turnFlags.moved = true;
+                    log(s, `» ${playerName(s, me)} reagrupa ${mv} tropa(s): ${tName(sel.o)} → ${tName(sel.t)}`, 'sys');
+                  }
+                  setS(s); setSel(null);
                 }
-                setS(s); setSel(null);
-              }
-            }}
-            onToFortify={() => { if (S.phase === 'attack') { const s = clone(Sref.current); s.phase = 'fortify'; setS(s); setSel(null); } }}
-            onEndTurn={endHumanTurn}
-            onAutoPlace={() => {
-              const s = clone(Sref.current);
-              if (S.phase !== 'reinforce') return;
-              const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
-              let g = 0;
-              while (s.pool > 0 && own.length && g++ < 500) {
-                const t = own[Math.floor(Math.random() * own.length)];
-                if (!t) break;
-                s.terr[t].troops++; s.pool--;
-              }
-              if (s.pool <= 0) { s.phase = 'attack'; log(s, '⚔️ Reparto automático listo. ¡A atacar!', 'sys'); }
-              setS(s);
-            }}
-          />
+              }}
+              onToFortify={() => { if (S.phase === 'attack') { const s = clone(Sref.current); s.phase = 'fortify'; setS(s); setSel(null); } }}
+              onEndTurn={endHumanTurn}
+              onAutoPlace={() => {
+                const s = clone(Sref.current);
+                if (S.phase !== 'reinforce') return;
+                const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
+                let g = 0;
+                while (s.pool > 0 && own.length && g++ < 500) {
+                  const t = own[Math.floor(Math.random() * own.length)];
+                  if (!t) break;
+                  s.terr[t].troops++; s.pool--;
+                }
+                if (s.pool <= 0) { s.phase = 'attack'; log(s, '» Reparto automático listo. ¡A atacar!', 'sys'); }
+                setS(s);
+              }}
+            />
+          </div>
+
+          <LogPanel S={S}/>
         </div>
 
-        <LogPanel S={S}/>
-      </div>
-
-      <div className="hint">Consejo: la General Paz es la línea de la muerte. Dueño de La Capital cobra +10 por ronda… y se la quieren afanar todos.</div>
-      <Copyright/>
+        <div className="hint">Consejo: la General Paz es la línea de la muerte. Dueño de La Capital cobra +10 por ronda… y se la quieren afanar todos.</div>
+        <Copyright/>
+      </main>
 
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>

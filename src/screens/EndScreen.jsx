@@ -9,30 +9,32 @@ export default function EndScreen({ S, onAgain, onHome }) {
   const mkName = w && S.winReason.startsWith('mission') ? MISSION_DEFS[w.mission].name : null;
 
   return (
-    <div className="end">
-      <div className="crown">👑</div>
-      <h1 className="logo" style={{ fontSize: 40 }}>
+    <div className="screen">
+      <div className="medallion" style={{ width: 84, height: 84 }}>
+        <div className="medallion-in"><span className="mat" style={{ fontSize: 46, color: 'var(--gold-light)' }}>emoji_events</span></div>
+      </div>
+      <h1 className="logo embossed" style={{ fontSize: 40 }}>
         {mkName ? 'MISIÓN CUMPLIDA' : '¡TERRITORIO CONQUISTADO!'}
-        <small>ganó {w ? w.name : ''}</small>
+        <small style={{ display: 'block', fontSize: 14, letterSpacing: 4 }}>ganó {w ? w.name : ''}</small>
       </h1>
-      <div className="tag">
+      <p className="tagline">
         {mkName
           ? `${w.name} cumplió la misión "${mkName}" y se quedó con el conurbano.`
           : 'Dominó TODO el Gran Buenos Aires, de Tigre a Almirante Brown.'}{' '}
         {pick(['El que no corre, vuela.', 'Fin de la joda, pa.', 'Se armó la podrida y la ganó el mejor.'])}
-      </div>
+      </p>
 
-      <div className="statbar">
+      <div className="stats">
         {sorted.map(p => {
           const n = ownersCount(S, p.id);
           const st = S.stat[p.id] || { conq: 0, capConq: 0, bw: 0, bl: 0 };
           return (
-            <div className="statcard" key={p.id} style={{ borderColor: p.color }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
-                <span className="dot" style={{ background: p.color }}/>{p.name}{p.human ? ' 🧑' : ' 🤖'}
+            <div className="statcard frame" key={p.id} style={{ borderColor: p.color }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, justifyContent: 'center' }}>
+                <span className="dot" style={{ background: p.color, width: 16, height: 16, borderRadius: '50%', boxShadow: '0 0 8px ' + p.color }}/>{p.name}{p.human ? '' : ' (bot)'}
               </div>
               <b style={{ color: p.color }}>{n}</b><div>territorios</div>
-              <div style={{ fontSize: 11, marginTop: 6 }}>⚔️ {st.conq} conquistas · 👑 {st.capConq} CABA<br/>✅ {st.bw} / ❌ {st.bl} batallas</div>
+              <div style={{ fontSize: 11, marginTop: 6, color: 'var(--muted)' }}>{st.conq} conquistas · {st.capConq} CABA · {st.bw}V/{st.bl}D</div>
             </div>
           );
         })}
@@ -45,9 +47,9 @@ export default function EndScreen({ S, onAgain, onHome }) {
         })}
       </div>
 
-      <div className="btns">
-        <button className="btn-big" onClick={onAgain}>🔄 REVANCHA (mismos pibes)</button>
-        <button className="btn-ghost" onClick={onHome}>Menú principal</button>
+      <div className="btns" style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
+        <button className="btn-gold btn-big" onClick={onAgain}><span className="mat" style={{ fontSize: 20, verticalAlign: -4 }}>replay</span> REVANCHA (mismos pibes)</button>
+        <button className="btn-ghost btn-big" onClick={onHome}><span className="mat" style={{ fontSize: 20, verticalAlign: -4 }}>home</span> Menú principal</button>
       </div>
       <Copyright/>
     </div>

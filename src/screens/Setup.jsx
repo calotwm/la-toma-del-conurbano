@@ -37,11 +37,11 @@ export default function Setup({ onStart, onBack, initial }) {
   const humans = metas.filter(m => m.human).length;
 
   return (
-    <div className="setup">
-      <button className="btn-ghost" onClick={onBack}>← Volver</button>
-      <h1 style={{ fontSize: 26, margin: '10px 0' }}>ARMAR LA PELOTERA</h1>
+    <div className="setup screen">
+      <button className="btn-ghost" style={{ alignSelf: 'flex-start' }} onClick={onBack}><span className="mat" style={{ fontSize: 18, verticalAlign: -3 }}>arrow_back</span> Volver</button>
+      <h1 className="logo embossed" style={{ fontSize: 30 }}>ARMAR LA PELOTERA</h1>
 
-      <div className="kv"><span>Jugadores</span><b>{count}</b></div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", color: 'var(--muted)', fontSize: 12 }}>JUGADORES: <strong style={{ color: 'var(--gold-light)' }}>{count}</strong></div>
       <div className="countrow">
         {[2, 3, 4, 5, 6].map(n => (
           <button key={n} className={'countbtn' + (n === count ? ' on' : '')} onClick={() => setCount(n)}>{n}</button>
@@ -52,23 +52,23 @@ export default function Setup({ onStart, onBack, initial }) {
         <input type="checkbox" checked={missions} onChange={e => setMissions(e.target.checked)}/>
         Misiones especiales (ganás apenas cumplís la tuya: La Matanza, La Capital, El Doble Comando, El 10)
       </label>
-      <div style={{ margin: '12px 0 6px', fontSize: 12, color: 'var(--dim)' }}>⚠️ Mínimo 1 humano. La Capital arranca NEUTRAL con 8 tropas (El Estado defiende).</div>
+      <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>Mínimo 1 humano. La Capital arranca NEUTRAL con 8 tropas (El Estado defiende).</div>
 
       {metas.map((m, i) => (
         <div className="pcard" key={i}>
-          <span className="dot" style={{ background: PLAYER_COLORS[i % PLAYER_COLORS.length] }}/>
+          <span className="dot" style={{ background: PLAYER_COLORS[i % PLAYER_COLORS.length], width: 22, height: 22, borderRadius: '50%', border: '2px solid #fff8', boxShadow: '0 0 6px ' + PLAYER_COLORS[i % PLAYER_COLORS.length] }}/>
           <input value={m.name} maxLength={14} onChange={e => setMeta(i, { name: e.target.value })}/>
-          <button className={'tagbtn' + (m.human ? ' on' : '')} onClick={() => setMeta(i, { human: !m.human, level: m.human ? 'capo' : m.level })}>{m.human ? '🧑 Humano' : '🤖 Bot'}</button>
+          <button className={'tagbtn' + (m.human ? ' on' : '')} onClick={() => setMeta(i, { human: !m.human, level: m.human ? 'capo' : m.level })}>{m.human ? 'Humano' : 'Bot'}</button>
           {!m.human && <button className={'tagbtn' + (m.level === 'chorro' ? ' on' : '')} onClick={() => setMeta(i, { level: 'chorro' })}>Chorro</button>}
           {!m.human && <button className={'tagbtn' + (m.level === 'defensa' ? ' on' : '')} onClick={() => setMeta(i, { level: 'defensa' })}>Defensa</button>}
           {!m.human && <button className={'tagbtn' + (m.level === 'capo' ? ' on' : '')} onClick={() => setMeta(i, { level: 'capo' })}>Capo</button>}
         </div>
       ))}
 
-      <div className="btns" style={{ justifyContent: 'flex-start' }}>
-        <button className="btn-big" disabled={humans < 1}
+      <div className="btns" style={{ display: 'flex', gap: 12, justifyContent: 'flex-start', marginTop: 10 }}>
+        <button className="btn-gold btn-big" disabled={humans < 1}
           onClick={() => onStart(metas.map((m, i) => ({ ...m, color: PLAYER_COLORS[i % PLAYER_COLORS.length] })), missions)}>
-          ¡A REPARTIR Y JUGAR!
+          <span className="mat" style={{ fontSize: 20, verticalAlign: -4 }}>flag</span> ¡A REPARTIR Y JUGAR!
         </button>
       </div>
       <Copyright/>

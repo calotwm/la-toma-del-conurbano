@@ -52,16 +52,16 @@ export const MISSION_DEFS = {
 
 // ---------- Eventos del Informe Metropolitano ----------
 export const EVENTS = [
-  { h: 'Corte de ruta en la 197', f: 'Nadie pasa. Ni los ejércitos.', fx: (s) => { const lead = leaderId(s); if (lead != null) { const mine = ownedTerrs(s, lead).filter(t => s.terr[t].troops > 1); if (mine.length) { const t = pick(mine); s.terr[t].troops--; log(s, `🪧 ${playerName(s, lead)} pierde 1 tropa en ${tName(t)} por el corte.`, 'lose'); } } } },
-  { h: 'Cacerolazos en CABA', f: 'El ruido aturde hasta a los generales.', fx: (s) => { const o = s.terr.capital.owner; if (o != null && s.terr.capital.troops > 1) { s.terr.capital.troops--; log(s, `🥄 Cacerolazo: ${playerName(s, o)} pierde 1 tropa en La Capital.`, 'lose'); } } },
-  { h: 'Día de la milanesa con papas', f: 'Hay asado en todos los cuarteles.', fx: (s) => { const w = randAlive(s); if (w != null) { const ts = ownedTerrs(s, w); const t = ts.length ? pick(ts) : null; if (t) { s.terr[t].troops++; log(s, `🥩 Asado general: ${playerName(s, w)} suma 1 tropa en ${tName(t)}.`, 'win'); } } } },
-  { h: 'Paro de colectivos total', f: 'Nadie llega al frente de batalla.', fx: (s) => { const w = randAlive(s); if (w != null) { const ts = ownedTerrs(s, w).filter(t => s.terr[t].troops > 1); if (ts.length) { const t = pick(ts); s.terr[t].troops--; log(s, `🚌 Paro: ${playerName(s, w)} pierde 1 tropa en ${tName(t)}.`, 'lose'); } } } },
-  { h: 'Explota la venta en La Salada', f: 'La economía paralela financia todo.', fx: (s) => { const o = s.terr.lomas.owner; if (o != null) { s.terr.lomas.troops += 2; log(s, `🛒 ${playerName(s, o)} factura en La Salada: +2 en Lomas de Zamora.`, 'win'); } else { log(s, '🛒 La Salada explota en ventas... pero Lomas es neutral, el negocio se lo lleva el Estado.', 'sys'); } } },
-  { h: 'Se arma la interna política', f: 'Todos se pelean por el presupuesto.', fx: (s) => log(s, '🗳️ Interna política: nadie gobierna, pero todos facturan. Sin efecto militar.', 'tv') },
-  { h: 'El clima: tormenta en el conurbano', f: 'Barro para todos.', fx: (s) => log(s, '⛈️ Tormenta de la puta madre. Las tropas se resbalan pero siguen.', 'tv') },
-  { h: 'Recital gratuito en la plaza', f: 'La cultura también conquista.', fx: (s) => log(s, '🎸 Recital masivo: por unas horas nadie se mata, hay pogo.', 'tv') },
-  { h: 'Falta el agua en los edificios', f: 'La crisis toca todas las puertas.', fx: (s) => log(s, '🚱 Cortes de agua: el conurbano aguanta como siempre.', 'tv') },
-  { h: 'Bono sorpresa para los menos favorecidos', f: 'La política redistribuye.', fx: (s) => { const poor = minPlayer(s); if (poor != null) { const ts = ownedTerrs(s, poor); if (ts.length) { const t = pick(ts); s.terr[t].troops++; log(s, `💵 Bono: ${playerName(s, poor)} suma 1 en ${tName(t)}.`, 'win'); } } } },
+  { h: 'Corte de ruta en la 197', f: 'Nadie pasa. Ni los ejércitos.', fx: (s) => { const lead = leaderId(s); if (lead != null) { const mine = ownedTerrs(s, lead).filter(t => s.terr[t].troops > 1); if (mine.length) { const t = pick(mine); s.terr[t].troops--; log(s, `» ${playerName(s, lead)} pierde 1 tropa en ${tName(t)} por el corte.`, 'lose'); } } } },
+  { h: 'Cacerolazos en CABA', f: 'El ruido aturde hasta a los generales.', fx: (s) => { const o = s.terr.capital.owner; if (o != null && s.terr.capital.troops > 1) { s.terr.capital.troops--; log(s, `» Cacerolazo: ${playerName(s, o)} pierde 1 tropa en La Capital.`, 'lose'); } } },
+  { h: 'Día de la milanesa con papas', f: 'Hay asado en todos los cuarteles.', fx: (s) => { const w = randAlive(s); if (w != null) { const ts = ownedTerrs(s, w); const t = ts.length ? pick(ts) : null; if (t) { s.terr[t].troops++; log(s, `» Asado general: ${playerName(s, w)} suma 1 tropa en ${tName(t)}.`, 'win'); } } } },
+  { h: 'Paro de colectivos total', f: 'Nadie llega al frente de batalla.', fx: (s) => { const w = randAlive(s); if (w != null) { const ts = ownedTerrs(s, w).filter(t => s.terr[t].troops > 1); if (ts.length) { const t = pick(ts); s.terr[t].troops--; log(s, `» Paro: ${playerName(s, w)} pierde 1 tropa en ${tName(t)}.`, 'lose'); } } } },
+  { h: 'Explota la venta en La Salada', f: 'La economía paralela financia todo.', fx: (s) => { const o = s.terr.lomas.owner; if (o != null) { s.terr.lomas.troops += 2; log(s, `» ${playerName(s, o)} factura en La Salada: +2 en Lomas de Zamora.`, 'win'); } else { log(s, '» La Salada explota en ventas... pero Lomas es neutral, el negocio se lo lleva el Estado.', 'sys'); } } },
+  { h: 'Se arma la interna política', f: 'Todos se pelean por el presupuesto.', fx: (s) => log(s, 'Interna política: nadie gobierna, pero todos facturan. Sin efecto militar.', 'tv') },
+  { h: 'El clima: tormenta en el conurbano', f: 'Barro para todos.', fx: (s) => log(s, 'Tormenta de la puta madre. Las tropas se resbalan pero siguen.', 'tv') },
+  { h: 'Recital gratuito en la plaza', f: 'La cultura también conquista.', fx: (s) => log(s, 'Recital masivo: por unas horas nadie se mata, hay pogo.', 'tv') },
+  { h: 'Falta el agua en los edificios', f: 'La crisis toca todas las puertas.', fx: (s) => log(s, 'Cortes de agua: el conurbano aguanta como siempre.', 'tv') },
+  { h: 'Bono sorpresa para los menos favorecidos', f: 'La política redistribuye.', fx: (s) => { const poor = minPlayer(s); if (poor != null) { const ts = ownedTerrs(s, poor); if (ts.length) { const t = pick(ts); s.terr[t].troops++; log(s, `» Bono: ${playerName(s, poor)} suma 1 en ${tName(t)}.`, 'win'); } } } },
 ];
 
 // ---------- Refuerzos ----------
@@ -163,8 +163,8 @@ export function createGame(meta) {
     turnFlags: { conquered: false, cardEarned: false, moved: false },
     busy: false, dice: null, stat, winner: null, winReason: '', log: [], eventFlash: 0,
   };
-  log(s, '🎮 ¡Arranca La Toma del Conurbano! Reparto territorial finalizado. La Capital (🏛️) es neutral y la vigila El Estado.', 'sys');
-  players.forEach(p => log(s, p.human ? '🧑 ' + p.name + ' (vos)' : '🤖 ' + p.name + ' (bot ' + p.level + ')', 'sys'));
+  log(s, '» ¡Arranca La Toma del Conurbano! Reparto territorial finalizado. La Capital es neutral y la vigila El Estado.', 'sys');
+  players.forEach(p => log(s, p.human ? '· ' + p.name + ' (vos)' : '· ' + p.name + ' (bot ' + p.level + ')', 'sys'));
   startTurn(s, order[0]);
   return s;
 }
@@ -184,14 +184,14 @@ export function startTurn(s, pid) {
       const cards = p.hand.splice(0, take);
       const v = tradeValue(s, pid, cards);
       s.pool += v;
-      log(s, `🃏 ${p.name} canjea cartas y suma ${v} tropas.`, 'card');
+      log(s, `» ${p.name} canjea cartas y suma ${v} tropas.`, 'card');
     }
   }
   let bonusText = `+${info.own} territorios`;
   if (info.comps) bonusText += `, +${info.comps} grupos conectados`;
   if (info.zones) bonusText += `, +${info.zones * 5} zonas metropolitanas`;
   if (info.cap) bonusText += ', +10 La Capital';
-  log(s, `🔁 Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
+  log(s, `» Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
 }
 
 export function advanceTurn(s) {
@@ -207,7 +207,7 @@ export function advanceTurn(s) {
 
 export function applyEvent(s) {
   const ev = pick(EVENTS);
-  log(s, `📺 INFORME METROPOLITANO — Ronda ${s.round}: ${ev.h}. ${ev.f}`, 'tv');
+  log(s, `» INFORME METROPOLITANO — Ronda ${s.round}: ${ev.h}. ${ev.f}`, 'tv');
   ev.fx(s);
   s.eventFlash = (s.eventFlash || 0) + 1;
 }
@@ -227,19 +227,19 @@ export function applyConquest(s, pid, o, t, diceN, al, dl) {
     s.turnFlags.cardEarned = true;
     const c = drawCard(s);
     s.players.find(p => p.id === pid).hand.push(c);
-    log(s, `🃏 ${playerName(s, pid)} gana una carta de conquista: ${emblemName(c.emblem)} ${c.emblem === 'capital' ? '🏛️' : c.emblem === 'bragado' ? '🧉' : '📍'}`, 'card');
+    log(s, `» ${playerName(s, pid)} gana una carta de conquista: ${emblemName(c.emblem)}.`, 'card');
   }
   if (capConq) {
-    log(s, `👑 ${playerName(s, pid)} CONQUISTA LA CAPITAL. ${prevOwner == null ? pick(PHRASES.capitalWin) : '¡' + pick(PHRASES.capitalLose) + ' — dice ' + playerName(s, prevOwner) + '!'}`, 'capital');
+    log(s, `★ ${playerName(s, pid)} CONQUISTA LA CAPITAL. ${prevOwner == null ? pick(PHRASES.capitalWin) : '¡' + pick(PHRASES.capitalLose) + ' — dice ' + playerName(s, prevOwner) + '!'}`, 'capital');
   } else {
-    log(s, `⚔️ ${playerName(s, pid)} conquista ${tName(t)} (${pick(PHRASES.territoryWin)})`, 'win');
+    log(s, `» ${playerName(s, pid)} conquista ${tName(t)} (${pick(PHRASES.territoryWin)})`, 'win');
   }
   if (prevOwner != null && ownersCount(s, prevOwner) === 0) {
     const lost = s.players.find(p => p.id === prevOwner);
     if (lost) {
       lost.alive = false;
       if (lost.hand.length) { lost.hand.forEach(c => s.players.find(p => p.id === pid).hand.push(c)); lost.hand = []; }
-      log(s, `💀 ${lost.name} quedó sin territorios: ELIMINADO. Sus cartas van para ${playerName(s, pid)}.`, 'lose');
+      log(s, `» ${lost.name} quedó sin territorios: ELIMINADO. Sus cartas van para ${playerName(s, pid)}.`, 'lose');
     }
   }
   if (s.missionsOn && !s.winner) {
