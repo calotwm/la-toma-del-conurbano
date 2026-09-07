@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { PLAYER_COLORS, BOT_NAMES } from '../data.js';
 import { Copyright } from '../components/common.jsx';
 
+// Niveles de bot con su explicación
+const LEVELS = [
+  { key: 'chorro',   label: 'Chorro',   desc: 'Ataca sin pensar, se la juega. Ideal para aprender.' },
+  { key: 'defensa',  label: 'Defensa',  desc: 'Prioriza proteger sus territorios y La Capital.' },
+  { key: 'capo',     label: 'Capo',     desc: 'Estratégico: va por La Capital y cumple su misión.' },
+];
+
 export default function Setup({ onStart, onBack, initial }) {
   const [count, setCount] = useState(initial && initial.length ? initial.length : 2);
   const [missions, setMissions] = useState(true);
@@ -55,13 +62,33 @@ export default function Setup({ onStart, onBack, initial }) {
       <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>Mínimo 1 humano. La Capital arranca NEUTRAL con 8 tropas (El Estado defiende).</div>
 
       {metas.map((m, i) => (
-        <div className="pcard" key={i}>
-          <span className="dot" style={{ background: PLAYER_COLORS[i % PLAYER_COLORS.length], width: 22, height: 22, borderRadius: '50%', border: '2px solid #fff8', boxShadow: '0 0 6px ' + PLAYER_COLORS[i % PLAYER_COLORS.length] }}/>
-          <input value={m.name} maxLength={14} onChange={e => setMeta(i, { name: e.target.value })}/>
-          <button className={'tagbtn' + (m.human ? ' on' : '')} onClick={() => setMeta(i, { human: !m.human, level: m.human ? 'capo' : m.level })}>{m.human ? 'Humano' : 'Bot'}</button>
-          {!m.human && <button className={'tagbtn' + (m.level === 'chorro' ? ' on' : '')} onClick={() => setMeta(i, { level: 'chorro' })}>Chorro</button>}
-          {!m.human && <button className={'tagbtn' + (m.level === 'defensa' ? ' on' : '')} onClick={() => setMeta(i, { level: 'defensa' })}>Defensa</button>}
-          {!m.human && <button className={'tagbtn' + (m.level === 'capo' ? ' on' : '')} onClick={() => setMeta(i, { level: 'capo' })}>Capo</button>}
+        <div className="pcard" key={i} style={{ gridTemplateColumns: 'auto 1fr auto' }}>
+          <span className="dot" style={{ background: PLAYER_COLORS[i % PLAYER_COLORS.length], width: 22, height: 22, borderRadius: '50%', border: '2px solid #fff8', boxShadow: '0 0 6px ' + PLAYER_COLORS[i % PLAYER_COLORS.length], alignSelf: 'start' }}/>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+            <input value={m.name} maxLength={14} onChange={e => setMeta(i, { name: e.target.value })}/>
+            {!m.human && (
+              <div className="level-picker">
+                {LEVELS.map(lv => (
+                  <button key={lv.key}
+                    className={'level-btn' + (m.level === lv.key ? ' on' : '')}
+                    title={lv.desc}
+                    onClick={() => setMeta(i, { level: lv.key })}>
+                    {lv.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            {!m.human && (
+              <div className="level-desc">
+                {LEVELS.find(lv => lv.key === m.level)?.desc}
+              </div>
+            )}
+          </div>
+          <button className={'tagbtn' + (m.human ? ' on' : '')}
+            style={{ alignSelf: 'start' }}
+            onClick={() => setMeta(i, { human: !m.human, level: m.human ? 'capo' : m.level })}>
+            {m.human ? 'Humano' : 'Bot'}
+          </button>
         </div>
       ))}
 

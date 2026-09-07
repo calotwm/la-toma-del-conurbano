@@ -287,6 +287,11 @@ main.game { max-width: 1720px; margin: 0 auto; padding: 14px; display: flex; fle
 .countbtn.on { background: var(--gold); color: #0b0d13; }
 .pcard { display: grid; grid-template-columns: auto 1fr auto auto; gap: 10px; align-items: center; background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; }
 .pcard input { background: #0d1017; border: 1px solid var(--line); color: var(--txt); border-radius: 8px; padding: 8px 10px; font-weight: 700; width: 100%; min-width: 110px; }
+.level-picker { display: flex; gap: 6px; flex-wrap: wrap; }
+.level-btn { padding: 6px 12px; border-radius: 8px; font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-weight: 700; transition: all .15s; }
+.level-btn:hover { border-color: var(--celeste); color: var(--celeste); }
+.level-btn.on { background: var(--celeste); color: #0b0d13; border-color: var(--celeste); }
+.level-desc { font-size: 11px; color: var(--muted); font-style: italic; line-height: 1.4; }
 .tagbtn { padding: 7px 12px; border-radius: 8px; font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); font-weight: 700; }
 .tagbtn.on { background: #243049; color: var(--gold-light); border-color: var(--gold); }
 .chk { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); margin: 10px 0; }
