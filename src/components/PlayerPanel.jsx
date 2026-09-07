@@ -87,23 +87,16 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
         </div>
       </div>
 
-      {/* zonas */}
-      <div>
-        <div className="panel-title"><h3>Control Metropolitano</h3></div>
-        {ZKEYS.map(k => {
-          const z = ZONES[k];
-          const done = z.ids.filter(t => S.terr[t].owner === curP.id).length;
-          const full = done === z.ids.length;
-          return (
-            <div className="zone-row" key={k}>
-              <span style={{ color: z.color, fontWeight: 800, width: 12 }}>{full ? '✓' : '•'}</span>
-              <span style={{ width: 118, fontSize: 10 }}>{z.label}</span>
-              <div className="zbar"><i style={{ width: (done / z.ids.length * 100) + '%', background: z.color }}/></div>
-              <b className={full ? 'full' : ''}>{done}/{z.ids.length}{full ? ' +5' : ''}</b>
-            </div>
-          );
-        })}
-      </div>
+      {/* bonus de zonas: compacto */}
+      {(() => {
+        const full = ZKEYS.filter(k => ZONES[k].ids.every(t => S.terr[t].owner === curP.id)).length;
+        return (
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+            <span>Zonas completas</span>
+            <strong style={{ color: 'var(--celeste)' }}>{full} {full > 0 ? `(+${full * 3} refuerzo)` : ''}</strong>
+          </div>
+        );
+      })()}
 
       {/* naipes */}
       <div>

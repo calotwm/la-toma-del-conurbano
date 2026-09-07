@@ -38,10 +38,11 @@ export default function Game({ S, setS }) {
   const flashT = useRef(null), bannerT = useRef(null);
   useEffect(() => () => { clearTimeout(flashT.current); clearTimeout(bannerT.current); }, []);
 
-  const showBanner = (txt, small) => {
+  const showBanner = (txt, small, short) => {
     setBanner({ txt, small: !!small });
     clearTimeout(bannerT.current);
-    bannerT.current = setTimeout(() => setBanner(null), small ? 1900 : 3400);
+    const dur = short ? 1400 : (small ? 1900 : 3400);
+    bannerT.current = setTimeout(() => setBanner(null), dur);
   };
   const flashOn = () => { setFlash(true); clearTimeout(flashT.current); flashT.current = setTimeout(() => setFlash(false), 1400); };
 
@@ -117,6 +118,28 @@ export default function Game({ S, setS }) {
     return () => { ctl.c = true; };
   }, [botId, S.gid]);
 
+  // Animación de dados: muestra los dados "rodando" (valores aleatorios cambiantes)
+  // durante ~1.2s y luego fija el resultado. Devuelve el resultado fijo.
+  async function animateDice(aN, dN, onCap, ctl) {
+    const dur = 1200;
+    const aRoll = rollDice(aN), dRoll = rollDice(dN);
+    // fase de rodado: valores que cambian cada 80ms
+    setS({ ...Sref.current, busy: true, dice: { a: Array(aN).fill('?'), d: Array(dN).fill('?'), aN, dN, rolling: true } });
+    if (onCap) Sound.alarm(); else Sound.dice();
+    for (let i = 0; i < dur / 80; i++) {
+      if (ctl && ctl.c) return null;
+      const tempA = rollDice(aN), tempD = rollDice(dN);
+      setS({ ...Sref.current, busy: true, dice: { a: tempA, d: tempD, aN, dN, rolling: true } });
+      await wait(80);
+    }
+    if (ctl && ctl.c) return null;
+    // fija el resultado
+    setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN, rolling: false } });
+    await wait(500);
+    if (ctl && ctl.c) return null;
+    return { aRoll, dRoll };
+  }
+
   async function botBattle(pid, o, t, ctl) {
     const s0 = Sref.current; if (ctl && ctl.c) return;
     const tt = s0.terr[t].troops, ot = s0.terr[o].troops;
@@ -125,13 +148,9 @@ export default function Game({ S, setS }) {
     if (t === 'capital' && (ot < 3 || aN < 2)) return;
     if (!canAttack(s0, pid, o, t, aN)) return;
     const dN = Math.min(2, tt);
-    const aRoll = rollDice(aN), dRoll = rollDice(dN);
-    setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN } });
-    if (t === 'capital') Sound.alarm(); else Sound.dice();
-    if (ctl && ctl.c) return;
-    await wait(1000);
-    if (ctl && ctl.c) return;
-    commitBattle(pid, o, t, aN, aRoll, dRoll);
+    const res = await animateDice(aN, dN, t === 'capital', ctl);
+    if (!res) return;
+    commitBattle(pid, o, t, aN, res.aRoll, res.dRoll);
   }
 
   async function humanBattle(o, t, aN) {
@@ -141,11 +160,9 @@ export default function Game({ S, setS }) {
     if (t === 'capital') { if (ot < 3) return; a = Math.min(3, a); a = Math.max(2, a); }
     if (a < 1) return;
     const dN = Math.min(2, s0.terr[t].troops);
-    const aRoll = rollDice(a), dRoll = rollDice(dN);
-    setS({ ...s0, busy: true, dice: { a: aRoll, d: dRoll, aN: a, dN } });
-    if (t === 'capital') Sound.alarm(); else Sound.dice();
-    await wait(1000);
-    commitBattle(me, o, t, a, aRoll, dRoll);
+    const res = await animateDice(a, dN, t === 'capital', null);
+    if (!res) return;
+    commitBattle(me, o, t, a, res.aRoll, res.dRoll);
   }
 
   function commitBattle(pid, o, t, aN, aRoll, dRoll) {
@@ -168,18 +185,22 @@ export default function Game({ S, setS }) {
         showBanner(prevOwner == null ? pick(PHRASES.capitalWin) : pick(PHRASES.capitalLose) + ' — ' + playerName(s, prevOwner), false);
       } else {
         Sound.conquest();
-        showBanner(`${tName(t)} ES TUYO. ${pick(PHRASES.territoryWin)}`, false);
+        // Cartel de conquista SOLO para el humano (1 a la vez); el bot solo al log
+        if (s.players.find(p => p.id === pid).human) {
+          showBanner(`${tName(t)} ES TUYO. ${pick(PHRASES.territoryWin)}`, false, true);
+        }
       }
     } else {
       s.stat[pid].bl++;
       s.lastBattle = { o, t, conquered: false, capital: isCap, aRoll, dRoll, al, dl };
       if (isCap) {
         Sound.defendCapital();
-        showBanner(pick(PHRASES.capDefense), false);
+        if (s.players.find(p => p.id === pid).human) showBanner(pick(PHRASES.capDefense), false);
         log(s, `» ${pick(PHRASES.capDefense)} — La Capital aguanta el ataque de ${playerName(s, pid)}.`, 'capital');
       } else {
         Sound.lose();
-        showBanner(pick(PHRASES.battleLose), false);
+        // Cartel de derrota SOLO para el humano
+        if (s.players.find(p => p.id === pid).human) showBanner(pick(PHRASES.battleLose), false, true);
         log(s, `» ${playerName(s, pid)} pierde ${al} en ${tName(o)} contra ${tName(t)}. ${pick(PHRASES.battleLose)}`, 'lose');
       }
     }
@@ -253,7 +274,7 @@ export default function Game({ S, setS }) {
   const isCapT = !!(sel && sel.t === 'capital');
 
   return (
-    <div>
+    <div className="game-shell">
       {/* ======= HEADER FILETEADO ======= */}
       <header className="hdr">
         <div className="gold-bar"/>
@@ -304,24 +325,6 @@ export default function Game({ S, setS }) {
       </header>
 
       <main className="game">
-        {/* Sub-HUD */}
-        <div className="frame subhud">
-          <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
-          <span className="corner corner-bl"></span><span className="corner corner-br"></span>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14, flexWrap: 'wrap' }}>
-            <div className="phase-pill">
-              <span className="mat" style={{ fontSize: 18 }}>verified</span>
-              <span className="lbl">Fase activa:</span>
-              <span className="val">{S.phase === 'reinforce' ? 'Despliegue de Refuerzos' : S.phase === 'attack' ? 'Asalto Territorial' : 'Reagrupamiento'}</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
-              ALERTA METROPOLITANA: <span className="code-red">CÓDIGO ROJO GENERALIZADO</span>
-            </div>
-            <div style={{ flex: 1 }}></div>
-            <div className="timer-chip"><span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>apartment</span>La Capital: <b className="owner">{playerName(S, S.terr.capital.owner)}</b> <span style={{ color: 'var(--muted)' }}>({S.terr.capital.troops})</span></div>
-          </div>
-        </div>
-
         {/* Layout 3 columnas: jugador | mapa | acciones+log */}
         <div className="game-fit">
           <div className="col">

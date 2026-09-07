@@ -123,7 +123,9 @@ button:disabled { opacity: .4; cursor: not-allowed; }
 .ticker-text { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold); letter-spacing: .5px; }
 
 /* ---------- Main ---------- */
-main.game { max-width: 1720px; margin: 0 auto; padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.game-shell { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+.hdr { flex: none; }
+main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 8px; display: flex; flex-direction: column; gap: 8px; width: 100%; }
 .subhud { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; }
 .phase-pill { display: flex; align-items: center; gap: 8px; background: #060912; border: 1px solid rgba(116,182,232,.4); padding: 8px 12px; border-radius: 8px; }
 .phase-pill .lbl { font-family: 'Space Mono', monospace; font-size: 9px; color: var(--gold); text-transform: uppercase; letter-spacing: 1px; }
@@ -137,12 +139,11 @@ main.game { max-width: 1720px; margin: 0 auto; padding: 14px; display: flex; fle
 @media (max-width: 1280px) { .grid { grid-template-columns: 1fr; } .rightcol { display: none; } }
 
 /* layout de altura fija: todo visible sin scroll de página */
-main.game { max-width: 1720px; margin: 0 auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; height: 100vh; }
-.game-fit { display: grid; grid-template-columns: 250px 1fr 320px; gap: 10px; align-items: stretch; min-height: 0; flex: 1; overflow: hidden; }
-@media (max-width: 1280px) { .game-fit { grid-template-columns: 1fr; overflow: auto; } }
+.game-fit { display: grid; grid-template-columns: 240px 1fr 320px; gap: 10px; align-items: stretch; min-height: 0; flex: 1; }
+@media (max-width: 1280px) { .game-fit { grid-template-columns: 1fr; } }
 .game-fit .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
 .map-wrap { flex: 1; min-height: 0; }
-.map-frame { display: flex; flex-direction: column; }
+.map-frame { display: flex; flex-direction: column; height: 100%; }
 .map-fit { flex: 1; min-height: 0; }
 .map-fit .map-ribbon { flex: none; }
 .map-fit .map-viewport { position: relative; flex: 1; min-height: 0; overflow: hidden; display: flex; }

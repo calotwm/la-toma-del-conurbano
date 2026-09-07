@@ -90,7 +90,7 @@ export default function ActionBar(props) {
                 <span className="n" style={{ background: '#3a0808', color: 'var(--warn)', border: '1px solid rgba(255,107,107,.4)' }}>{S.dice.aN} DADOS</span>
               </div>
               <div className="dice-row">
-                {S.dice.a.map((v, i) => <span key={i} className={'dice-slot red' + (S.busy ? ' rolling' : '')}><span className="pip">{S.busy ? '?' : v}</span>{i === 0 && !S.busy ? <span className="cap">MAYOR</span> : null}</span>)}
+                {S.dice.a.map((v, i) => <span key={i} className={'dice-slot red' + (S.dice.rolling ? ' rolling' : '')}><span className="pip">{S.dice.rolling ? v : v}</span>{i === 0 && !S.dice.rolling ? <span className="cap">MAYOR</span> : null}</span>)}
                 {Array.from({ length: 3 - S.dice.a.length }).map((_, i) => <span key={'e' + i} className="dice-slot red empty"><span className="mat" style={{ fontSize: 20, opacity: .3 }}>block</span></span>)}
               </div>
             </div>
@@ -100,7 +100,7 @@ export default function ActionBar(props) {
                 <span className="n" style={{ background: '#2e2104', color: 'var(--celeste)', border: '1px solid rgba(212,175,55,.5)' }}>{S.dice.dN} DADOS</span>
               </div>
               <div className="dice-row">
-                {S.dice.d.map((v, i) => <span key={i} className={'dice-slot gold' + (S.busy ? ' rolling' : '')}><span className="pip">{S.busy ? '?' : v}</span>{i === 0 && !S.busy ? <span className="cap">EMPATA</span> : null}</span>)}
+                {S.dice.d.map((v, i) => <span key={i} className={'dice-slot gold' + (S.dice.rolling ? ' rolling' : '')}><span className="pip">{v}</span>{i === 0 && !S.dice.rolling ? <span className="cap">EMPATA</span> : null}</span>)}
                 {Array.from({ length: 2 - S.dice.d.length }).map((_, i) => <span key={'e' + i} className="dice-slot gold empty"><span className="mat" style={{ fontSize: 20, opacity: .3 }}>block</span></span>)}
               </div>
             </div>
