@@ -6,7 +6,7 @@ import { playerColor, playerName } from '../engine.js';
 // Capas: 1) regiones de zona (bgPath), 2) conexiones, 3) nodos interactivos.
 const W = 1000, H = 800;
 
-export default function MapView({ S, sel, onTerr }) {
+export default function MapView({ S, sel, battle, onTerr }) {
   const phase = S.phase;
   const cur = S.players.find(p => p.id === S.order[S.tidx]);
   const me = cur && cur.human ? cur.id : null;
@@ -45,6 +45,31 @@ export default function MapView({ S, sel, onTerr }) {
   const hovered = hover ? TERR.find(t => t.id === hover) : null;
   const hoverOwner = hovered ? S.terr[hovered.id] : null;
   const capital = TERR.find(t => t.id === 'capital');
+
+  // Capa de batalla: anillos atacante/defensor + flecha animada + rótulo lunfardo
+  const battleVis = (() => {
+    if (!battle) return null;
+    const oT = TERR.find(t => t.id === battle.o);
+    const tT = TERR.find(t => t.id === battle.t);
+    if (!oT || !tT) return null;
+    const nodeR = (t) => (t.special ? 26 : t.big ? 22 : 18);
+    const rO = nodeR(oT), rT = nodeR(tT);
+    const atkColor = playerColor(S, battle.atkId);
+    const defColor = playerColor(S, battle.defId);
+    const defending = battle.defId != null && battle.defId === me;
+    const ox = oT.x, oy = oT.y, tx = tT.x, ty = tT.y;
+    const dx = tx - ox, dy = ty - oy;
+    const d = Math.hypot(dx, dy) || 1;
+    const ux = dx / d, uy = dy / d;
+    const gap = 6;
+    const sx = ox + ux * (rO + gap), sy = oy + uy * (rO + gap);
+    const ex = tx - ux * (rT + gap), ey = ty - uy * (rT + gap);
+    const ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    const mx = (ox + tx) / 2, my = (oy + ty) / 2 - 14;
+    const atkName = playerName(S, battle.atkId);
+    const defName = playerName(S, battle.defId);
+    return { oT, tT, rO, rT, atkColor, defColor, defending, sx, sy, ex, ey, ang, mx, my, atkName, defName };
+  })();
 
   return (
     <div style={{ position: 'relative' }}>
@@ -113,9 +138,9 @@ export default function MapView({ S, sel, onTerr }) {
                 onClick={() => onTerr(t.id)}
                 onMouseEnter={() => setHover(t.id)}
                 onMouseLeave={() => setHover(null)}>
-                {/* halo de selección */}
-                {isSel && <circle cx={t.x} cy={t.y} r={r + 8} fill="none" stroke="#ffffff" strokeWidth="3" className="animate-pulse"/>}
-                {cand && <circle cx={t.x} cy={t.y} r={r + 9} fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="5,3" opacity="0.9"/>}
+                {/* halo de selección (suprimido durante una batalla para evitar dobles anillos) */}
+                {!battle && isSel && <circle cx={t.x} cy={t.y} r={r + 8} fill="none" stroke="#ffffff" strokeWidth="3" className="animate-pulse"/>}
+                {!battle && cand && <circle cx={t.x} cy={t.y} r={r + 9} fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="5,3" opacity="0.9"/>}
                 {/* aura CABA */}
                 {t.special && <circle cx={t.x} cy={t.y} r={r + 14} fill="#facc15" fillOpacity="0.15"/>}
                 {/* círculo principal */}
@@ -128,6 +153,21 @@ export default function MapView({ S, sel, onTerr }) {
             );
           })}
         </g>
+
+        {/* CAPA 4: BATALLA (anillos + flecha + rótulo) — siempre por encima de los nodos */}
+        {battleVis && (
+          <g className="battle-layer" pointerEvents="none">
+            <circle cx={battleVis.oT.x} cy={battleVis.oT.y} r={battleVis.rO + 6} fill="none" stroke={battleVis.atkColor} strokeWidth="3" className="battle-ring-atk"/>
+            <circle cx={battleVis.tT.x} cy={battleVis.tT.y} r={battleVis.rT + 6} fill="none" stroke={battleVis.defColor} strokeWidth={battleVis.defending ? 5 : 3} className={'battle-ring-def' + (battleVis.defending ? ' defend' : '')}/>
+            <line x1={battleVis.sx} y1={battleVis.sy} x2={battleVis.ex} y2={battleVis.ey} stroke={battleVis.atkColor} strokeWidth="3" strokeDasharray="8 6" className="battle-arrow"/>
+            <polygon points="0,0 -9,-5 -9,5" fill={battleVis.atkColor} transform={`translate(${battleVis.ex} ${battleVis.ey}) rotate(${battleVis.ang})`}/>
+            <text x={battleVis.mx} y={battleVis.my} textAnchor="middle" fontSize="12" fontWeight="700" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.9)', strokeWidth: 3 }}>
+              <tspan fill={battleVis.atkColor}>{battleVis.atkName}</tspan>
+              <tspan fill="#cbd5e1"> le pisa el rancho a </tspan>
+              <tspan fill={battleVis.defColor}>{battleVis.defName}</tspan>
+            </text>
+          </g>
+        )}
       </svg>
 
       {/* inspector */}

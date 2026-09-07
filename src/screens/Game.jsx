@@ -33,6 +33,7 @@ export default function Game({ S, setS }) {
   const [musicOn, setMusicOn] = useState(false);
   const [amt, setAmt] = useState(1);
   const [dn, setDn] = useState(null);
+  const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
 
   const Sref = useRef(S); Sref.current = S;
   const flashT = useRef(null), bannerT = useRef(null);
@@ -59,6 +60,9 @@ export default function Game({ S, setS }) {
       return () => clearTimeout(id);
     }
   }, [S.winner, S.screen]);
+
+  // limpiar el overlay de batalla al cambiar de turno o fase (evita overlay viejo)
+  useEffect(() => { setBattle(null); }, [S.tidx, S.phase]);
 
   // runner de bots
   const botId = (S.screen === 'game' && !S.winner && curP && !curP.human) ? curP.id : null;
@@ -126,10 +130,12 @@ export default function Game({ S, setS }) {
 
   // Animación de dados: muestra los dados "rodando" (valores aleatorios cambiantes)
   // durante ~1.2s y luego fija el resultado. Devuelve el resultado fijo.
-  async function animateDice(aN, dN, onCap, ctl) {
+  async function animateDice(aN, dN, onCap, ctl, o, t, atkId) {
     const dur = 1200;
     const aRoll = rollDice(aN), dRoll = rollDice(dN);
-    // fase de rodado: valores que cambian cada 80ms
+    // muestra el ataque en el mapa (origen ataca a destino)
+    const defId = Sref.current.terr[t].owner;
+    setBattle({ o, t, atkId, defId });
     setS({ ...Sref.current, busy: true, dice: { a: Array(aN).fill('?'), d: Array(dN).fill('?'), aN, dN, rolling: true } });
     if (onCap) Sound.alarm(); else Sound.dice();
     for (let i = 0; i < dur / 80; i++) {
@@ -139,7 +145,6 @@ export default function Game({ S, setS }) {
       await wait(80);
     }
     if (ctl && ctl.c) return null;
-    // fija el resultado
     setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN, rolling: false } });
     await wait(500);
     if (ctl && ctl.c) return null;
@@ -154,7 +159,7 @@ export default function Game({ S, setS }) {
     if (t === 'capital' && (ot < 3 || aN < 2)) return;
     if (!canAttack(s0, pid, o, t, aN)) return;
     const dN = Math.min(3, tt);
-    const res = await animateDice(aN, dN, t === 'capital', ctl);
+    const res = await animateDice(aN, dN, t === 'capital', ctl, o, t, pid);
     if (!res) return;
     commitBattle(pid, o, t, aN, res.aRoll, res.dRoll);
   }
@@ -166,12 +171,13 @@ export default function Game({ S, setS }) {
     if (t === 'capital') { if (ot < 3) return; a = Math.min(3, a); a = Math.max(2, a); }
     if (a < 1) return;
     const dN = Math.min(3, s0.terr[t].troops);
-    const res = await animateDice(a, dN, t === 'capital', null);
+    const res = await animateDice(a, dN, t === 'capital', null, o, t, me);
     if (!res) return;
     commitBattle(me, o, t, a, res.aRoll, res.dRoll);
   }
 
   function commitBattle(pid, o, t, aN, aRoll, dRoll) {
+    setBattle(null);
     const s = clone(Sref.current);
     const prevOwner = s.terr[t].owner;
     const res = battleResult(aRoll, dRoll);
@@ -374,7 +380,7 @@ export default function Game({ S, setS }) {
                 </div>
               </div>
               <div className="map-viewport">
-                <MapView S={S} sel={sel} onTerr={onTerr}/>
+                <MapView S={S} sel={sel} battle={battle} onTerr={onTerr}/>
               </div>
             </div>
           </div>

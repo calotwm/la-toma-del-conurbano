@@ -221,6 +221,13 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .cand-ring { fill: none; stroke: #fff; stroke-width: 2.5; stroke-dasharray: 4 4; animation: blink 1s infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ---------- Capa de batalla (overlay del mapa) ---------- */
+.battle-layer { pointer-events: none; }
+.battle-arrow { animation: dashFlow .6s linear infinite; }
+@keyframes dashFlow { to { stroke-dashoffset: -14; } } /* periodo del dash 8+6=14; offset negativo marcha los dashes origen→destino */
+.battle-ring-atk, .battle-ring-def { animation: blink .9s infinite; }
+.battle-ring-def.defend { animation: blink .45s infinite; stroke-width: 5; }
+
 .inspector { position: absolute; left: 10px; bottom: 10px; background: rgba(8,13,26,.95); border: 1px solid var(--gold); border-radius: 8px; padding: 10px 12px; max-width: 250px; box-shadow: 0 8px 28px rgba(0,0,0,.6); pointer-events: none; }
 .inspector-title { font-size: 12px; color: var(--gold-light); font-weight: 900; display: flex; align-items: center; gap: 6px; }
 .inspector-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 10px; margin-top: 6px; font-family: 'Space Mono', monospace; font-size: 10px; color: var(--muted); }
