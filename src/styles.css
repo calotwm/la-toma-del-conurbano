@@ -426,3 +426,38 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .btn, .btn-gold, .btn-red, .btn-dark, .btn-big { min-height: 44px; }
   .dice-slot { width: 52px; height: 52px; }
 }
+
+/* ============================================================
+   PANTALLAS DE MENÚ — compactar (Home / Setup / Sorteo / Fin)
+   ============================================================ */
+@media (max-width: 900px) {
+  .screen { padding: 14px; gap: 10px; justify-content: flex-start; }
+  .screen h1.logo { font-size: clamp(24px, 7vw, 36px); }
+  .setup { padding: 10px; }
+  .pcard { grid-template-columns: auto 1fr; gap: 8px; padding: 8px 10px; }
+  .pcard input { min-width: 0; }
+  .countrow { gap: 6px; margin: 8px 0; }
+  .countbtn { padding: 8px 14px; font-size: 14px; }
+  .tagbtn { padding: 6px 9px; font-size: 11px; }
+  .level-picker { gap: 4px; }
+  .level-btn { padding: 5px 9px; font-size: 11px; }
+  .chk { font-size: 12px; margin: 8px 0; }
+  .btn-big { font-size: 14px; padding: 12px 20px; }
+  .tagline { font-size: 12px; }
+  .medallion { width: 48px; height: 48px; }
+  .medallion-in .mat { font-size: 26px; }
+  .stats { gap: 8px; }
+  .statcard { padding: 10px 12px; min-width: 130px; }
+}
+
+/* teléfonos muy angostos */
+@media (max-width: 480px) {
+  .screen h1.logo { font-size: 22px; }
+  .screen { padding: 10px; }
+  .pcard { grid-template-columns: 1fr; }
+  .countrow { justify-content: center; }
+  .btns { flex-direction: column; align-items: center; }
+  .btn-big { width: 100%; max-width: 340px; }
+  .hdr-inner { flex-wrap: wrap; }
+  .turn-crest { padding: 4px 8px; }
+}
