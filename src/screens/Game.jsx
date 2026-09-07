@@ -67,6 +67,7 @@ export default function Game({ S, setS }) {
     const ctl = { c: false };
     (async () => {
       await wait(700);
+      let atkCount = 0;
       while (!ctl.c) {
         const s = Sref.current;
         const sCur = s.players.find(p => p.id === s.order[s.tidx]);
@@ -76,21 +77,26 @@ export default function Game({ S, setS }) {
             const plan = aiPlacementPlan(s, botId);
             const s2 = clone(s);
             plan.forEach(id => { s2.terr[id].troops++; s2.pool--; });
-            setS(s2); await wait(650);
+            setS(s2); await wait(500);
           } else {
             const s2 = clone(Sref.current); s2.phase = 'attack';
-            log(s2, `${playerName(s2, botId)} pasa a la fase de ataque.`, 'sys');
-            setS(s2); await wait(350);
+            setS(s2); await wait(300);
           }
           continue;
         }
         if (s.phase === 'attack') {
+          if (atkCount >= 8) { // límite de ataques por turno para no trabarse visualmente
+            const s2 = clone(Sref.current); s2.phase = 'fortify';
+            setS(s2); await wait(300);
+            continue;
+          }
           const m = aiPickAttack(s, botId);
           if (!m) {
             const s2 = clone(Sref.current); s2.phase = 'fortify';
-            setS(s2); await wait(350);
+            setS(s2); await wait(300);
             continue;
           }
+          atkCount++;
           await botBattle(botId, m.o, m.t, ctl);
           continue;
         }
@@ -218,7 +224,9 @@ export default function Game({ S, setS }) {
 
   function onTerr(id) {
     const s = Sref.current;
-    if (s.busy || !me) return;
+    if (!me) return;
+    // el refuerzo nunca se bloquea por busy (evita que se "trabe" sumando tropas)
+    if (s.busy && s.phase !== 'reinforce') return;
 
     if (s.phase === 'reinforce') {
       if (s.terr[id].owner !== me || s.pool <= 0) return;
@@ -410,6 +418,33 @@ export default function Game({ S, setS }) {
 
         <Copyright/>
       </main>
+
+      {/* Overlay de dados: dado animado girando en el centro */}
+      {S.dice && (
+        <div className="dice-overlay">
+          <div className="dice-box">
+            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 2 }}>Resolución de batalla</div>
+            <div className="vs-row">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <span className="cap-big" style={{ color: 'var(--warn)' }}>Atacante</span>
+                <div className="die-big atk" style={{ width: 'auto', height: 'auto', fontSize: 40, padding: '8px 18px', gap: 6 }}>
+                  {S.dice.a.map((v, i) => <span key={i} className={S.dice.rolling ? 'spin' : ''} style={{ display: 'inline-block' }}>{v}</span>)}
+                </div>
+              </div>
+              <span className="vs" style={{ fontSize: 22 }}>VS</span>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                <span className="cap-big" style={{ color: 'var(--gold)' }}>Defensor</span>
+                <div className="die-big def" style={{ width: 'auto', height: 'auto', fontSize: 40, padding: '8px 18px', gap: 6 }}>
+                  {S.dice.d.map((v, i) => <span key={i} className={S.dice.rolling ? 'spin' : ''} style={{ display: 'inline-block' }}>{v}</span>)}
+                </div>
+              </div>
+            </div>
+            {!S.dice.rolling && (
+              <div className="res-line">{S.lastBattle ? (S.lastBattle.conquered ? (S.lastBattle.capital ? '¡La Capital es tuya!' : 'Territorio conquistado') : 'Ataque rechazado') : ''}</div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>

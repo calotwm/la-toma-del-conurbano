@@ -76,34 +76,9 @@ export default function ActionBar(props) {
               <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
             ))}
             <div style={{ flex: 1 }}></div>
-            <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '12px 26px', borderRadius: 10, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 14, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAttack}>
-              <span className="mat" style={{ fontSize: 18 }}>casino</span>🎲 TIRAR DADOS
+            <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
+              <span className="mat" style={{ fontSize: 16 }}>casino</span>🎲 TIRAR
             </button>
-          </div>
-        )}
-
-        {S.dice && (
-          <div className="arena">
-            <div className="dice-box atk">
-              <div className="dice-box-hdr">
-                <div className="who"><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#0284c7', boxShadow: '0 0 8px #0284c7' }}></span>Atacante</div>
-                <span className="n" style={{ background: '#3a0808', color: 'var(--warn)', border: '1px solid rgba(255,107,107,.4)' }}>{S.dice.aN} DADOS</span>
-              </div>
-              <div className="dice-row">
-                {S.dice.a.map((v, i) => <span key={i} className={'dice-slot red' + (S.dice.rolling ? ' rolling' : '')}><span className="pip">{S.dice.rolling ? v : v}</span>{i === 0 && !S.dice.rolling ? <span className="cap">MAYOR</span> : null}</span>)}
-                {Array.from({ length: 3 - S.dice.a.length }).map((_, i) => <span key={'e' + i} className="dice-slot red empty"><span className="mat" style={{ fontSize: 20, opacity: .3 }}>block</span></span>)}
-              </div>
-            </div>
-            <div className="dice-box def">
-              <div className="dice-box-hdr">
-                <div className="who"><span style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d4d', boxShadow: '0 0 8px #ff4d4d' }}></span>Defensor</div>
-                <span className="n" style={{ background: '#2e2104', color: 'var(--celeste)', border: '1px solid rgba(212,175,55,.5)' }}>{S.dice.dN} DADOS</span>
-              </div>
-              <div className="dice-row">
-                {S.dice.d.map((v, i) => <span key={i} className={'dice-slot gold' + (S.dice.rolling ? ' rolling' : '')}><span className="pip">{v}</span>{i === 0 && !S.dice.rolling ? <span className="cap">EMPATA</span> : null}</span>)}
-                {Array.from({ length: 2 - S.dice.d.length }).map((_, i) => <span key={'e' + i} className="dice-slot gold empty"><span className="mat" style={{ fontSize: 20, opacity: .3 }}>block</span></span>)}
-              </div>
-            </div>
           </div>
         )}
 
