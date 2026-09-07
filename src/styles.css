@@ -139,10 +139,16 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 @media (max-width: 1280px) { .grid { grid-template-columns: 1fr; } .rightcol { display: none; } }
 
 /* layout de altura fija: todo visible sin scroll de página */
-.game-fit { display: grid; grid-template-columns: 240px 1fr 320px; gap: 10px; align-items: stretch; min-height: 0; flex: 1; }
-@media (max-width: 1280px) { .game-fit { grid-template-columns: 1fr; } }
+.game-fit { display: grid; grid-template-columns: 240px 1fr 320px; grid-template-areas: "you map actions" "you map log"; grid-template-rows: auto 1fr; gap: 10px; align-items: stretch; min-height: 0; flex: 1; }
+@media (max-width: 1280px) { .game-fit { grid-template-columns: 240px 1fr 320px; } }
+.panel-you { grid-area: you; }
+.map-wrap { grid-area: map; flex: 1; min-height: 0; }
+.panel-actions { grid-area: actions; }
+.panel-log { grid-area: log; }
+.mobile-tabs { display: none; }
 .game-fit .col { display: flex; flex-direction: column; gap: 10px; min-height: 0; overflow: hidden; }
-.map-wrap { flex: 1; min-height: 0; }
+.panel-actions { overflow-y: auto; }
+.panel-log { overflow-y: auto; }
 .map-frame { display: flex; flex-direction: column; height: 100%; background: #0b0e14; }
 .map-fit { flex: 1; min-height: 0; }
 .map-fit .map-ribbon { flex: none; }
@@ -376,3 +382,48 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .banner.small { font-size: clamp(12px, 1.6vw, 16px); padding: 12px 22px; }
 .flash { position: fixed; inset: 0; pointer-events: none; z-index: 70; box-shadow: inset 0 0 160px var(--celeste); opacity: 0; transition: opacity .5s; }
 .flash.on { opacity: 1; }
+
+/* ============================================================
+   RESPONSIVE MÓVIL — layout táctil por pestañas
+   ============================================================ */
+@media (max-width: 900px) {
+  .hdr .logo-sub, .hdr .tag-edicion, .map-ribbon .scale { display: none; }
+  .hdr-inner { padding: 6px 10px; gap: 8px; }
+  .logo-title { font-size: 14px; letter-spacing: 1px; }
+  .hdr-util button { width: 30px; height: 30px; }
+  .medallion { width: 32px; height: 32px; }
+  .medallion-in .mat { font-size: 18px; }
+  .game-shell { overflow: hidden; }
+  main.game { padding: 4px; gap: 4px; }
+  .game-fit { grid-template-areas: "map"; grid-template-columns: 1fr; grid-template-rows: 1fr; gap: 0; }
+  .map-wrap { grid-area: map; height: 100%; }
+  .map-ribbon { padding: 6px 8px; }
+  .map-ribbon h3 { font-size: 11px; }
+  /* paneles como drawers */
+  .panel-you, .panel-actions, .panel-log {
+    position: fixed; z-index: 40; background: #0d131f; border: 1px solid var(--line);
+    box-shadow: 0 0 40px rgba(0,0,0,.6); transition: transform .28s ease;
+    display: block; overflow-y: auto; padding: 12px;
+  }
+  .panel-you { left: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(-105%); }
+  .panel-you.show { transform: translateX(0); }
+  .panel-log { right: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(105%); }
+  .panel-log.show { transform: translateX(0); }
+  .panel-actions { left: 0; right: 0; bottom: 52px; max-height: 55vh; transform: translateY(110%); border-radius: 14px 14px 0 0; }
+  .panel-actions.show { transform: translateY(0); }
+  /* barra de pestañas */
+  .mobile-tabs {
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;
+    background: #0b0f1a; border-top: 1px solid var(--line); padding: 4px; gap: 2px;
+  }
+  .mobile-tabs .tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px;
+    padding: 5px 2px; background: transparent; color: var(--muted); font-size: 9px; font-weight: 700;
+    border-radius: 8px; text-transform: uppercase; letter-spacing: .5px;
+  }
+  .mobile-tabs .tab.on { background: #182036; color: var(--celeste); }
+  .mobile-tabs .tab .mat { font-size: 19px; }
+  /* botones táctiles */
+  .btn, .btn-gold, .btn-red, .btn-dark, .btn-big { min-height: 44px; }
+  .dice-slot { width: 52px; height: 52px; }
+}

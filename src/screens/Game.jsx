@@ -34,6 +34,7 @@ export default function Game({ S, setS }) {
   const [amt, setAmt] = useState(1);
   const [dn, setDn] = useState(null);
   const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
+  const [mobileTab, setMobileTab] = useState('map'); // pestaña móvil: map|you|actions|log
 
   const Sref = useRef(S); Sref.current = S;
   const flashT = useRef(null), bannerT = useRef(null);
@@ -341,7 +342,7 @@ export default function Game({ S, setS }) {
       <main className="game">
         {/* Layout 3 columnas: jugador | mapa | acciones+log */}
         <div className="game-fit">
-          <div className="col">
+          <div className={'col panel-you' + (mobileTab === 'you' ? ' show' : '')}>
             <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
             <div className="frame panel" style={{ flex: 1, minHeight: 0 }}>
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
@@ -385,7 +386,7 @@ export default function Game({ S, setS }) {
             </div>
           </div>
 
-          <div className="col col-right">
+          <div className={'col col-right panel-actions' + (mobileTab === 'actions' ? ' show' : '')}>
             <ActionBar
               S={S} sel={sel} setSel={setSel} me={me} humanTurn={humanTurn}
               dn={dn} setDn={setDn} amt={amt} setAmt={setAmt} maxD={maxD} isCapT={isCapT}
@@ -433,8 +434,19 @@ onEndTurn={endHumanTurn}
                 log(s, '» ¡A atacar!', 'sys');
               }}
           />
+          </div>
+
+          <div className={'panel-log' + (mobileTab === 'log' ? ' show' : '')}>
             <LogPanel S={S}/>
           </div>
+        </div>
+
+        {/* Barra de pestañas móvil */}
+        <div className="mobile-tabs">
+          <button className={'tab' + (mobileTab === 'map' ? ' on' : '')} onClick={() => setMobileTab('map')}><span className="mat">map</span>Mapa</button>
+          <button className={'tab' + (mobileTab === 'you' ? ' on' : '')} onClick={() => setMobileTab('you')}><span className="mat">person</span>Vos</button>
+          <button className={'tab' + (mobileTab === 'actions' ? ' on' : '')} onClick={() => setMobileTab('actions')}><span className="mat">swords</span>Acciones</button>
+          <button className={'tab' + (mobileTab === 'log' ? ' on' : '')} onClick={() => setMobileTab('log')}><span className="mat">campaign</span>Log</button>
         </div>
 
         <Copyright/>
