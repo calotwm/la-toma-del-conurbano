@@ -140,7 +140,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 
 /* layout de altura fija: todo visible sin scroll de página */
 .game-fit { display: grid; grid-template-columns: 240px 1fr 320px; grid-template-areas: "you map actions" "you map log"; grid-template-rows: auto 1fr; gap: 10px; align-items: stretch; min-height: 0; flex: 1; }
-@media (max-width: 1280px) { .game-fit { grid-template-columns: 240px 1fr 320px; } }
+@media (max-width: 1280px) and (min-width: 901px) { .game-fit { grid-template-columns: 190px 1fr 250px; } }
 .panel-you { grid-area: you; }
 .map-wrap { grid-area: map; flex: 1; min-height: 0; }
 .panel-actions { grid-area: actions; }
@@ -409,8 +409,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-you.show { transform: translateX(0); }
   .panel-log { right: 0; top: 0; bottom: 0; width: 88vw; max-width: 360px; transform: translateX(105%); }
   .panel-log.show { transform: translateX(0); }
-  .panel-actions { left: 0; right: 0; bottom: 52px; max-height: 55vh; transform: translateY(110%); border-radius: 14px 14px 0 0; }
-  .panel-actions.show { transform: translateY(0); }
+  .panel-actions { left: 0; right: 0; bottom: 48px; max-height: 40vh; overflow-y: auto; border-radius: 14px 14px 0 0; padding: 8px 10px; }
   /* barra de pestañas */
   .mobile-tabs {
     display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;

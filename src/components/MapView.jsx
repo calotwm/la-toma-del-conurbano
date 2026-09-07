@@ -73,7 +73,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-full select-none overflow-hidden">
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" className="w-full h-full select-none overflow-hidden">
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>

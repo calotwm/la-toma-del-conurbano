@@ -445,7 +445,6 @@ onEndTurn={endHumanTurn}
         <div className="mobile-tabs">
           <button className={'tab' + (mobileTab === 'map' ? ' on' : '')} onClick={() => setMobileTab('map')}><span className="mat">map</span>Mapa</button>
           <button className={'tab' + (mobileTab === 'you' ? ' on' : '')} onClick={() => setMobileTab('you')}><span className="mat">person</span>Vos</button>
-          <button className={'tab' + (mobileTab === 'actions' ? ' on' : '')} onClick={() => setMobileTab('actions')}><span className="mat">swords</span>Acciones</button>
           <button className={'tab' + (mobileTab === 'log' ? ' on' : '')} onClick={() => setMobileTab('log')}><span className="mat">campaign</span>Log</button>
         </div>
 
