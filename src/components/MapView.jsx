@@ -157,7 +157,9 @@ export default function MapView({ S, sel, onTerr }) {
               {t.special
                 ? <text className="count" x={t.x} y={t.y + 4} fontSize="16">{tt.troops}</text>
                 : <text className="count" x={t.x} y={t.y + 5} fontSize={t.big ? 15 : 12}>{tt.troops}</text>}
-              <text className={'label' + (owner != null ? ' owner' : '')} x={t.x} y={t.y + r + (t.special ? 20 : 14)}>{t.special ? 'LA CAPITAL' : t.name}</text>
+              {t.special
+                ? <text className={'label owner'} x={t.x} y={t.y + t.r + 22}>{'LA CAPITAL'}</text>
+                : <TLabel t={t} r={r}/>}
             </g>
           );
         })}
@@ -181,4 +183,16 @@ export default function MapView({ S, sel, onTerr }) {
       </div>
     </div>
   );
+}
+
+// Etiqueta de territorio con posición configurable para evitar solapamientos.
+function TLabel({ t, r }) {
+  const gap = r + 6;
+  const pos = t.lp || 'b';
+  let x = t.x, y = t.y, anchor = 'middle';
+  if (pos === 'b') { y = t.y + gap + 8; }
+  else if (pos === 't') { y = t.y - gap - 6; }
+  else if (pos === 'l') { x = t.x - gap - 4; anchor = 'end'; }
+  else if (pos === 'r') { x = t.x + gap + 4; anchor = 'start'; }
+  return <text className="label" x={x} y={y} textAnchor={anchor}>{t.name}</text>;
 }
