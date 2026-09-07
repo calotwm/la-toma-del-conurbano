@@ -323,8 +323,8 @@ main.game { max-width: 1720px; margin: 0 auto; padding: 10px; display: flex; fle
 .statcard div { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
 .grad { height: 12px; border-radius: 6px; overflow: hidden; display: flex; width: min(640px, 90vw); }
 .grad i { height: 100%; }
-.footer { color: #5b6480; font-size: 11px; letter-spacing: 1px; margin-top: 22px; font-family: 'Space Mono', monospace; }
-.hint { font-size: 11px; color: #5b6480; line-height: 1.5; }
+.footer { color: #c7d6ea; font-size: 11px; letter-spacing: 1px; margin-top: 22px; font-family: 'Space Mono', monospace; }
+.hint { font-size: 11px; color: #c7d6ea; line-height: 1.5; }
 
 .banner {
   position: fixed; top: 16%; left: 50%; transform: translateX(-50%) scale(.4) rotate(-2deg); z-index: 90;
