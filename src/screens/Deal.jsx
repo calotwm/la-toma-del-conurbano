@@ -35,7 +35,7 @@ export default function Deal({ S, setS }) {
     }, 90);
   };
 
-  const tirarHumano = () => { if (human) rollOne(human.id); };
+  const tirarHumano = () => {}; // (sin uso: cada humano tira con su propio id)
 
   // los bots tiran automáticamente, uno por vez
   const botStillToRoll = S.players.filter(p => !p.human && rolls[p.id] == null && !rolling);
@@ -72,14 +72,16 @@ export default function Deal({ S, setS }) {
             <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 8px', background: '#0d1017', border: '1px solid var(--line)', borderRadius: 8 }}>
               <span className="dot" style={{ background: p.color, width: 14, height: 14, borderRadius: '50%', boxShadow: '0 0 6px ' + p.color }}/>
               <b style={{ color: p.color, fontSize: 13 }}>{p.name}</b>
-              {p.human ? <span className="minitag" style={{ color: 'var(--celeste)' }}>VOS</span> : <span className="minitag" style={{ color: 'var(--muted)' }}>bot</span>}
+              {p.human
+                ? (() => { const hi = S.players.filter(x => x.human).indexOf(p); return <span className="minitag" style={{ color: 'var(--celeste)' }}>{hi === 0 ? 'VOS' : 'VOS ' + (hi + 1)}</span>; })()
+                : <span className="minitag" style={{ color: 'var(--muted)' }}>bot</span>}
               <div style={{ flex: 1 }}></div>
               {rollingPlayer === p.id
                 ? <span className="deal-die" style={{ fontWeight: 900, fontSize: 24 }}>?</span>
                 : rolls[p.id] != null
                   ? <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 26, color: 'var(--celeste)' }}>{rolls[p.id]}</span>
                   : p.human
-                    ? <button className="btn-gold" style={{ padding: '8px 14px', borderRadius: 8, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 6 }} onClick={tirarHumano} disabled={rolling}>
+                    ? <button className="btn-gold" style={{ padding: '8px 14px', borderRadius: 8, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => rollOne(p.id)} disabled={rolling}>
                         <span className="mat" style={{ fontSize: 18 }}>casino</span>TIRAR
                       </button>
                     : <span style={{ color: 'var(--muted)', fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{rolling ? 'tirando...' : '...'}</span>}
