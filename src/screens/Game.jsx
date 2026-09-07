@@ -403,8 +403,8 @@ export default function Game({ S, setS }) {
                 }
               }}
               onToFortify={() => { if (S.phase === 'attack') { const s = clone(Sref.current); s.phase = 'fortify'; setS(s); setSel(null); } }}
-              onEndTurn={endHumanTurn}
-              onAutoPlace={() => {
+onEndTurn={endHumanTurn}
+            onAutoPlace={() => {
                 const s = clone(Sref.current);
                 if (S.phase !== 'reinforce') return;
                 const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
@@ -417,7 +417,22 @@ export default function Game({ S, setS }) {
                 if (s.pool <= 0) { s.phase = 'attack'; log(s, '» Reparto automático listo. ¡A atacar!', 'sys'); }
                 setS(s);
               }}
-            />
+            onSkipReinforce={() => {
+                // reparte el pool restante y pasa a atacar
+                const s = clone(Sref.current);
+                if (S.phase !== 'reinforce') return;
+                const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
+                let g = 0;
+                while (s.pool > 0 && own.length && g++ < 500) {
+                  const t = own[Math.floor(Math.random() * own.length)];
+                  if (!t) break;
+                  s.terr[t].troops++; s.pool--;
+                }
+                s.phase = 'attack';
+                setS(s); setSel(null); setDn(null);
+                log(s, '» ¡A atacar!', 'sys');
+              }}
+          />
             <LogPanel S={S}/>
           </div>
         </div>

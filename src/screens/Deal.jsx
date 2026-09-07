@@ -8,8 +8,9 @@ import { Sound } from '../sound.js';
 // 2) muestra qué territorios te tocaron a vos y TU misión secreta (la del bot queda oculta).
 export default function Deal({ S, setS }) {
   const human = S.players.find(p => p.human);
-  const [rolls, setRolls] = useState({});          // playerId -> valor del dado
+  const [rolls, setRolls] = useState({});          // playerId -> valor final del dado
   const [rolling, setRolling] = useState(false);
+  const [rollingPlayer, setRollingPlayer] = useState(null); // quién está rodando (animación)
 
   const rolledAll = S.players.every(p => rolls[p.id] != null);
 
@@ -18,35 +19,28 @@ export default function Deal({ S, setS }) {
     ? [...S.order].sort((a, b) => (rolls[b] - rolls[a]) || (S.order.indexOf(a) - S.order.indexOf(b)))
     : [];
 
-  const tirarHumano = () => {
-    if (!human || rolling || rolls[human.id] != null) return;
-    setRolling(true);
+  const rollOne = (pid) => {
+    if (rolling || rolls[pid] != null) return;
+    setRolling(true); setRollingPlayer(pid);
     Sound.dice();
-    // animación: cambia el valor unos instantes
+    // el dado gira (sin fijar número) y recién al final muestra el valor
     let i = 0;
     const iv = setInterval(() => {
-      const v = rollDice(1)[0];
-      setRolls(prev => ({ ...prev, [human.id]: i === 7 ? v : v }));
       i++;
-      if (i >= 7) { clearInterval(iv); setRolling(false); }
-    }, 100);
+      if (i >= 7) {
+        clearInterval(iv);
+        setRolls(prev => ({ ...prev, [pid]: rollDice(1)[0] }));
+        setRolling(false); setRollingPlayer(null);
+      }
+    }, 90);
   };
 
-  // los bots tiran automáticamente
+  const tirarHumano = () => { if (human) rollOne(human.id); };
+
+  // los bots tiran automáticamente, uno por vez
   const botStillToRoll = S.players.filter(p => !p.human && rolls[p.id] == null && !rolling);
   if (botStillToRoll.length && !rolling && !rolledAll) {
-    // useEffect-style: tirar un bot por vez
-    setTimeout(() => {
-      setRolling(true);
-      const b = botStillToRoll[0];
-      Sound.dice();
-      let i = 0;
-      const iv = setInterval(() => {
-        setRolls(prev => ({ ...prev, [b.id]: rollDice(1)[0] }));
-        i++;
-        if (i >= 6) { clearInterval(iv); setRolling(false); }
-      }, 90);
-    }, 400);
+    setTimeout(() => rollOne(botStillToRoll[0].id), 300);
   }
 
   const empezar = () => {
@@ -80,13 +74,15 @@ export default function Deal({ S, setS }) {
               <b style={{ color: p.color, fontSize: 13 }}>{p.name}</b>
               {p.human ? <span className="minitag" style={{ color: 'var(--celeste)' }}>VOS</span> : <span className="minitag" style={{ color: 'var(--muted)' }}>bot</span>}
               <div style={{ flex: 1 }}></div>
-              {rolls[p.id] != null
-                ? <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 26, color: 'var(--celeste)' }}>{rolls[p.id]}</span>
-                : p.human
-                  ? <button className="btn-gold" style={{ padding: '8px 14px', borderRadius: 8, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 6 }} onClick={tirarHumano} disabled={rolling}>
-                      <span className="mat" style={{ fontSize: 18 }}>casino</span>TIRAR
-                    </button>
-                  : <span style={{ color: 'var(--muted)', fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{rolling ? 'tirando...' : '...'}</span>}
+              {rollingPlayer === p.id
+                ? <span className="deal-die" style={{ fontWeight: 900, fontSize: 24 }}>?</span>
+                : rolls[p.id] != null
+                  ? <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 26, color: 'var(--celeste)' }}>{rolls[p.id]}</span>
+                  : p.human
+                    ? <button className="btn-gold" style={{ padding: '8px 14px', borderRadius: 8, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 6 }} onClick={tirarHumano} disabled={rolling}>
+                        <span className="mat" style={{ fontSize: 18 }}>casino</span>TIRAR
+                      </button>
+                    : <span style={{ color: 'var(--muted)', fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{rolling ? 'tirando...' : '...'}</span>}
             </div>
           ))}
         </div>

@@ -3,7 +3,7 @@ import { tName, playerName } from '../engine.js';
 // Barra de acciones según la fase (solo humano). Estilo filéteado.
 export default function ActionBar(props) {
   const { S, sel, setSel, me, humanTurn, dn, setDn, amt, setAmt,
-    onAttack, onFortify, onToFortify, onEndTurn, onAutoPlace, maxD, isCapT } = props;
+    onAttack, onFortify, onToFortify, onEndTurn, onAutoPlace, onSkipReinforce, maxD, isCapT } = props;
 
   if (!humanTurn) return null;
 
@@ -39,6 +39,9 @@ export default function ActionBar(props) {
         <div style={{ flex: 1 }}></div>
         <button className="btn-gold" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onAutoPlace}>
           <span className="mat" style={{ fontSize: 18 }}>bolt</span>Reparto automático
+        </button>
+        <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onSkipReinforce}>
+          <span className="mat" style={{ fontSize: 18 }}>swords</span>Ir a atacar
         </button>
       </div>
     );

@@ -4,7 +4,7 @@ import { playerColor, playerName } from '../engine.js';
 
 // Mapa estilo TEG con geografía real del AMBA (grilla 1000x800).
 // Capas: 1) regiones de zona (bgPath), 2) conexiones, 3) nodos interactivos.
-const W = 1000, H = 800;
+const W = 1200, H = 800, OX = 100;
 
 export default function MapView({ S, sel, battle, onTerr }) {
   const phase = S.phase;
@@ -73,7 +73,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto select-none overflow-hidden">
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" className="w-full h-full select-none overflow-hidden">
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>
@@ -89,12 +89,14 @@ export default function MapView({ S, sel, battle, onTerr }) {
           </linearGradient>
         </defs>
 
-        {/* fondo de tierra */}
+        {/* fondo de tierra (cubre todo el viewBox) */}
         <rect x="0" y="0" width={W} height={H} fill="url(#landGrad)"/>
+        {/* contenido del mapa desplazado a la derecha para ocupar mejor el ancho */}
+        <g transform={`translate(${OX},0)`}>
         {/* MAR al este (Río de la Plata), con costa suave */}
         <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterGrad)"/>
         <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterRipple)"/>
-        <text x={W - 34} y={H / 2} transform={`rotate(90 ${W - 34} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="18" letterSpacing="8" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
+        <text x={W - OX - 40} y={H / 2} transform={`rotate(90 ${W - OX - 40} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="18" letterSpacing="8" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
 
         {/* CAPA 1: REGIONES DE ZONA (dibujadas a mano) */}
         <g id="capa-regiones">
@@ -168,6 +170,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
             </text>
           </g>
         )}
+        </g>{/* cierre del translate(OX) */}
       </svg>
 
       {/* inspector */}
