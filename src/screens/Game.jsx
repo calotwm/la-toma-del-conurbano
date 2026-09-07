@@ -54,6 +54,14 @@ export default function Game({ S, setS }) {
   // autosave
   useEffect(() => { if (S.screen === 'game') saveGame(S); }, [S]);
 
+  // watchdog: si busy queda atrapado en true sin dados en curso, resetealo (evita que te "congele" y no te deje atacar)
+  useEffect(() => {
+    if (S.busy && !S.dice) {
+      const t = setTimeout(() => setS(prev => (prev.busy && !prev.dice ? { ...prev, busy: false } : prev)), 1500);
+      return () => clearTimeout(t);
+    }
+  }, [S.busy, S.dice]);
+
   // fin de partida -> pantalla end
   useEffect(() => {
     if (S.winner && S.screen === 'game') {
@@ -238,6 +246,7 @@ export default function Game({ S, setS }) {
     if (s.phase === 'reinforce') {
       if (s.terr[id].owner !== me || s.pool <= 0) return;
       const s2 = clone(s);
+      s2.busy = false; // asegura que no quede bloqueado por una batalla previa
       s2.terr[id].troops++; s2.pool--;
       if (s2.pool <= 0) { s2.phase = 'attack'; log(s2, '» Refuerzos listos. ¡A atacar!', 'sys'); }
       setS(s2);
@@ -408,6 +417,7 @@ onEndTurn={endHumanTurn}
             onAutoPlace={() => {
                 const s = clone(Sref.current);
                 if (S.phase !== 'reinforce') return;
+                s.busy = false;
                 const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
                 let g = 0;
                 while (s.pool > 0 && own.length && g++ < 500) {
@@ -422,6 +432,7 @@ onEndTurn={endHumanTurn}
                 // reparte el pool restante y pasa a atacar
                 const s = clone(Sref.current);
                 if (S.phase !== 'reinforce') return;
+                s.busy = false;
                 const own = ownersCount(s, me) ? TIDS_OWNED(s, me) : [];
                 let g = 0;
                 while (s.pool > 0 && own.length && g++ < 500) {
