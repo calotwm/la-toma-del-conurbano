@@ -477,6 +477,8 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 @media (max-width: 900px) {
   .hdr .logo-sub, .hdr .tag-edicion, .map-ribbon .scale { display: none; }
   .ticker-bar { display: none; } /* solo ambientación, no aporta al juego — le da más alto al mapa */
+  /* el cartel de conquista/misión pegado bien arriba, lejos de la bandeja de acciones de abajo */
+  .banner { top: 8px; }
   .hdr-inner { padding: 6px 10px; gap: 8px; }
   .logo-title { font-size: 14px; letter-spacing: 1px; }
   .hdr-util button { width: 30px; height: 30px; }
@@ -623,9 +625,10 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .reinforce-btn .mat { font-size: 16px; }
 .reinforce-bar { flex-wrap: wrap; }
 
-/* bottom sheet móvil: info del territorio tocado */
+/* ficha del territorio tocado (mobile): flota arriba DEL MAPA (zona libre), no abajo
+   donde tapaba los botones de la bandeja de acciones */
 .bottom-sheet {
-  position: fixed; left: 8px; right: 8px; bottom: 58px; z-index: 35;
+  position: absolute; left: 8px; right: 8px; top: 8px; z-index: 25;
   background: #0d1524; border: 1px solid var(--celeste); border-radius: 12px;
   padding: 10px 12px; box-shadow: 0 6px 30px rgba(0,0,0,.6);
 }

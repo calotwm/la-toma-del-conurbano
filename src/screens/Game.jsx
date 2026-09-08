@@ -185,6 +185,7 @@ export default function Game({ S, setS }) {
       if (ctl && ctl.c) return abort();
       const tempA = rollDice(aN), tempD = rollDice(dN);
       setS({ ...Sref.current, busy: true, dice: { a: tempA, d: tempD, aN, dN, rolling: true } });
+      Sound.diceTick();
       await wait(80);
     }
     if (ctl && ctl.c) return abort();
@@ -438,7 +439,7 @@ export default function Game({ S, setS }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <span className="mat" style={{ fontSize: 18, color: 'var(--celeste)' }}>radar</span>
                   <h3>Cartografía Estratégica AMBA</h3>
-                  <span className="scale">· 29 distritos</span>
+                  <span className="scale">· {TIDS.length} distritos</span>
                 </div>
                 <div className="map-tools">
                   <button onClick={() => showBanner('CABA: la joya del conurbano, +10 de refuerzo', true)}><span className="mat" style={{ fontSize: 17 }}>filter_center_focus</span></button>

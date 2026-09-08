@@ -36,7 +36,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
   // en mobile recortamos a un encuadre casi cuadrado que contiene todos los distritos,
   // así el mapa aprovecha mejor un contenedor angosto y alto en vez de quedar chiquito
   // con barras vacías arriba/abajo por el "meet".
-  const vb = isMobile ? '40 10 860 800' : `0 0 ${W} ${H}`;
+  const vb = isMobile ? '5 0 900 830' : `0 0 ${W} ${H}`;
 
   // ---------- Pan & zoom táctil (mapa nunca se deforma, se agranda con pellizco y se arrastra) ----------
   const onPointerDown = (e) => {

@@ -49,6 +49,7 @@ export const Sound = (() => {
     unlock() { ac(); },
     click() { if (!on) return; blip(900, 0.06, 'triangle', 0.08); },
     dice() { if (!on) return; for (let i = 0; i < 6; i++) noise(0.05, 0.08, 1800 + i * 200); blip(300, 0.1, 'square', 0.05); },
+    diceTick() { if (!on) return; noise(0.045, 0.055, 2000 + Math.random() * 900); }, // traqueteo, uno por frame mientras ruedan los dados
     attack() { if (!on) return; noise(0.35, 0.14, 700); blip(220, 0.3, 'sawtooth', 0.09, 0, -90); },
     alarm() { if (!on) return; for (let i = 0; i < 3; i++) { blip(660, 0.16, 'square', 0.09, i * 0.22); blip(880, 0.16, 'square', 0.09, i * 0.22 + 0.11); } },
     win() { if (!on) return; [523, 659, 784, 1047].forEach((f, i) => blip(f, 0.14, 'square', 0.09, i * 0.09)); },
