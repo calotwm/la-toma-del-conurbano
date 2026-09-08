@@ -466,3 +466,26 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .hdr-inner { flex-wrap: wrap; }
   .turn-crest { padding: 4px 8px; }
 }
+
+/* ============================================================
+   ESTILOS AGREGADOS (bottom sheet móvil + botones de refuerzo)
+   ============================================================ */
+/* botones de refuerzo compactos */
+.reinforce-btn { padding: 10px 14px; border-radius: 8px; font-weight: 900; text-transform: uppercase; display: flex; align-items: center; gap: 6px; font-size: 12px; line-height: 1; }
+.reinforce-btn .mat { font-size: 16px; }
+.reinforce-bar { flex-wrap: wrap; }
+
+/* bottom sheet móvil: info del territorio tocado */
+.bottom-sheet {
+  position: fixed; left: 8px; right: 8px; bottom: 58px; z-index: 35;
+  background: #0d1524; border: 1px solid var(--celeste); border-radius: 12px;
+  padding: 10px 12px; box-shadow: 0 6px 30px rgba(0,0,0,.6);
+}
+.bottom-sheet-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d3852; padding-bottom: 6px; }
+.bs-title { font-weight: 800; font-size: 14px; color: var(--celeste); }
+.bs-close { background: transparent; color: var(--muted); font-size: 16px; padding: 2px 8px; }
+.bs-content { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+.bs-row { display: flex; justify-content: space-between; font-size: 12px; }
+.bs-label { color: var(--muted); }
+.bs-value { font-weight: 700; color: var(--txt); }
+.bs-value.fac { color: var(--celeste); }
