@@ -87,24 +87,6 @@ export default function ActionBar(props) {
           </div>
         )}
 
-        {S.dice && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, margin: '10px 0', padding: 10, background: '#0d1017', border: '1px solid var(--line)', borderRadius: 10 }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'var(--warn)', marginBottom: 4 }}>ATACANTE</div>
-              <div style={{ display: 'flex', gap: 5 }}>
-                {S.dice.a.map((v, i) => <span key={i} className={'die' + (S.dice.rolling ? ' rolling' : '')} style={{ width: 32, height: 32, fontSize: 16 }}>{v}</span>)}
-              </div>
-            </div>
-            <span className="vs">VS</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'var(--gold)', marginBottom: 4 }}>DEFENSOR</div>
-              <div style={{ display: 'flex', gap: 5 }}>
-                {S.dice.d.map((v, i) => <span key={i} className={'die' + (S.dice.rolling ? ' rolling' : '')} style={{ width: 32, height: 32, fontSize: 16 }}>{v}</span>)}
-              </div>
-            </div>
-          </div>
-        )}
-
         {lastBattleChip()}
         <div className="btns" style={{ display: 'flex', gap: 8, marginTop: 10 }}>
           <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
