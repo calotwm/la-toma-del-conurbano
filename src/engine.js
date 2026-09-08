@@ -47,18 +47,18 @@ function zoneOwned(s, p, k) { return ZONES[k].ids.every(t => s.terr[t].owner ===
 function otherZones(s, p, excl) { return ZKEYS.filter(k => k !== excl && k !== 'capital').reduce((acc, k) => acc + ZONES[k].ids.filter(t => s.terr[t].owner === p).length, 0); }
 
 export const MISSION_DEFS = {
-  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 13 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 14 },
-  norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 6 },
-  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 4 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 4 },
+  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 17 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 17 },
+  norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 7 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 7 },
+  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 5 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 5 },
   sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
   eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
   suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
   contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) },
   el10:    { name: 'El 10 del Sur', desc: 'Tener La Capital y 10 territorios de la Zona Sur.', check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 10 },
-  triple:  { name: 'La Triple Corona', desc: 'Controlar 7 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 7) },
+  triple:  { name: 'La Triple Corona', desc: 'Controlar 8 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 8) },
 };
-// Objetivo común (TEG real): ocupar 25 de los 29 territorios
-export const COMMON_GOAL = 25;
+// Objetivo común (TEG real): ocupar 30 de los 35 territorios
+export const COMMON_GOAL = 30;
 
 // ---------- Eventos del Informe Metropolitano ----------
 export const EVENTS = [
