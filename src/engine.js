@@ -55,7 +55,7 @@ export const MISSION_DEFS = {
   suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
   contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) },
   el10:    { name: 'El 10 del Sur', desc: 'Tener La Capital y 10 territorios de la Zona Sur.', check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 10 },
-  triple:  { name: 'La Triple Corona', desc: 'Controlar 3 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 3) },
+  triple:  { name: 'La Triple Corona', desc: 'Controlar 7 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 7) },
 };
 // Objetivo común (TEG real): ocupar 25 de los 29 territorios
 export const COMMON_GOAL = 25;
