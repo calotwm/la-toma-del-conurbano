@@ -26,23 +26,23 @@ export default function ActionBar(props) {
   // ---------- REFUERZO ----------
   if (S.phase === 'reinforce') {
     return (
-      <div className="frame subhud" style={{ flexWrap: 'wrap' }}>
+      <div className="frame subhud reinforce-bar">
         <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
         <span className="corner corner-bl"></span><span className="corner corner-br"></span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div className="bastion-ic"><span className="mat">group_add</span></div>
           <div>
             <div className="bastion-t">FASE 1 · REFUERZO</div>
-            <div className="bastion-s" style={{ color: 'var(--muted)' }}>Tocá tus territorios en el mapa (1 clic = 1 tropa).</div>
+            <div className="bastion-s" style={{ color: 'var(--muted)' }}>Tocá tus territorios en el mapa.</div>
           </div>
         </div>
         <div style={{ flex: 1 }}></div>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn-gold" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 7, fontSize: 12, lineHeight: 1 }} onClick={onAutoPlace}>
-            <span className="mat" style={{ fontSize: 17 }}>auto_awesome</span>Reparto automático
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button className="btn-gold reinforce-btn" onClick={onAutoPlace}>
+            <span className="mat">auto_awesome</span>Auto
           </button>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 7, fontSize: 13, lineHeight: 1 }} onClick={onSkipReinforce}>
-            <span className="mat" style={{ fontSize: 18 }}>swords</span>Ir a atacar
+          <button className="btn-red reinforce-btn" onClick={onSkipReinforce}>
+            <span className="mat">swords</span>Atacar
           </button>
         </div>
       </div>

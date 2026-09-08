@@ -2,25 +2,30 @@ import { useEffect, useState } from 'react';
 import { TERR, ADJ, ADJ_PAIRS, CX, CY, STATE_COLOR, ZONES } from '../data.js';
 import { playerColor, playerName } from '../engine.js';
 
-// Mapa estilo TEG con geografía real del AMBA (grilla 1000x800).
-// Capas: 1) regiones de zona (bgPath), 2) conexiones, 3) nodos interactivos.
-const W = 1200, H = 800, OX = 150;
+const W = 1200, H = 800;
 
 export default function MapView({ S, sel, battle, onTerr }) {
   const phase = S.phase;
   const cur = S.players.find(p => p.id === S.order[S.tidx]);
   const me = cur && cur.human ? cur.id : null;
   const myTurn = me != null && !S.busy;
-  const [hover, setHover] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedNode, setSelectedNode] = useState(null);
+  const [mapWidth, setMapWidth] = useState(1200);
 
-  // en móvil el mapa debe quedar COMPLETO (meet), en desktop puede llenar (slice)
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 900);
+    const check = () => {
+      const w = window.innerWidth;
+      setIsMobile(w < 900);
+      setMapWidth(w);
+    };
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
+
+  const OX = isMobile ? 50 : 150;
+  const vb = `0 0 ${W} ${H}`;
 
   const getCoords = (id) => { const t = TERR.find(x => x.id === id); return t ? { x: t.x, y: t.y } : { x: 0, y: 0 }; };
 
@@ -51,9 +56,8 @@ export default function MapView({ S, sel, battle, onTerr }) {
     return false;
   };
 
-  const hovered = hover ? TERR.find(t => t.id === hover) : null;
-  const hoverOwner = hovered ? S.terr[hovered.id] : null;
-  const capital = TERR.find(t => t.id === 'capital');
+  const selectedNodeData = selectedNode ? TERR.find(t => t.id === selectedNode) : null;
+  const selectedNodeOwner = selectedNodeData ? S.terr[selectedNodeData.id] : null;
 
   // Capa de batalla: anillos atacante/defensor + flecha animada + rótulo lunfardo
   const battleVis = (() => {
@@ -80,9 +84,14 @@ export default function MapView({ S, sel, battle, onTerr }) {
     return { oT, tT, rO, rT, atkColor, defColor, defending, sx, sy, ex, ey, ang, mx, my, atkName, defName };
   })();
 
+  const handleNodeClick = (id) => {
+    onTerr(id);
+    if (isMobile) setSelectedNode(id);
+  };
+
   return (
-    <div style={{ position: 'relative' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio={isMobile ? 'none' : 'xMidYMid slice'} className="w-full h-full select-none overflow-hidden">
+    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+      <svg viewBox={vb} preserveAspectRatio="xMidYMid meet" className="w-full h-full select-none overflow-hidden">
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>
@@ -141,15 +150,16 @@ export default function MapView({ S, sel, battle, onTerr }) {
             const zona = ZONES[t.zone];
             const troopCol = owner == null ? '#475569' : playerColor(S, owner);
             const r = t.special ? 26 : t.big ? 22 : 18;
+            const hitboxR = 22;
             return (
               <g key={t.id}
                 className={'node' + (dimm ? ' dim' : '')}
                 opacity={dimm ? 0.3 : 1}
                 style={{ cursor: dim(t.id) ? 'not-allowed' : 'pointer' }}
-                onClick={() => onTerr(t.id)}
-                onMouseEnter={() => setHover(t.id)}
-                onMouseLeave={() => setHover(null)}>
-                {/* halo de selección (suprimido durante una batalla para evitar dobles anillos) */}
+                onClick={() => handleNodeClick(t.id)}>
+                {/* hitbox invisible (44x44px) para móvil */}
+                <circle cx={t.x} cy={t.y} r={hitboxR} fill="transparent" pointerEvents="auto"/>
+                {/* halo de selección */}
                 {!battle && isSel && <circle cx={t.x} cy={t.y} r={r + 8} fill="none" stroke="#ffffff" strokeWidth="3" className="animate-pulse"/>}
                 {!battle && cand && <circle cx={t.x} cy={t.y} r={r + 9} fill="none" stroke="#fff" strokeWidth="2.5" strokeDasharray="5,3" opacity="0.9"/>}
                 {/* aura CABA */}
@@ -182,22 +192,46 @@ export default function MapView({ S, sel, battle, onTerr }) {
         </g>{/* cierre del translate(OX) */}
       </svg>
 
-      {/* inspector */}
-      <div className="inspector">
-        <div className="inspector-title"><span className="turn-dot" style={{ width: 8, height: 8 }}></span>{hovered ? hovered.name : 'Cartografía'}</div>
-        <div className="inspector-grid">
-          <div>Facción: <strong className="fac">{hoverOwner ? (hoverOwner.owner == null ? 'El Estado' : playerName(S, hoverOwner.owner)) : '—'}</strong></div>
-          <div>Guarnición: <strong>{hoverOwner ? hoverOwner.troops + ' tropas' : '—'}</strong></div>
+      {/* inspector desktop */}
+      {!isMobile && (
+        <div className="inspector">
+          <div className="inspector-title"><span className="turn-dot" style={{ width: 8, height: 8 }}></span>Cartografía</div>
+          <div className="inspector-grid">
+            <div>Facción: <strong className="fac">—</strong></div>
+            <div>Guarnición: <strong>—</strong></div>
+          </div>
+          <div className="inspector-flavor">Hover sobre un distrito para info.</div>
         </div>
-        <div className="inspector-flavor">{hovered ? hovered.flavor : 'Pasá el mouse sobre un distrito para la telemetría.'}</div>
-      </div>
+      )}
 
-      {/* leyenda */}
-      <div className="legend">
-        {[['#facc15', 'Capital'], ['#ec4899', 'Norte'], ['#f97316', 'Oeste'], ['#22c55e', 'Sur'], ['#475569', 'El Estado']].map(([c, n]) => (
-          <span key={n}><i style={{ background: c }}></i>{n}</span>
-        ))}
-      </div>
+      {/* bottom sheet móvil */}
+      {isMobile && selectedNodeData && (
+        <div className="bottom-sheet">
+          <div className="bottom-sheet-header">
+            <div className="bs-title">{selectedNodeData.name}</div>
+            <button className="bs-close" onClick={() => setSelectedNode(null)}>✕</button>
+          </div>
+          <div className="bs-content">
+            <div className="bs-row">
+              <span className="bs-label">Facción:</span>
+              <span className="bs-value fac">{selectedNodeOwner ? (selectedNodeOwner.owner == null ? 'El Estado' : playerName(S, selectedNodeOwner.owner)) : '—'}</span>
+            </div>
+            <div className="bs-row">
+              <span className="bs-label">Guarnición:</span>
+              <span className="bs-value">{selectedNodeOwner ? selectedNodeOwner.troops + ' tropas' : '—'}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* leyenda compacta */}
+      {!isMobile && (
+        <div className="legend">
+          {[['#facc15', 'Capital'], ['#ec4899', 'Norte'], ['#f97316', 'Oeste'], ['#22c55e', 'Sur'], ['#475569', 'El Estado']].map(([c, n]) => (
+            <span key={n}><i style={{ background: c }}></i>{n}</span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
