@@ -7,7 +7,7 @@ import { Sound } from '../sound.js';
 const SUIT = { cañon: { icon: 'hardware', cls: 'cañon', name: 'Cañón' }, caballeria: { icon: 'military_tech', cls: 'caballeria', name: 'Caballería' }, infanteria: { icon: 'person_shield', cls: 'infanteria', name: 'Infantería' }, comodin: { icon: 'stars', cls: 'comodin', name: 'Comodín' } };
 const suitFor = emblem => emblem === 'capital' ? 'comodin' : (['quilmes','bragado'].includes(emblem) ? 'comodin' : (emblem ? 'infanteria' : 'infanteria'));
 
-export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }) {
+export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, onTrade }) {
   if (!curP) return null;
   const ownsCap = S.terr.capital.owner === curP.id;
   const n = ownersCount(S, curP.id);
@@ -130,6 +130,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards }
               <span className="mat" style={{ fontSize: 17 }}>workspace_premium</span>Canje Habilitado
             </div>
             <button className="btn-gold" style={{ width: '100%', marginTop: 8, padding: '9px 12px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 11, textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => {
+              if (onTrade) { onTrade(selected); setSelCards([]); return; }
               const s = clone(S);
               const p = s.players.find(x => x.id === me);
               const cards = selected.map(i => p.hand[i]);

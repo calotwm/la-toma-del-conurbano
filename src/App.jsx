@@ -5,6 +5,8 @@ import Setup from './screens/Setup.jsx';
 import Deal from './screens/Deal.jsx';
 import Game from './screens/Game.jsx';
 import EndScreen from './screens/EndScreen.jsx';
+import Online from './screens/Online.jsx';
+import OnlineGame from './screens/OnlineGame.jsx';
 
 export default function App() {
   const [S, setS] = useState({
@@ -13,6 +15,7 @@ export default function App() {
     round: 1, tidx: 0, phase: 'reinforce', pool: 0, turnFlags: {}, log: [],
   });
   const [hasSave] = useState(() => !!loadGame());
+  const [online, setOnline] = useState(null); // {state, youAre, code} una vez arrancada la partida online
 
   if (S.screen === 'home') {
     return (
@@ -20,6 +23,25 @@ export default function App() {
         hasSave={hasSave}
         onNew={() => setS({ ...S, screen: 'setup' })}
         onContinue={() => { const g = loadGame(); if (g) setS(g); }}
+        onOnline={() => setS({ ...S, screen: 'online' })}
+      />
+    );
+  }
+
+  if (S.screen === 'online') {
+    return (
+      <Online
+        onBack={() => setS({ ...S, screen: 'home' })}
+        onGameStart={(payload) => { setOnline(payload); setS({ ...S, screen: 'onlineGame' }); }}
+      />
+    );
+  }
+
+  if (S.screen === 'onlineGame') {
+    return (
+      <OnlineGame
+        initial={online.state} youAre={online.youAre} code={online.code}
+        onExit={() => { setOnline(null); setS({ ...S, screen: 'home' }); }}
       />
     );
   }
