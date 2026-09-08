@@ -96,25 +96,24 @@ export default function Game({ S, setS }) {
         if (s.phase === 'reinforce') {
           if (s.pool > 0) {
             const plan = aiPlacementPlan(s, botId);
-            const s2 = clone(s);
-            plan.forEach(id => { s2.terr[id].troops++; s2.pool--; });
-            setS(s2); await wait(500);
+            setS(prev => { const s2 = clone(prev); plan.forEach(id => { s2.terr[id].troops++; s2.pool--; }); return s2; });
+            await wait(500);
           } else {
-            const s2 = clone(Sref.current); s2.phase = 'attack';
-            setS(s2); await wait(300);
+            setS(prev => { const s2 = clone(prev); s2.phase = 'attack'; return s2; });
+            await wait(300);
           }
           continue;
         }
         if (s.phase === 'attack') {
           if (atkCount >= 8) { // límite de ataques por turno para no trabarse visualmente
-            const s2 = clone(Sref.current); s2.phase = 'fortify';
-            setS(s2); await wait(300);
+            setS(prev => { const s2 = clone(prev); s2.phase = 'fortify'; return s2; });
+            await wait(300);
             continue;
           }
           const m = aiPickAttack(s, botId);
           if (!m) {
-            const s2 = clone(Sref.current); s2.phase = 'fortify';
-            setS(s2); await wait(300);
+            setS(prev => { const s2 = clone(prev); s2.phase = 'fortify'; return s2; });
+            await wait(300);
             continue;
           }
           atkCount++;
@@ -124,20 +123,25 @@ export default function Game({ S, setS }) {
         if (s.phase === 'fortify') {
           const f = aiFortifyPlan(Sref.current, botId);
           if (f) {
-            const s2 = clone(Sref.current);
-            const mv = Math.min(f.move, s2.terr[f.o].troops - 1);
-            if (mv > 0) {
-              s2.terr[f.o].troops -= mv;
-              s2.terr[f.t].troops += mv;
-              log(s2, `» ${playerName(s2, botId)} reagrupa ${mv} tropa(s) de ${tName(f.o)} a ${tName(f.t)}.`, 'sys');
-            }
-            setS(s2); await wait(550);
+            // OJO: setS toma un snapshot fresco (prev) en vez de Sref.current, que puede estar
+            // desactualizado si un commitBattle recién actualizó el estado en este mismo tick
+            // (Sref.current solo se refresca en el render, no de inmediato) — usar Sref.current
+            // acá pisaría esa actualización (p.ej. dejaría los dados de la última batalla colgados).
+            setS(prev => {
+              const s2 = clone(prev);
+              const mv = Math.min(f.move, s2.terr[f.o].troops - 1);
+              if (mv > 0) {
+                s2.terr[f.o].troops -= mv;
+                s2.terr[f.t].troops += mv;
+                log(s2, `» ${playerName(s2, botId)} reagrupa ${mv} tropa(s) de ${tName(f.o)} a ${tName(f.t)}.`, 'sys');
+              }
+              return s2;
+            });
+            await wait(550);
           } else {
             await wait(300);
           }
-          const s3 = clone(Sref.current);
-          advanceTurn(s3);
-          setS(s3);
+          setS(prev => { const s3 = clone(prev); advanceTurn(s3); return s3; });
           break;
         }
       }
