@@ -35,9 +35,11 @@ export default function Game({ S, setS }) {
   const [amt, setAmt] = useState(1);
   const [dn, setDn] = useState(null);
   const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
+  const [armedRoll, setArmedRoll] = useState(null); // {o,t,atkId,defId,aN,dN,isCapital} — dados listos, esperando que el humano los tire
   const [mobileDrawer, setMobileDrawer] = useState(null); // cajón móvil: null|you|log (mapa + acciones siempre visibles)
 
   const Sref = useRef(S); Sref.current = S;
+  const pendingRollResolve = useRef(null);
   const flashT = useRef(null), bannerT = useRef(null);
   useEffect(() => () => { clearTimeout(flashT.current); clearTimeout(bannerT.current); }, []);
 
@@ -51,6 +53,9 @@ export default function Game({ S, setS }) {
 
   const curP = S.players && S.players.length ? S.players.find(p => p.id === S.order[S.tidx]) : null;
   const me = curP && curP.human ? curP.id : null;
+  const humanId = S.players && S.players.length ? (S.players.find(p => p.human) || {}).id : null; // estable, no depende de a quién le toca
+
+  const onRoll = () => { if (pendingRollResolve.current) { pendingRollResolve.current(); pendingRollResolve.current = null; } };
 
   // autosave
   useEffect(() => { if (S.screen === 'game') saveGame(S); }, [S]);
@@ -135,29 +140,48 @@ export default function Game({ S, setS }) {
         }
       }
     })();
-    return () => { ctl.c = true; };
+    return () => {
+      ctl.c = true;
+      // si el efecto se corta con una tirada humana pendiente, la liberamos para que no quede colgada
+      if (pendingRollResolve.current) { pendingRollResolve.current(); pendingRollResolve.current = null; }
+    };
   }, [botId, S.gid]);
 
-  // Animación de dados: muestra los dados "rodando" (valores aleatorios cambiantes)
-  // durante ~1.2s y luego fija el resultado. Devuelve el resultado fijo.
+  // Animación de dados: si el humano está DEFENDIENDO, arma la tirada y espera a que la
+  // tire con el botón (no automático); si no, muestra los dados "rodando" ~1.2s y fija el
+  // resultado. Cualquier corte a mitad de camino (ctl.c) limpia todo el estado, así nunca
+  // queda "colgado" esperando un F5.
   async function animateDice(aN, dN, onCap, ctl, o, t, atkId) {
-    const dur = 1200;
-    const aRoll = rollDice(aN), dRoll = rollDice(dN);
-    // muestra el ataque en el mapa (origen ataca a destino)
     const defId = Sref.current.terr[t].owner;
     setBattle({ o, t, atkId, defId });
+    const abort = () => {
+      setBattle(null); setArmedRoll(null);
+      setS(prev => (prev.busy || prev.dice) ? { ...prev, busy: false, dice: null } : prev);
+      return null;
+    };
+
+    const humanDefending = humanId != null && defId === humanId && atkId !== humanId;
+    if (humanDefending) {
+      setArmedRoll({ o, t, atkId, defId, aN, dN, isCapital: onCap });
+      await new Promise(resolve => { pendingRollResolve.current = resolve; });
+      setArmedRoll(null);
+      if (ctl && ctl.c) return abort();
+    }
+
+    const dur = 1200;
+    const aRoll = rollDice(aN), dRoll = rollDice(dN);
     setS({ ...Sref.current, busy: true, dice: { a: Array(aN).fill('?'), d: Array(dN).fill('?'), aN, dN, rolling: true } });
     if (onCap) Sound.alarm(); else Sound.dice();
     for (let i = 0; i < dur / 80; i++) {
-      if (ctl && ctl.c) return null;
+      if (ctl && ctl.c) return abort();
       const tempA = rollDice(aN), tempD = rollDice(dN);
       setS({ ...Sref.current, busy: true, dice: { a: tempA, d: tempD, aN, dN, rolling: true } });
       await wait(80);
     }
-    if (ctl && ctl.c) return null;
+    if (ctl && ctl.c) return abort();
     setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN, rolling: false } });
     await wait(1900);
-    if (ctl && ctl.c) return null;
+    if (ctl && ctl.c) return abort();
     return { aRoll, dRoll };
   }
 
@@ -486,7 +510,7 @@ onEndTurn={endHumanTurn}
 
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>
-      <DiceOverlay S={S} dice={S.dice} battle={battle}/>
+      <DiceOverlay S={S} dice={S.dice} battle={battle} armed={armedRoll} onRoll={onRoll}/>
     </div>
   );
 }

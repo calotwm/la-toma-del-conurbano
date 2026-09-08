@@ -10,10 +10,26 @@ const PIPS = {
   6: [0, 2, 3, 5, 6, 8],
 };
 
-function DieFace({ value, kind, state }) {
+// aclara (percent>0) u oscurece (percent<0) un color hex, para armar el degradé "vidrioso" del dado
+function shade(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const clamp = v => Math.max(0, Math.min(255, v));
+  const r = clamp((num >> 16) + percent), g = clamp(((num >> 8) & 0xff) + percent), b = clamp((num & 0xff) + percent);
+  return '#' + (0x1000000 + r * 0x10000 + g * 0x100 + b).toString(16).slice(1);
+}
+
+function dieStyle(color) {
+  return {
+    background: `linear-gradient(135deg, ${shade(color, 75)}, ${color} 50%, ${shade(color, -70)})`,
+    borderColor: shade(color, 90),
+    boxShadow: `0 8px 18px ${color}66`,
+  };
+}
+
+function DieFace({ value, color, state }) {
   const cells = PIPS[value] || [];
   return (
-    <div className={`combat-die ${kind} ${state}`}>
+    <div className={`combat-die ${state}`} style={dieStyle(color)}>
       <div className="combat-die-grid">
         {Array.from({ length: 9 }, (_, i) => (
           <span key={i} className={cells.includes(i) ? 'pip on' : 'pip'}/>
@@ -41,15 +57,53 @@ function pairStates(a, d) {
   return { aState, dState };
 }
 
-export default function DiceOverlay({ S, dice, battle }) {
-  if (!dice) return null;
+export default function DiceOverlay({ S, dice, battle, armed, onRoll }) {
+  if (!dice && !armed) return null;
 
   const atkName = battle ? playerName(S, battle.atkId) : 'Atacante';
   const defName = battle ? playerName(S, battle.defId) : 'Defensor';
-  const atkColor = battle ? playerColor(S, battle.atkId) : 'var(--red-l)';
-  const defColor = battle ? playerColor(S, battle.defId) : 'var(--gold-light)';
+  const atkColor = battle ? playerColor(S, battle.atkId) : '#ff6b6b';
+  const defColor = battle ? playerColor(S, battle.defId) : '#e8b33a';
   const targetName = battle ? tName(battle.t) : '';
-  const isCapital = battle && battle.t === 'capital';
+  const isCapital = (battle && battle.t === 'capital') || (armed && armed.isCapital);
+
+  // estado "armado": los dados están listos pero todavía no se tiraron — espera el toque del humano
+  if (armed && !dice) {
+    return (
+      <div className={'combat-overlay armed' + (isCapital ? ' capital' : '')}>
+        <div className="combat-card">
+          <div className="combat-vs-line">
+            <span className="combat-side atk" style={{ color: atkColor }}>{atkName}</span>
+            <span className="combat-vs-word">{isCapital ? 'asalta' : 'ataca a'}</span>
+            <span className="combat-side def" style={{ color: defColor }}>{defName}</span>
+          </div>
+          {targetName && <div className="combat-target">{isCapital ? '★ LA CAPITAL' : targetName} · ¡TE DEFENDÉS!</div>}
+
+          <div className="combat-row">
+            <div className="combat-dice-group">
+              <div className="combat-group-label atk">ATACANTE</div>
+              <div className="combat-dice">
+                {Array.from({ length: armed.aN }, (_, i) => <div key={i} className="combat-die closed" style={dieStyle(atkColor)}/>)}
+              </div>
+            </div>
+            <div className="combat-swords">⚔</div>
+            <div className="combat-dice-group">
+              <div className="combat-group-label def">DEFENSOR (VOS)</div>
+              <div className="combat-dice">
+                {Array.from({ length: armed.dN }, (_, i) => <div key={i} className="combat-die closed" style={dieStyle(defColor)}/>)}
+              </div>
+            </div>
+          </div>
+
+          <button className="combat-roll-btn" onClick={onRoll}>
+            <span className="mat">casino</span>¡TIRAR LOS DADOS!
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!dice) return null;
 
   let aState = dice.a.map(() => 'rolling');
   let dState = dice.d.map(() => 'rolling');
@@ -75,14 +129,14 @@ export default function DiceOverlay({ S, dice, battle }) {
           <div className="combat-dice-group">
             <div className="combat-group-label atk">ATACANTE</div>
             <div className="combat-dice">
-              {dice.a.map((v, i) => <DieFace key={i} value={v} kind="atk" state={aState[i]}/>)}
+              {dice.a.map((v, i) => <DieFace key={i} value={v} color={atkColor} state={aState[i]}/>)}
             </div>
           </div>
           <div className="combat-swords">⚔</div>
           <div className="combat-dice-group">
             <div className="combat-group-label def">DEFENSOR</div>
             <div className="combat-dice">
-              {dice.d.map((v, i) => <DieFace key={i} value={v} kind="def" state={dState[i]}/>)}
+              {dice.d.map((v, i) => <DieFace key={i} value={v} color={defColor} state={dState[i]}/>)}
             </div>
           </div>
         </div>

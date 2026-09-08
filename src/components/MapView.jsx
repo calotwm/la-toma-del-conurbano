@@ -1,8 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { TERR, ADJ, ADJ_PAIRS, CX, CY, STATE_COLOR, ZONES } from '../data.js';
 import { playerColor, playerName } from '../engine.js';
 
 const W = 1200, H = 800;
+const MIN_SCALE = 1, MAX_SCALE = 4;
+
+// clampea el paneo para que el contenido zoomeado siempre cubra el viewport (sin huecos) y no se pierda
+function clampView(v, rect) {
+  const scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, v.scale));
+  const minX = rect.width * (1 - scale), maxX = 0;
+  const minY = rect.height * (1 - scale), maxY = 0;
+  return { scale, x: Math.min(maxX, Math.max(minX, v.x)), y: Math.min(maxY, Math.max(minY, v.y)) };
+}
 
 export default function MapView({ S, sel, battle, onTerr }) {
   const phase = S.phase;
@@ -11,21 +20,72 @@ export default function MapView({ S, sel, battle, onTerr }) {
   const myTurn = me != null && !S.busy;
   const [isMobile, setIsMobile] = useState(false);
   const [selectedNode, setSelectedNode] = useState(null);
-  const [mapWidth, setMapWidth] = useState(1200);
+  const [view, setView] = useState({ x: 0, y: 0, scale: 1 }); // pan/zoom táctil (solo móvil)
+  const containerRef = useRef(null);
+  const gesture = useRef({ pointers: new Map(), mode: null, moved: false, startView: null, startPointer: null, startDist: 0, startScale: 1, startMid: null });
 
   useEffect(() => {
-    const check = () => {
-      const w = window.innerWidth;
-      setIsMobile(w < 900);
-      setMapWidth(w);
-    };
+    const check = () => setIsMobile(window.innerWidth < 900);
     check();
     window.addEventListener('resize', check);
     return () => window.removeEventListener('resize', check);
   }, []);
 
   const OX = isMobile ? 50 : 150;
-  const vb = isMobile ? '170 0 900 800' : `0 0 ${W} ${H}`;
+  const vb = `0 0 ${W} ${H}`;
+
+  // ---------- Pan & zoom táctil (mapa nunca se deforma, se agranda con pellizco y se arrastra) ----------
+  const onPointerDown = (e) => {
+    if (!isMobile) return;
+    try { containerRef.current?.setPointerCapture?.(e.pointerId); } catch { /* pointer no activo, ignorar */ }
+    gesture.current.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    gesture.current.moved = false;
+    const pts = [...gesture.current.pointers.values()];
+    if (pts.length === 1) {
+      gesture.current.mode = 'pan';
+      gesture.current.startView = { ...view };
+      gesture.current.startPointer = { x: e.clientX, y: e.clientY };
+    } else if (pts.length === 2) {
+      gesture.current.mode = 'pinch';
+      gesture.current.startDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1;
+      gesture.current.startScale = view.scale;
+      gesture.current.startMid = { x: (pts[0].x + pts[1].x) / 2, y: (pts[0].y + pts[1].y) / 2 };
+      gesture.current.startView = { ...view };
+    }
+  };
+  const onPointerMove = (e) => {
+    if (!isMobile || !gesture.current.pointers.has(e.pointerId) || !containerRef.current) return;
+    gesture.current.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const rect = containerRef.current.getBoundingClientRect();
+    const pts = [...gesture.current.pointers.values()];
+    if (gesture.current.mode === 'pan' && pts.length === 1) {
+      const dx = e.clientX - gesture.current.startPointer.x;
+      const dy = e.clientY - gesture.current.startPointer.y;
+      if (Math.hypot(dx, dy) > 6) gesture.current.moved = true;
+      setView(clampView({ ...gesture.current.startView, x: gesture.current.startView.x + dx, y: gesture.current.startView.y + dy }, rect));
+    } else if (gesture.current.mode === 'pinch' && pts.length === 2) {
+      const dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y) || 1;
+      const s0 = gesture.current.startScale;
+      const s1 = s0 * (dist / gesture.current.startDist);
+      const localMid = { x: gesture.current.startMid.x - rect.left, y: gesture.current.startMid.y - rect.top };
+      const x1 = localMid.x - (localMid.x - gesture.current.startView.x) * (s1 / s0);
+      const y1 = localMid.y - (localMid.y - gesture.current.startView.y) * (s1 / s0);
+      gesture.current.moved = true;
+      setView(clampView({ x: x1, y: y1, scale: s1 }, rect));
+    }
+  };
+  const endPointer = (e) => {
+    gesture.current.pointers.delete(e.pointerId);
+    const pts = [...gesture.current.pointers.values()];
+    if (pts.length === 1) {
+      gesture.current.mode = 'pan';
+      gesture.current.startView = { ...view };
+      gesture.current.startPointer = { ...pts[0] };
+    } else if (pts.length === 0) {
+      gesture.current.mode = null;
+    }
+  };
+  const resetView = () => setView({ x: 0, y: 0, scale: 1 });
 
   const getCoords = (id) => { const t = TERR.find(x => x.id === id); return t ? { x: t.x, y: t.y } : { x: 0, y: 0 }; };
 
@@ -85,13 +145,21 @@ export default function MapView({ S, sel, battle, onTerr }) {
   })();
 
   const handleNodeClick = (id) => {
+    if (gesture.current.moved) { gesture.current.moved = false; return; } // fue un arrastre/pellizco, no un toque
     onTerr(id);
     if (isMobile) setSelectedNode(id);
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <svg viewBox={vb} preserveAspectRatio={isMobile ? 'none' : 'xMidYMid meet'} className="w-full h-full select-none overflow-hidden">
+    <div
+      ref={containerRef} className="map-pan-surface"
+      style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', touchAction: isMobile ? 'none' : 'auto' }}
+      onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endPointer} onPointerCancel={endPointer}
+    >
+      <svg
+        viewBox={vb} preserveAspectRatio="xMidYMid meet" className="w-full h-full select-none"
+        style={isMobile ? { transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, transformOrigin: '0 0', transition: gesture.current.mode ? 'none' : 'transform .2s ease-out' } : undefined}
+      >
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>
@@ -191,6 +259,13 @@ export default function MapView({ S, sel, battle, onTerr }) {
         )}
         </g>{/* cierre del translate(OX) */}
       </svg>
+
+      {/* botón de reset de zoom táctil, solo cuando estás ampliado */}
+      {isMobile && view.scale > 1.02 && (
+        <button className="map-reset-zoom" onClick={resetView}>
+          <span className="mat">center_focus_weak</span>
+        </button>
+      )}
 
       {/* inspector desktop */}
       {!isMobile && (
