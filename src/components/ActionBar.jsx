@@ -39,10 +39,10 @@ export default function ActionBar(props) {
         <div style={{ flex: 1 }}></div>
         <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
           <button className="btn-gold reinforce-btn" onClick={onAutoPlace}>
-            <span className="mat">auto_awesome</span>Auto
+            <span className="mat">auto_awesome</span><span className="btn-label">Auto</span>
           </button>
           <button className="btn-red reinforce-btn" onClick={onSkipReinforce}>
-            <span className="mat">swords</span>Atacar
+            <span className="mat">swords</span><span className="btn-label">Atacar</span>
           </button>
         </div>
       </div>
@@ -71,7 +71,9 @@ export default function ActionBar(props) {
               ? <div className="bastion-s" style={{ color: 'var(--muted)' }}>Desde <b style={{ color: '#fff' }}>{tName(sel.o)}</b> ({oT.troops}) — elegí un territorio lindero enemigo o neutral.</div>
               : <div className="bastion-s" style={{ color: 'var(--muted)' }}><b style={{ color: '#fff' }}>{tName(sel.o)}</b> ataca a <b style={{ color: 'var(--warn)' }}>{tName(sel.t)}</b> ({tT.troops}){sel.t === 'capital' ? ' — ¡LA JOYA!' : ''}</div>}
           <div style={{ flex: 1 }}></div>
-          <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12 }} onClick={() => setSel(null)}>Quitar selección</button>
+          <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setSel(null)}>
+            <span className="mat" style={{ fontSize: 15 }}>close</span><span className="btn-label">Quitar selección</span>
+          </button>
         </div>
 
         {sel && sel.o && sel.t && (
@@ -82,7 +84,7 @@ export default function ActionBar(props) {
             ))}
             <div style={{ flex: 1 }}></div>
             <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
-              <span className="mat" style={{ fontSize: 16 }}>casino</span>🎲 TIRAR
+              <span className="mat" style={{ fontSize: 16 }}>casino</span><span className="btn-label">TIRAR</span>
             </button>
           </div>
         )}
@@ -90,11 +92,11 @@ export default function ActionBar(props) {
         {lastBattleChip()}
         <div className="btns" style={{ display: 'flex', gap: 8, marginTop: 10 }}>
           <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
-            <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span>Cortar ataque → reagrupar
+            <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span><span className="btn-label">Cortar ataque → reagrupar</span>
           </button>
           <div style={{ flex: 1 }}></div>
           <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
+            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
           </button>
         </div>
       </div>
@@ -120,7 +122,9 @@ export default function ActionBar(props) {
             ? <div className="bastion-s" style={{ color: 'var(--muted)' }}>Origen: <b style={{ color: '#fff' }}>{tName(sel.o)}</b> ({oT.troops}). Elegí destino tuyo lindero.</div>
             : <div className="bastion-s" style={{ color: 'var(--muted)' }}>{tName(sel.o)} → {tName(sel.t)}</div>}
         <div style={{ flex: 1 }}></div>
-        <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8 }} onClick={() => setSel(null)}>Quitar</button>
+        <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setSel(null)}>
+          <span className="mat" style={{ fontSize: 15 }}>close</span><span className="btn-label">Quitar</span>
+        </button>
       </div>
 
       {sel && sel.o && sel.t && (
@@ -130,11 +134,11 @@ export default function ActionBar(props) {
           <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--celeste)' }}>{amt}</b>
           <button className="btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
           <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
-            <span className="mat" style={{ fontSize: 17 }}>local_shipping</span>Mover
+            <span className="mat" style={{ fontSize: 17 }}>local_shipping</span><span className="btn-label">Mover</span>
           </button>
           <div style={{ flex: 1 }}></div>
           <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
+            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
           </button>
         </div>
       )}
@@ -143,7 +147,7 @@ export default function ActionBar(props) {
       {(!sel || !sel.o || !sel.t) && (
         <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
           <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span>Terminar turno
+            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
           </button>
         </div>
       )}
