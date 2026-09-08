@@ -275,6 +275,71 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .outcome-body { font-style: italic; font-size: 12px; color: #dbe2ef; }
 .outcome .btns { display: flex; gap: 8px; }
 
+/* ---------- Combat overlay (tirada de dados en pantalla) ---------- */
+.combat-overlay {
+  position: fixed; inset: 0; z-index: 95; display: flex; align-items: center; justify-content: center;
+  padding: 16px; pointer-events: none;
+  background: radial-gradient(600px 400px at 50% 50%, rgba(5,8,15,.55) 0%, rgba(5,8,15,.75) 70%, rgba(5,8,15,.85) 100%);
+  animation: combatFadeIn .18s ease-out;
+}
+@keyframes combatFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.combat-card {
+  background: linear-gradient(180deg, #101828 0%, #0a0f1a 100%);
+  border: 2px solid var(--celeste); border-radius: 18px;
+  box-shadow: 0 0 0 4px rgba(5,8,15,.9), 0 20px 60px rgba(0,0,0,.7), 0 0 40px rgba(116,182,232,.25);
+  padding: 18px 22px 16px; width: min(420px, 92vw);
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  transform: scale(.9); animation: combatPop .28s cubic-bezier(.16,.8,.32,1) forwards;
+}
+@keyframes combatPop { to { transform: scale(1); } }
+.combat-overlay.capital .combat-card { border-color: var(--gold-light); box-shadow: 0 0 0 4px rgba(5,8,15,.9), 0 20px 60px rgba(0,0,0,.7), 0 0 46px rgba(232,179,58,.35); }
+.combat-vs-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; justify-content: center; text-align: center; }
+.combat-side { font-weight: 900; font-size: clamp(14px, 4vw, 18px); text-transform: uppercase; letter-spacing: .5px; }
+.combat-vs-word { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+.combat-target { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--gold-light); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; }
+
+.combat-row { display: flex; align-items: center; justify-content: center; gap: clamp(8px, 3vw, 20px); width: 100%; }
+.combat-dice-group { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.combat-group-label { font-family: 'Space Mono', monospace; font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; }
+.combat-group-label.atk { color: var(--red-l); }
+.combat-group-label.def { color: var(--gold-light); }
+.combat-dice { display: flex; gap: 8px; }
+.combat-swords { font-size: clamp(18px, 5vw, 26px); color: var(--gold); filter: drop-shadow(0 0 6px rgba(232,179,58,.5)); flex: none; }
+
+.combat-die {
+  position: relative; width: clamp(42px, 13vw, 58px); height: clamp(42px, 13vw, 58px);
+  border-radius: 10px; border: 2px solid; transition: transform .25s ease, opacity .25s ease, filter .25s ease;
+}
+.combat-die.atk { background: linear-gradient(135deg, #ff8e8e, #d43b3b 55%, #6a0404); border-color: #ffcdd2; box-shadow: 0 6px 16px rgba(239,68,68,.4); }
+.combat-die.def { background: linear-gradient(135deg, #f6d77a, #e8b33a 55%, #755000); border-color: #fff7d1; box-shadow: 0 6px 16px rgba(232,179,58,.35); }
+.combat-die-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 15%; box-sizing: border-box; }
+.combat-die-grid .pip { border-radius: 50%; align-self: center; justify-self: center; width: 22%; height: 22%; }
+.combat-die.atk .pip.on { background: #fff; box-shadow: 0 0 3px rgba(0,0,0,.5) inset; }
+.combat-die.def .pip.on { background: #221600; }
+
+.combat-die.rolling { animation: diceTumble .12s linear infinite; }
+@keyframes diceTumble { 0% { transform: rotate(-10deg) scale(.96); } 50% { transform: rotate(8deg) scale(1.04); } 100% { transform: rotate(-6deg) scale(.98); } }
+.combat-die.win { animation: dieWin .5s ease-out; box-shadow: 0 0 0 3px #fff, 0 0 22px rgba(255,255,255,.7); }
+@keyframes dieWin { 0% { transform: scale(1); } 40% { transform: scale(1.22); } 100% { transform: scale(1.08); } }
+.combat-die.lose { opacity: .4; filter: grayscale(.6); transform: scale(.88) rotate(-6deg); }
+.combat-die-badge {
+  position: absolute; top: -9px; right: -9px; width: 22px; height: 22px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 12px;
+  border: 2px solid #0a0f1a;
+}
+.combat-die-badge.win { background: var(--ok); color: #052e11; }
+.combat-die-badge.lose { background: var(--red-l); color: #3a0202; }
+
+.combat-tally { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.combat-loss { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
+.combat-loss.atk { background: rgba(255,77,77,.15); color: var(--red-l); border: 1px solid rgba(255,77,77,.4); }
+.combat-loss.def { background: rgba(232,179,58,.15); color: var(--gold-light); border: 1px solid rgba(232,179,58,.4); }
+
+@media (max-width: 480px) {
+  .combat-die { width: clamp(38px, 15vw, 50px); height: clamp(38px, 15vw, 50px); }
+  .combat-card { padding: 14px 16px 12px; }
+}
+
 /* ---------- Log ---------- */
 .logbox { max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; scrollbar-width: thin; }
 .logbox::-webkit-scrollbar { width: 6px; }
@@ -401,12 +466,16 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .map-wrap .map-frame { height: 100%; }
   .map-ribbon { padding: 6px 8px; }
   .map-ribbon h3 { font-size: 11px; }
-  .panel-you, .panel-actions, .panel-log {
+  /* especificidad: .game-fit .col ya define display:flex más arriba, así que estas reglas
+     necesitan igual o mayor especificidad para poder ocultar/mostrar según la pestaña activa */
+  .game-fit .panel-you, .game-fit .panel-actions, .game-fit .panel-log {
     width: 100%; flex: 1; min-height: 0; overflow-y: auto; padding: 10px;
     background: #0d131f; border: 1px solid var(--line); border-radius: 10px;
     display: none;
   }
-  .panel-actions.show, .panel-you.show, .panel-log.show { display: block; }
+  .game-fit .panel-actions.show, .game-fit .panel-you.show, .game-fit .panel-log.show {
+    display: flex; flex-direction: column;
+  }
   /* barra de pestañas */
   .mobile-tabs {
     display: flex; position: fixed; bottom: 0; left: 0; right: 0; z-index: 45;

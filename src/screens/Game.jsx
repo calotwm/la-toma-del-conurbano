@@ -10,6 +10,7 @@ import MapView from '../components/MapView.jsx';
 import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
+import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
 const LEVEL_LABELS = { chorro: 'Chorro (fácil)', defensa: 'Tibio (medio)', capo: 'Capo (difícil)' };
@@ -155,7 +156,7 @@ export default function Game({ S, setS }) {
     }
     if (ctl && ctl.c) return null;
     setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN, rolling: false } });
-    await wait(500);
+    await wait(900);
     if (ctl && ctl.c) return null;
     return { aRoll, dRoll };
   }
@@ -464,6 +465,7 @@ onEndTurn={endHumanTurn}
 
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>
+      <DiceOverlay S={S} dice={S.dice} battle={battle}/>
     </div>
   );
 }
