@@ -35,7 +35,7 @@ export default function Game({ S, setS }) {
   const [amt, setAmt] = useState(1);
   const [dn, setDn] = useState(null);
   const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
-  const [mobileTab, setMobileTab] = useState('actions'); // pestaña móvil: actions|you|log (el mapa siempre visible arriba)
+  const [mobileDrawer, setMobileDrawer] = useState(null); // cajón móvil: null|you|log (mapa + acciones siempre visibles)
 
   const Sref = useRef(S); Sref.current = S;
   const flashT = useRef(null), bannerT = useRef(null);
@@ -350,9 +350,30 @@ export default function Game({ S, setS }) {
       </header>
 
       <main className="game">
+        {/* Tira compacta de stats — solo en móvil, siempre visible arriba del mapa */}
+        {curP && (
+          <div className="mobile-dash">
+            <div className="chip">
+              <b>{ownersCount(S, curP.id)}</b><span>Municipios</span>
+            </div>
+            <div className="chip">
+              <b style={{ color: S.terr.capital.owner === curP.id ? 'var(--gold-light)' : undefined }}>
+                {S.terr.capital.owner === curP.id ? 'SÍ' : 'NO'}
+              </b><span>La Capital</span>
+            </div>
+            <div className="chip">
+              <b>{curP.hand.length}</b><span>Naipes</span>
+            </div>
+          </div>
+        )}
+
+        {/* Fondo oscuro para los cajones móviles (Vos / Bitácora) */}
+        <div className={'drawer-backdrop' + (mobileDrawer ? ' show' : '')} onClick={() => setMobileDrawer(null)}/>
+
         {/* Layout 3 columnas: jugador | mapa | acciones+log */}
         <div className="game-fit">
-          <div className={'col panel-you' + (mobileTab === 'you' ? ' show' : '')}>
+          <div className={'col panel-you' + (mobileDrawer === 'you' ? ' show' : '')}>
+            <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
             <div className="frame panel" style={{ flex: 1, minHeight: 0 }}>
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
@@ -396,7 +417,7 @@ export default function Game({ S, setS }) {
             </div>
           </div>
 
-          <div className={'col col-right panel-actions' + (mobileTab === 'actions' ? ' show' : '')}>
+          <div className="col col-right panel-actions">
             <ActionBar
               S={S} sel={sel} setSel={setSel} me={me} humanTurn={humanTurn}
               dn={dn} setDn={setDn} amt={amt} setAmt={setAmt} maxD={maxD} isCapT={isCapT}
@@ -448,16 +469,16 @@ onEndTurn={endHumanTurn}
           />
           </div>
 
-          <div className={'panel-log' + (mobileTab === 'log' ? ' show' : '')}>
+          <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
+            <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <LogPanel S={S}/>
           </div>
         </div>
 
-        {/* Barra de pestañas móvil */}
+        {/* Barra de pestañas móvil: solo dos cajones, el mapa y las acciones siempre están a la vista */}
         <div className="mobile-tabs">
-          <button className={'tab' + (mobileTab === 'actions' ? ' on' : '')} onClick={() => setMobileTab('actions')}><span className="mat">swords</span>Acciones</button>
-          <button className={'tab' + (mobileTab === 'you' ? ' on' : '')} onClick={() => setMobileTab('you')}><span className="mat">person</span>Vos</button>
-          <button className={'tab' + (mobileTab === 'log' ? ' on' : '')} onClick={() => setMobileTab('log')}><span className="mat">campaign</span>Log</button>
+          <button className={'tab' + (mobileDrawer === 'you' ? ' on' : '')} onClick={() => setMobileDrawer(d => d === 'you' ? null : 'you')}><span className="mat">person</span>Vos</button>
+          <button className={'tab' + (mobileDrawer === 'log' ? ' on' : '')} onClick={() => setMobileDrawer(d => d === 'log' ? null : 'log')}><span className="mat">campaign</span>Bitácora</button>
         </div>
 
         <Copyright/>
