@@ -1,6 +1,6 @@
 import { ZONES, ZKEYS, PHRASES, pick } from '../data.js';
 import {
-  ownersCount, reinforceInfo, repTitleFor, playerName, emblemName, tradeValue, log, clone, MISSION_DEFS,
+  ownersCount, totalTroops, reinforceInfo, repTitleFor, playerName, emblemName, tradeValue, log, clone, MISSION_DEFS,
 } from '../engine.js';
 import { Sound } from '../sound.js';
 
@@ -50,6 +50,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
         <div className="counter"><b>{n}</b><span>Municipios</span></div>
         <div className="counter blue"><b>{S.terr.capital.owner === curP.id ? 'SÍ' : 'NO'}</b><span>La Capital</span></div>
         <div className="counter red"><b>{curP.hand.length}</b><span>Naipes</span></div>
+        <div className="counter green"><b>{totalTroops(S, curP.id)}</b><span>Tropas</span></div>
       </div>
 
       {/* misión (prominente, arriba) */}

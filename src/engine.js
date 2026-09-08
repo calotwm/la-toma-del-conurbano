@@ -10,6 +10,7 @@ export const tName = id => (TERR.find(t => t.id === id) || { name: id }).name;
 
 export const ownersCount = (s, p) => TIDS.filter(t => s.terr[t].owner === p).length;
 export const ownedTerrs = (s, p) => TIDS.filter(t => s.terr[t].owner === p);
+export const totalTroops = (s, p) => TIDS.filter(t => s.terr[t].owner === p).reduce((sum, t) => sum + s.terr[t].troops, 0);
 
 export function leaderId(s) {
   let best = null, bn = -1;

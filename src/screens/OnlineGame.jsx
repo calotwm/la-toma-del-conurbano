@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { PHRASES, ADJ, TIDS, pick } from '../data.js';
-import { rollDice, ownersCount, tName, playerName, MISSION_DEFS } from '../engine.js';
+import { rollDice, ownersCount, totalTroops, tName, playerName, MISSION_DEFS } from '../engine.js';
 import { Sound } from '../sound.js';
 import { getSocket, disconnectSocket } from '../net.js';
 import MapView from '../components/MapView.jsx';
@@ -201,6 +201,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
               <b style={{ color: S.terr.capital.owner === youAre ? 'var(--gold-light)' : undefined }}>{S.terr.capital.owner === youAre ? 'SÍ' : 'NO'}</b><span>La Capital</span>
             </div>
             <div className="chip"><b>{(S.players.find(p => p.id === youAre)?.hand || []).length}</b><span>Naipes</span></div>
+            <div className="chip"><b>{totalTroops(S, youAre)}</b><span>Tropas</span></div>
           </div>
         )}
 
