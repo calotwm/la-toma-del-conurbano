@@ -40,6 +40,7 @@ export default function Game({ S, setS }) {
 
   const Sref = useRef(S); Sref.current = S;
   const pendingRollResolve = useRef(null);
+  const manualDefendUsedRef = useRef(false); // ya se pidió una tirada manual de defensa este turno de bot
   const flashT = useRef(null), bannerT = useRef(null);
   useEffect(() => () => { clearTimeout(flashT.current); clearTimeout(bannerT.current); }, []);
 
@@ -83,6 +84,7 @@ export default function Game({ S, setS }) {
   const botId = (S.screen === 'game' && !S.winner && curP && !curP.human) ? curP.id : null;
   useEffect(() => {
     if (!botId) return;
+    manualDefendUsedRef.current = false; // cada turno de bot te pide tirar a mano solo la primera vez (la Capital siempre es manual)
     const ctl = { c: false };
     (async () => {
       await wait(700);
@@ -160,8 +162,11 @@ export default function Game({ S, setS }) {
       return null;
     };
 
-    const humanDefending = humanId != null && defId === humanId && atkId !== humanId;
+    // pide tirada manual solo la primera vez que te defendés en el turno del bot (la Capital, siempre)
+    const humanDefending = humanId != null && defId === humanId && atkId !== humanId
+      && (onCap || !manualDefendUsedRef.current);
     if (humanDefending) {
+      manualDefendUsedRef.current = true;
       setArmedRoll({ o, t, atkId, defId, aN, dN, isCapital: onCap });
       await new Promise(resolve => { pendingRollResolve.current = resolve; });
       setArmedRoll(null);
