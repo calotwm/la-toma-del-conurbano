@@ -19,6 +19,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
   const me = cur && cur.human ? cur.id : null;
   const myTurn = me != null && !S.busy;
   const [isMobile, setIsMobile] = useState(false);
+  const [hoverNode, setHoverNode] = useState(null); // distrito bajo el mouse (solo desktop, para el panel "Cartografía")
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 }); // pan/zoom táctil (solo móvil)
   const containerRef = useRef(null);
   const gesture = useRef({ pointers: new Map(), mode: null, moved: false, startView: null, startPointer: null, startDist: 0, startScale: 1, startMid: null });
@@ -118,6 +119,9 @@ export default function MapView({ S, sel, battle, onTerr }) {
     if (phase === 'fortify' && ADJ[sel.o].includes(id) && S.terr[id].owner === me && id !== sel.o) return true;
     return false;
   };
+
+  const hoverData = hoverNode ? TERR.find(t => t.id === hoverNode) : null;
+  const hoverOwner = hoverData ? S.terr[hoverData.id] : null;
 
   // Capa de batalla: anillos atacante/defensor + flecha animada + rótulo lunfardo
   const battleVis = (() => {
@@ -223,7 +227,9 @@ export default function MapView({ S, sel, battle, onTerr }) {
                 className={'node' + (dimm ? ' dim' : '')}
                 opacity={dimm ? 0.3 : 1}
                 style={{ cursor: dim(t.id) ? 'not-allowed' : 'pointer' }}
-                onClick={() => handleNodeClick(t.id)}>
+                onClick={() => handleNodeClick(t.id)}
+                onMouseEnter={() => !isMobile && setHoverNode(t.id)}
+                onMouseLeave={() => !isMobile && setHoverNode(id => id === t.id ? null : id)}>
                 {/* hitbox invisible (44x44px) para móvil */}
                 <circle cx={t.x} cy={t.y} r={hitboxR} fill="transparent" pointerEvents="auto"/>
                 {/* halo de selección */}
@@ -266,15 +272,15 @@ export default function MapView({ S, sel, battle, onTerr }) {
         </button>
       )}
 
-      {/* inspector desktop */}
+      {/* inspector desktop: muestra info real del distrito bajo el mouse */}
       {!isMobile && (
         <div className="inspector">
-          <div className="inspector-title"><span className="turn-dot" style={{ width: 8, height: 8 }}></span>Cartografía</div>
+          <div className="inspector-title"><span className="turn-dot" style={{ width: 8, height: 8 }}></span>{hoverData ? hoverData.name : 'Cartografía'}</div>
           <div className="inspector-grid">
-            <div>Facción: <strong className="fac">—</strong></div>
-            <div>Guarnición: <strong>—</strong></div>
+            <div>Facción: <strong className="fac">{hoverOwner ? (hoverOwner.owner == null ? 'El Estado' : playerName(S, hoverOwner.owner)) : '—'}</strong></div>
+            <div>Guarnición: <strong>{hoverOwner ? hoverOwner.troops + ' tropas' : '—'}</strong></div>
           </div>
-          <div className="inspector-flavor">Hover sobre un distrito para info.</div>
+          <div className="inspector-flavor">{hoverData ? hoverData.flavor : 'Hover sobre un distrito para info.'}</div>
         </div>
       )}
 
