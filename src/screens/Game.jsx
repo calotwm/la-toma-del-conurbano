@@ -156,7 +156,7 @@ export default function Game({ S, setS }) {
     }
     if (ctl && ctl.c) return null;
     setS({ ...Sref.current, busy: true, dice: { a: aRoll, d: dRoll, aN, dN, rolling: false } });
-    await wait(900);
+    await wait(1900);
     if (ctl && ctl.c) return null;
     return { aRoll, dRoll };
   }
