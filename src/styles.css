@@ -313,9 +313,8 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .combat-die.atk { background: linear-gradient(135deg, #ff8e8e, #d43b3b 55%, #6a0404); border-color: #ffcdd2; box-shadow: 0 6px 16px rgba(239,68,68,.4); }
 .combat-die.def { background: linear-gradient(135deg, #f6d77a, #e8b33a 55%, #755000); border-color: #fff7d1; box-shadow: 0 6px 16px rgba(232,179,58,.35); }
 .combat-die-grid { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 1fr); padding: 15%; box-sizing: border-box; }
-.combat-die-grid .pip { border-radius: 50%; align-self: center; justify-self: center; width: 22%; height: 22%; }
-.combat-die.atk .pip.on { background: #fff; box-shadow: 0 0 3px rgba(0,0,0,.5) inset; }
-.combat-die.def .pip.on { background: #221600; }
+.combat-die-grid .pip { border-radius: 50%; align-self: center; justify-self: center; width: 30%; height: 30%; }
+.combat-die.atk .pip.on, .combat-die.def .pip.on { background: #fff; box-shadow: 0 0 4px rgba(0,0,0,.6) inset, 0 0 3px rgba(255,255,255,.5); }
 
 .combat-die.rolling { animation: diceTumble .12s linear infinite; }
 @keyframes diceTumble { 0% { transform: rotate(-10deg) scale(.96); } 50% { transform: rotate(8deg) scale(1.04); } 100% { transform: rotate(-6deg) scale(.98); } }
@@ -482,20 +481,33 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   /* la bandeja de acciones ya NO es una pestaña: siempre está a la vista, compacta, debajo del mapa */
   .game-fit .panel-actions {
     display: flex !important; flex-direction: column; flex: none; width: 100%;
-    min-height: 0; max-height: 40vh; overflow-y: auto;
-    padding: 8px; background: #0d131f; border: 1px solid var(--line); border-radius: 10px;
+    min-height: 0; max-height: 38vh; overflow-y: auto;
+    padding: 6px; background: #0d131f; border: 1px solid var(--line); border-radius: 10px;
   }
   .panel-actions .frame .corner { display: none; }
-  .panel-actions .frame { padding: 8px 10px; }
-  .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 6px; padding: 8px; }
-  .panel-actions .bastion-t { font-size: 11px; }
-  .panel-actions .bastion-s { font-size: 10.5px; }
+  .panel-actions .frame { padding: 7px 9px; }
+  .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 5px; padding: 7px; }
+  .panel-actions .bastion-ic { width: 28px; height: 28px; }
+  .panel-actions .bastion-ic .mat { font-size: 15px !important; }
+  .panel-actions .bastion-t { font-size: 10px; }
+  .panel-actions .bastion-s { font-size: 10px; }
+  .panel-actions .phase-pill { padding: 5px 9px; }
+  .panel-actions .phase-pill .lbl { font-size: 8px; }
   .panel-actions .subhud > div:last-child { width: 100%; justify-content: center; }
-  .panel-actions .btn { flex: 1; min-width: 0; justify-content: center; }
-  .panel-actions .dice-picker { flex-wrap: wrap; }
-  .panel-actions .dice-picker .btn { flex: 1 1 auto; }
-  .panel-actions .btns { flex-direction: column; }
-  .panel-actions .btns .btn { width: 100%; }
+  .panel-actions .dice-picker { flex-wrap: wrap; gap: 6px !important; }
+  /* aplana el tamaño de todos los botones de la bandeja, sea cual sea su estilo inline */
+  .panel-actions button {
+    padding: 8px 10px !important; font-size: 11px !important; border-radius: 7px !important;
+    min-height: 38px !important; gap: 5px !important;
+  }
+  .panel-actions button .mat { font-size: 14px !important; }
+  .panel-actions .btn, .panel-actions .reinforce-btn { flex: 1; min-width: 0; justify-content: center; }
+  .panel-actions .btns { flex-direction: column; gap: 6px !important; }
+  .panel-actions .btns button { width: 100%; }
+  .panel-actions .outcome { padding: 8px 10px !important; gap: 8px !important; }
+  .panel-actions .outcome-title { font-size: 12px !important; }
+  .panel-actions .outcome-body { font-size: 10.5px !important; }
+  .panel-actions .win-ic .mat { font-size: 20px !important; }
 
   /* "Vos" y "Bitácora" ahora son cajones que se deslizan sobre el mapa, no pestañas de pantalla completa */
   .game-fit .panel-you, .game-fit .panel-log {
@@ -530,9 +542,11 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
     border-radius: 8px; text-transform: uppercase; letter-spacing: .5px;
   }
   .mobile-tabs .tab.on { background: #182036; color: var(--celeste); }
-  .mobile-tabs .tab .mat { font-size: 19px; }
-  /* botones táctiles */
-  .btn, .btn-gold, .btn-red, .btn-dark, .btn-big { min-height: 44px; }
+  .mobile-tabs .tab .mat { font-size: 17px; }
+  .mobile-tabs { padding: 3px; }
+  .mobile-tabs .tab { padding: 4px 2px; }
+  /* botones táctiles: compactos pero siguen siendo cómodos para el dedo */
+  .btn, .btn-gold, .btn-red, .btn-dark, .btn-big { min-height: 40px; }
   .dice-slot { width: 52px; height: 52px; }
   /* el pie de copyright no aporta nada acá y come espacio vertical valioso */
   main.game > .footer { display: none; }
