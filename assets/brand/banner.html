@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"/>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;900&display=swap" rel="stylesheet"/>
 <style>
   * { margin: 0; box-sizing: border-box; }
   html, body { width: 1500px; height: 500px; }
@@ -17,47 +17,26 @@
     position: absolute; inset: 14px; border: 3px solid #d4af37; border-radius: 18px;
     box-shadow: inset 0 0 0 2px #8a660a, 0 0 40px rgba(0,0,0,.4);
   }
-  .mat { font-family: 'Material Symbols Outlined'; font-weight: normal; line-height: 1; display: inline-block; font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 48; }
-  .left { position: absolute; left: 60px; top: 50%; transform: translateY(-50%); }
-  .medallion {
-    width: 150px; height: 150px; border-radius: 50%;
-    background: linear-gradient(180deg, #fce184, #d4af37 55%, #755000);
-    padding: 5px; box-shadow: 0 0 34px rgba(232,179,58,.55);
-  }
-  .medallion-in { width: 100%; height: 100%; border-radius: 50%; background: #0b101c; border: 3px solid #5a4209; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-  .medallion-in .mat { color: #f6d77a; font-size: 96px; }
-  .cinta { position: absolute; bottom: 0; left: 0; right: 0; height: 14px; background: linear-gradient(180deg, #74b7e8 0%, #74b7e8 32%, #ffffff 33%, #ffffff 66%, #74b7e8 67%, #74b7e8 100%); }
-  .tt { position: absolute; left: 250px; top: 50%; transform: translateY(-50%); }
-  .title { font-weight: 900; letter-spacing: 3px; line-height: .98; font-size: 88px; background: linear-gradient(180deg, #eef4fb 0%, #a8d4f2 40%, #74b6e8 75%, #4a90c8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 4px rgba(0,0,0,.5)); }
-  .tag { display: inline-block; margin-top: 18px; padding: 8px 18px; border-radius: 6px; background: linear-gradient(90deg, #8b1111, #b71c1c); color: #ffd8d8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 16px; border: 1px solid rgba(255,107,107,.4); }
-  .sub { color: #f6d77a; font-size: 20px; font-weight: 700; letter-spacing: 1px; margin-top: 10px; }
+  .tt { position: absolute; left: 110px; top: 50%; transform: translateY(-50%); }
+  .title { font-weight: 900; letter-spacing: 3px; line-height: .98; font-size: 96px; background: linear-gradient(180deg, #eef4fb 0%, #a8d4f2 40%, #74b6e8 75%, #4a90c8 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 4px rgba(0,0,0,.5)); }
+  .tag { display: inline-block; margin-top: 20px; padding: 9px 20px; border-radius: 6px; background: linear-gradient(90deg, #8b1111, #b71c1c); color: #ffd8d8; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; font-size: 18px; border: 1px solid rgba(255,107,107,.4); }
   /* mapa simulado a la derecha */
   .map { position: absolute; right: 40px; top: 0; bottom: 0; width: 520px; }
-  .obelisco { position: absolute; top: 95px; left: 40px; width: 60px; height: 210px; }
-  .ob-tri { width: 0; height: 0; border-left: 34px solid transparent; border-right: 34px solid transparent; border-bottom: 70px solid #b9c2d1; margin: 0 auto; }
-  .ob-body { height: 140px; background: linear-gradient(90deg, #aab3c4, #cdd5e0 60%, #aab3c4); }
-  .ob-base { height: 16px; background: #7d879c; margin-top: 4px; }
   .terr { position: absolute; width: 70px; height: 70px; border-radius: 50%; border: 5px solid #0a0c12; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 26px; color: #fff; box-shadow: 0 6px 16px rgba(0,0,0,.4); }
   .t1 { left: 250px; top: 70px; background: #fac815; }
   .t2 { left: 360px; top: 40px; background: #ec4899; }
   .t3 { left: 430px; top: 160px; background: #f97316; }
   .t4 { left: 300px; top: 210px; background: #22c55e; }
   .t5 { left: 150px; top: 130px; background: #475569; }
-  .lin { position: absolute; left: 210px; top: 120px; width: 330px; height: 260px; }
 </style>
 </head>
 <body>
   <div class="border"></div>
-  <div class="left">
-    <div class="medallion"><div class="medallion-in"><span class="mat">wb_sunny</span><div class="cinta"></div></div></div>
-  </div>
   <div class="tt">
     <div class="title">LA TOMA DEL<br/>CONURBANO</div>
     <div class="tag">Edición Beligerante</div>
-    <div class="sub">Un TEG bien argento · El que no corre, vuela</div>
   </div>
   <div class="map">
-    <div class="obelisco"><div class="ob-tri"></div><div class="ob-body"></div><div class="ob-base"></div></div>
     <div class="terr t1">8</div>
     <div class="terr t2">5</div>
     <div class="terr t3">7</div>
