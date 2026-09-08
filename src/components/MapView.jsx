@@ -19,7 +19,6 @@ export default function MapView({ S, sel, battle, onTerr }) {
   const me = cur && cur.human ? cur.id : null;
   const myTurn = me != null && !S.busy;
   const [isMobile, setIsMobile] = useState(false);
-  const [selectedNode, setSelectedNode] = useState(null);
   const [view, setView] = useState({ x: 0, y: 0, scale: 1 }); // pan/zoom táctil (solo móvil)
   const containerRef = useRef(null);
   const gesture = useRef({ pointers: new Map(), mode: null, moved: false, startView: null, startPointer: null, startDist: 0, startScale: 1, startMid: null });
@@ -120,9 +119,6 @@ export default function MapView({ S, sel, battle, onTerr }) {
     return false;
   };
 
-  const selectedNodeData = selectedNode ? TERR.find(t => t.id === selectedNode) : null;
-  const selectedNodeOwner = selectedNodeData ? S.terr[selectedNodeData.id] : null;
-
   // Capa de batalla: anillos atacante/defensor + flecha animada + rótulo lunfardo
   const battleVis = (() => {
     if (!battle) return null;
@@ -151,7 +147,6 @@ export default function MapView({ S, sel, battle, onTerr }) {
   const handleNodeClick = (id) => {
     if (gesture.current.moved) { gesture.current.moved = false; return; } // fue un arrastre/pellizco, no un toque
     onTerr(id);
-    if (isMobile) setSelectedNode(id);
   };
 
   return (
@@ -280,26 +275,6 @@ export default function MapView({ S, sel, battle, onTerr }) {
             <div>Guarnición: <strong>—</strong></div>
           </div>
           <div className="inspector-flavor">Hover sobre un distrito para info.</div>
-        </div>
-      )}
-
-      {/* bottom sheet móvil */}
-      {isMobile && selectedNodeData && (
-        <div className="bottom-sheet">
-          <div className="bottom-sheet-header">
-            <div className="bs-title">{selectedNodeData.name}</div>
-            <button className="bs-close" onClick={() => setSelectedNode(null)}>✕</button>
-          </div>
-          <div className="bs-content">
-            <div className="bs-row">
-              <span className="bs-label">Facción:</span>
-              <span className="bs-value fac">{selectedNodeOwner ? (selectedNodeOwner.owner == null ? 'El Estado' : playerName(S, selectedNodeOwner.owner)) : '—'}</span>
-            </div>
-            <div className="bs-row">
-              <span className="bs-label">Guarnición:</span>
-              <span className="bs-value">{selectedNodeOwner ? selectedNodeOwner.troops + ' tropas' : '—'}</span>
-            </div>
-          </div>
         </div>
       )}
 
