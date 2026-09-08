@@ -275,6 +275,11 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .dice-picker { display: flex; gap: 8px; align-items: center; }
 .dice-picker button { padding: 8px 14px; border-radius: 8px; font-weight: 900; }
 .dice-picker button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
+/* fila única de acciones (dados/mover + cortar/terminar turno), todo junto en vez de filas separadas */
+.action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.action-row-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
+.action-row-sep { flex: 1 1 auto; min-width: 8px; }
+.action-row button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(232,179,58,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(246,215,122,.8)); }
 .outcome-title { font-size: 15px; color: var(--gold-light); font-weight: 900; }
@@ -513,18 +518,20 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-actions .phase-pill { padding: 5px 9px; }
   .panel-actions .phase-pill .lbl { font-size: 8px; }
   .panel-actions .subhud > div:last-child { width: 100%; justify-content: center; }
-  .panel-actions .dice-picker { flex-wrap: wrap; gap: 6px !important; }
+  /* una sola fila de acciones, apretada, sin el separador elástico que las alejaba en desktop */
+  .panel-actions .action-row { gap: 5px !important; margin-top: 6px; }
+  .panel-actions .action-row-sep { display: none; }
+  .panel-actions .action-row-label { display: none; } /* "DADOS:"/"MOVER:" — de más al lado de botones ícono-solo */
   /* botones de la bandeja: solo ícono en móvil (sin texto), chicos y cuadrados */
   .panel-actions .btn-label { display: none; }
   .panel-actions button {
     padding: 9px !important; font-size: 11px !important; border-radius: 9px !important;
-    min-height: 40px !important; min-width: 40px !important; width: 40px; flex: 0 0 auto !important;
+    min-height: 38px !important; min-width: 38px !important; width: 38px; flex: 0 0 auto !important;
     gap: 0 !important;
   }
-  .panel-actions button .mat { font-size: 19px !important; }
+  .panel-actions button .mat { font-size: 18px !important; }
   /* excepciones: los botones que muestran un número o +/- necesitan su propio ancho, no son "solo ícono" */
-  .panel-actions .dice-picker button:not(:has(.mat)) { width: auto; padding: 9px 14px !important; }
-  .panel-actions .btns { flex-direction: row; justify-content: flex-start; gap: 6px !important; }
+  .panel-actions .action-row button:not(:has(.mat)) { width: auto; min-width: 30px !important; padding: 9px 10px !important; }
   .panel-actions .outcome { padding: 8px 10px !important; gap: 8px !important; }
   .panel-actions .outcome-title { font-size: 12px !important; }
   .panel-actions .outcome-body { font-size: 10.5px !important; }

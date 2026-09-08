@@ -76,29 +76,28 @@ export default function ActionBar(props) {
           </button>
         </div>
 
-        {sel && sel.o && sel.t && (
-          <div className="dice-picker" style={{ margin: '10px 0' }}>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>DADOS ATACANTE:</span>
-            {opts.filter(n => n >= minD).map(n => (
-              <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
-            ))}
-            <div style={{ flex: 1 }}></div>
-            <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
-              <span className="mat" style={{ fontSize: 16 }}>casino</span><span className="btn-label">TIRAR</span>
-            </button>
-          </div>
-        )}
-
-        {lastBattleChip()}
-        <div className="btns" style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+        <div className="action-row">
+          {sel && sel.o && sel.t && (
+            <>
+              <span className="action-row-label">DADOS:</span>
+              {opts.filter(n => n >= minD).map(n => (
+                <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
+              ))}
+              <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
+                <span className="mat" style={{ fontSize: 16 }}>casino</span><span className="btn-label">TIRAR</span>
+              </button>
+              <span className="action-row-sep"/>
+            </>
+          )}
           <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
             <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span><span className="btn-label">Cortar ataque → reagrupar</span>
           </button>
-          <div style={{ flex: 1 }}></div>
           <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
             <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
           </button>
         </div>
+
+        {lastBattleChip()}
       </div>
     );
   }
@@ -127,30 +126,25 @@ export default function ActionBar(props) {
         </button>
       </div>
 
-      {sel && sel.o && sel.t && (
-        <div className="dice-picker" style={{ margin: '10px 0' }}>
-          <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>MOVER:</span>
-          <button className="btn-dark" onClick={() => setAmt(Math.max(1, amt - 1))}>−</button>
-          <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--celeste)' }}>{amt}</b>
-          <button className="btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
-          <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
-            <span className="mat" style={{ fontSize: 17 }}>local_shipping</span><span className="btn-label">Mover</span>
-          </button>
-          <div style={{ flex: 1 }}></div>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
-          </button>
-        </div>
-      )}
+      <div className="action-row">
+        {sel && sel.o && sel.t && (
+          <>
+            <span className="action-row-label">MOVER:</span>
+            <button className="btn-dark" onClick={() => setAmt(Math.max(1, amt - 1))}>−</button>
+            <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--celeste)' }}>{amt}</b>
+            <button className="btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
+            <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
+              <span className="mat" style={{ fontSize: 17 }}>local_shipping</span><span className="btn-label">Mover</span>
+            </button>
+            <span className="action-row-sep"/>
+          </>
+        )}
+        <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
+          <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
+        </button>
+      </div>
 
       {lastBattleChip()}
-      {(!sel || !sel.o || !sel.t) && (
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 10 }}>
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
-          </button>
-        </div>
-      )}
     </div>
   );
 }
