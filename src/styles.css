@@ -279,6 +279,9 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
 .action-row-label { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--muted); }
 .action-row-sep { flex: 1 1 auto; min-width: 8px; }
+/* agrupa botones (dados+tirar / cortar+terminar) para poder acomodarlos distinto en mobile;
+   en desktop es transparente al layout, como si no estuviera */
+.action-group { display: contents; }
 .action-row button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(232,179,58,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(246,215,122,.8)); }
@@ -512,18 +515,42 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   }
   .panel-actions .frame .corner { display: none; }
   .panel-actions .frame { padding: 7px 9px; }
-  .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 5px; padding: 7px; }
+  .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 3px; padding: 7px; position: relative; }
   .panel-actions .bastion-ic { width: 28px; height: 28px; }
   .panel-actions .bastion-ic .mat { font-size: 15px !important; }
   .panel-actions .bastion-t { font-size: 10px; }
-  .panel-actions .bastion-s { font-size: 10px; }
-  .panel-actions .phase-pill { padding: 5px 9px; }
+  .panel-actions .bastion-s { font-size: 10px; padding-right: 34px; } /* deja lugar al botón "quitar selección" flotante */
+  .panel-actions .phase-pill { padding: 5px 30px 5px 9px; } /* idem: no lo tapa el botón flotante */
   .panel-actions .phase-pill .lbl { font-size: 8px; }
-  .panel-actions .subhud > div:last-child { width: 100%; justify-content: center; }
-  /* una sola fila de acciones, apretada, sin el separador elástico que las alejaba en desktop */
-  .panel-actions .action-row { gap: 5px !important; margin-top: 6px; }
+  /* el div espaciador flex:1 (para separar en desktop) no aporta nada apilado en columna: fuera */
+  .panel-actions .subhud > div:empty { display: none; }
+  /* "quitar selección" flota arriba a la derecha, sobre el espacio vacío de la píldora de fase,
+     en vez de ocupar su propia fila entera solo para un ícono */
+  .panel-actions .subhud > button:last-child {
+    position: absolute; top: 7px; right: 7px; z-index: 2;
+    min-height: 26px !important; min-width: 26px !important; width: 26px !important; height: 26px;
+    padding: 4px !important; border-radius: 7px !important; flex: none !important;
+  }
+  .panel-actions .subhud > button:last-child .mat { font-size: 14px !important; }
+  /* fila de acciones: cada grupo (dados/mover, y los botones finales) ocupa su propia fila completa */
+  .panel-actions .action-row { flex-direction: column; align-items: stretch; gap: 6px !important; margin-top: 6px; }
   .panel-actions .action-row-sep { display: none; }
   .panel-actions .action-row-label { display: none; } /* "DADOS:"/"MOVER:" — de más al lado de botones ícono-solo */
+  .panel-actions .action-group { display: flex; width: 100%; gap: 6px; align-items: center; }
+  .panel-actions .action-group-dice { flex-wrap: wrap; }
+  /* botones finales (terminar turno, cortar ataque, mover): grandes, se reparten todo el ancho, sin hueco muerto,
+     e ícono + texto apilados porque ahora sobra ancho para mostrar la etiqueta */
+  .panel-actions .action-group-final { gap: 8px; }
+  .panel-actions .action-group-final button,
+  .panel-actions .btn-fill-row button {
+    flex: 1 1 0 !important; width: auto !important; min-height: 50px !important;
+    flex-direction: column !important; gap: 3px !important; padding: 6px 4px !important;
+  }
+  .panel-actions .btn-fill-row { width: 100%; }
+  .panel-actions .action-group-final .btn-label,
+  .panel-actions .btn-fill-row .btn-label {
+    display: block !important; font-size: 9.5px !important; white-space: normal; text-align: center; line-height: 1.15;
+  }
   /* botones de la bandeja: solo ícono en móvil (sin texto), chicos y cuadrados */
   .panel-actions .btn-label { display: none; }
   .panel-actions button {
@@ -625,18 +652,3 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .reinforce-btn .mat { font-size: 16px; }
 .reinforce-bar { flex-wrap: wrap; }
 
-/* ficha del territorio tocado (mobile): flota arriba DEL MAPA (zona libre), no abajo
-   donde tapaba los botones de la bandeja de acciones */
-.bottom-sheet {
-  position: absolute; left: 8px; right: 8px; top: 8px; z-index: 25;
-  background: #0d1524; border: 1px solid var(--celeste); border-radius: 12px;
-  padding: 10px 12px; box-shadow: 0 6px 30px rgba(0,0,0,.6);
-}
-.bottom-sheet-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d3852; padding-bottom: 6px; }
-.bs-title { font-weight: 800; font-size: 14px; color: var(--celeste); }
-.bs-close { background: transparent; color: var(--muted); font-size: 16px; padding: 2px 8px; }
-.bs-content { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
-.bs-row { display: flex; justify-content: space-between; font-size: 12px; }
-.bs-label { color: var(--muted); }
-.bs-value { font-weight: 700; color: var(--txt); }
-.bs-value.fac { color: var(--celeste); }

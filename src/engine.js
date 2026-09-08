@@ -53,7 +53,7 @@ export const MISSION_DEFS = {
   sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
   eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
   suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
-  contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) },
+  contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital y 5 territorios más de cualquier zona.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) && ownersCount(s, p) >= ADJ['capital'].length + 5 },
   el10:    { name: 'El 10 del Sur', desc: 'Tener La Capital y 10 territorios de la Zona Sur.', check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 10 },
   triple:  { name: 'La Triple Corona', desc: 'Controlar 8 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 8) },
 };
