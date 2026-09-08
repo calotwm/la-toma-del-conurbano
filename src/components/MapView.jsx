@@ -25,7 +25,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
   }, []);
 
   const OX = isMobile ? 50 : 150;
-  const vb = `0 0 ${W} ${H}`;
+  const vb = isMobile ? '170 0 900 800' : `0 0 ${W} ${H}`;
 
   const getCoords = (id) => { const t = TERR.find(x => x.id === id); return t ? { x: t.x, y: t.y } : { x: 0, y: 0 }; };
 
@@ -91,7 +91,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
 
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-      <svg viewBox={vb} preserveAspectRatio="xMidYMid meet" className="w-full h-full select-none overflow-hidden">
+      <svg viewBox={vb} preserveAspectRatio={isMobile ? 'none' : 'xMidYMid meet'} className="w-full h-full select-none overflow-hidden">
         <defs>
           <radialGradient id="waterGrad" cx="50%" cy="40%" r="90%">
             <stop offset="0%" stopColor="#10263f"/>
