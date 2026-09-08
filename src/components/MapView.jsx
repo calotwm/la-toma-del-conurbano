@@ -31,8 +31,12 @@ export default function MapView({ S, sel, battle, onTerr }) {
     return () => window.removeEventListener('resize', check);
   }, []);
 
-  const OX = isMobile ? 50 : 150;
-  const vb = `0 0 ${W} ${H}`;
+  const OX = isMobile ? 0 : 150;
+  // en desktop el lienzo completo 1200x800 sobra (mucho margen y agua vacíos);
+  // en mobile recortamos a un encuadre casi cuadrado que contiene todos los distritos,
+  // así el mapa aprovecha mejor un contenedor angosto y alto en vez de quedar chiquito
+  // con barras vacías arriba/abajo por el "meet".
+  const vb = isMobile ? '40 10 860 800' : `0 0 ${W} ${H}`;
 
   // ---------- Pan & zoom táctil (mapa nunca se deforma, se agranda con pellizco y se arrastra) ----------
   const onPointerDown = (e) => {

@@ -334,6 +334,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   color: #241700; font-weight: 900; font-size: 15px; text-transform: uppercase; letter-spacing: .5px;
   display: flex; align-items: center; gap: 8px; box-shadow: inset 0 1px 1px rgba(255,255,255,.7), 0 6px 18px rgba(232,179,58,.5);
   animation: rollPulse 1.4s ease-in-out infinite;
+  pointer-events: auto; cursor: pointer; /* .combat-overlay tiene pointer-events:none para no tapar el resto de la UI */
 }
 .combat-roll-btn .mat { font-size: 20px; }
 @keyframes rollPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
@@ -470,6 +471,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 
 @media (max-width: 900px) {
   .hdr .logo-sub, .hdr .tag-edicion, .map-ribbon .scale { display: none; }
+  .ticker-bar { display: none; } /* solo ambientación, no aporta al juego — le da más alto al mapa */
   .hdr-inner { padding: 6px 10px; gap: 8px; }
   .logo-title { font-size: 14px; letter-spacing: 1px; }
   .hdr-util button { width: 30px; height: 30px; }
@@ -491,8 +493,9 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .game-fit { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; }
   .map-wrap { grid-area: auto; width: 100%; flex: 1; min-height: 0; background: #0b0e14; border-radius: 10px; overflow: hidden; }
   .map-wrap .map-frame { height: 100%; }
-  .map-ribbon { padding: 6px 8px; }
-  .map-ribbon h3 { font-size: 11px; }
+  /* la etiqueta "Cartografía Estratégica AMBA" es decorativa y el botón no hace nada útil
+     (el zoom real ahora se controla tocando el mapa) — se saca para darle más alto al mapa */
+  .map-ribbon { display: none; }
 
   /* la bandeja de acciones ya NO es una pestaña: siempre está a la vista, compacta, debajo del mapa */
   .game-fit .panel-actions {
