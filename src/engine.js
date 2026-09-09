@@ -214,7 +214,7 @@ export function startTurn(s, pid) {
       log(s, `» ${p.name} canjea cartas y suma ${v} tropas.`, 'card');
     }
   }
-  let bonusText = `50% de ${info.own} países = ${info.base}`;
+  let bonusText = `50% de ${info.own} localidades = ${info.base}`;
   if (info.zones) bonusText += `, +${info.zones * 4} zonas`;
   if (info.cap) bonusText += ', +10 CABA';
   log(s, `» Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
