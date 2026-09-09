@@ -24,9 +24,13 @@ export const TERR = [
   { id:'sanmiguel',   name:'San Miguel',      x:300, y:220, r:18, zone:'norte', flavor:'Tranquilo, arbolado... hasta que llega un ejército.' },
   { id:'josecpaz',    name:'José C. Paz',     x:240, y:200, r:18, zone:'norte', flavor:'Ciudad dormitorio: si dormís, perdés territorios.' },
   { id:'malvinas',    name:'Malvinas Argentinas', x:320, y:160, r:18, zone:'norte', flavor:'Polo industrial y del peronismo profundo del oeste norteño.' },
+  { id:'exaltacion',  name:'Exaltación de la Cruz', x:255, y:15, r:18, zone:'norte', flavor:'Campo abierto y countries en obra: el norte que todavía no terminó de construirse.' },
+  { id:'dontorcuato', name:'Don Torcuato',    x:390, y:175, r:18, zone:'norte', flavor:'Entre vías y galpones tigrenses: la trastienda industrial del delta.' },
   // ZONA OESTE
   { id:'generalrodriguez', name:'General Rodríguez', x:50,  y:365, r:18, zone:'oeste', flavor:'Punta de riel del Belgrano y campo abierto: el oeste más profundo.' },
   { id:'marcospaz',   name:'Marcos Paz',      x:100, y:530, r:18, zone:'oeste', flavor:'La cárcel más famosa del país y el silencio del campo alrededor.' },
+  { id:'lujan',       name:'Luján',           x:15,  y:435, r:18, zone:'oeste', flavor:'La Basílica y el turismo religioso: acá se reza antes de atacar.' },
+  { id:'gonzalezcatan', name:'González Catán', x:190, y:610, r:18, zone:'oeste', flavor:'El corazón obrero más profundo de La Matanza: se defiende con uñas y dientes.' },
   { id:'moreno',      name:'Moreno',          x:130, y:380, r:18, zone:'oeste', flavor:'Punta de riel del Sarmiento: llegar acá ya es conquista.' },
   { id:'merlo',       name:'Merlo',           x:180, y:470, r:18, zone:'oeste', flavor:'Trenes, bandas de rock y quilombo garantizado.' },
   { id:'ituzaingo',   name:'Ituzaingó',       x:230, y:390, r:18, zone:'oeste', flavor:'Residencial y prolijo: el caos se viste de traje.' },
@@ -51,15 +55,17 @@ export const TERR = [
   { id:'berazategui', name:'Berazategui',     x:760, y:610, r:18, zone:'sur', flavor:'La ciudad del vidrio, sobre el río: todo se ve transparente (menos las alianzas).' },
   { id:'sanvicente',  name:'San Vicente',     x:470, y:745, r:18, zone:'sur', flavor:'Campo, quintas y el borde sur del conurbano: tranquilo hasta que no.' },
   { id:'presidenteperon', name:'Presidente Perón', x:365, y:760, r:18, zone:'sur', flavor:'El más joven de los partidos del sur: chico pero picante.' },
+  { id:'canuelas',    name:'Cañuelas',        x:260, y:780, r:18, zone:'sur', flavor:'El campo bien cerca de la ciudad: la última frontera rural del sur.' },
+  { id:'guernica',    name:'Guernica',        x:410, y:730, r:18, zone:'sur', flavor:'La toma de tierras más famosa del conurbano. Un partido que sabe lo que es esto.' },
 ];
 
 export const TIDS = TERR.map(t => t.id);
 
 export const ZONES = {
   capital: { label:'Capital Federal', color:'#facc15', stroke:'#eab308', bgPath:'M 540,340 L 610,360 L 590,440 L 520,410 Z', ids:['capital'] },
-  norte:   { label:'Zona Norte', color:'#ec4899', stroke:'#db2777', bgPath:'M 160,120 L 190,25 L 400,5 L 610,110 L 630,240 L 520,320 L 370,300 L 240,270 Z', ids:['escobar','pilar','tigre','sanfernando','sanisidro','vicentelopez','sanmartin','sanmiguel','josecpaz','malvinas'] },
-  oeste:   { label:'Zona Oeste', color:'#f97316', stroke:'#ea580c', bgPath:'M 20,335 L 380,270 L 530,390 L 420,545 L 220,630 L 65,565 Z', ids:['generalrodriguez','marcospaz','moreno','merlo','ituzaingo','hurlingham','moron','tresdefebrero','ciudadela','ramosmejia','flores','sanjusto','lamatanza'] },
-  sur:     { label:'Zona Sur', color:'#22c55e', stroke:'#16a34a', bgPath:'M 540,440 L 730,500 L 810,610 L 640,790 L 420,795 L 300,750 Z', ids:['avellaneda','lanus','quilmes','lomas','echeverria','ezeiza','brown','varela','berazategui','sanvicente','presidenteperon'] },
+  norte:   { label:'Zona Norte', color:'#ec4899', stroke:'#db2777', bgPath:'M 160,140 L 200,15 L 320,0 L 400,5 L 610,110 L 630,240 L 520,320 L 370,300 L 240,270 Z', ids:['escobar','pilar','tigre','sanfernando','sanisidro','vicentelopez','sanmartin','sanmiguel','josecpaz','malvinas','exaltacion','dontorcuato'] },
+  oeste:   { label:'Zona Oeste', color:'#f97316', stroke:'#ea580c', bgPath:'M 5,335 L 380,270 L 530,390 L 420,545 L 220,650 L 55,600 L 5,480 Z', ids:['generalrodriguez','marcospaz','moreno','merlo','ituzaingo','hurlingham','moron','tresdefebrero','ciudadela','ramosmejia','flores','sanjusto','lamatanza','lujan','gonzalezcatan'] },
+  sur:     { label:'Zona Sur', color:'#22c55e', stroke:'#16a34a', bgPath:'M 540,440 L 730,500 L 810,610 L 640,795 L 380,798 L 180,780 L 300,620 Z', ids:['avellaneda','lanus','quilmes','lomas','echeverria','ezeiza','brown','varela','berazategui','sanvicente','presidenteperon','canuelas','guernica'] },
 };
 export const ZKEYS = ['capital','norte','oeste','sur'];
 
@@ -74,9 +80,13 @@ export const ADJ_PAIRS = [
   ['sanmiguel','josecpaz'],['sanmiguel','hurlingham'],['sanmiguel','moreno'],['josecpaz','moreno'],
   ['malvinas','sanmiguel'],['malvinas','josecpaz'],['malvinas','moreno'],['malvinas','hurlingham'],
   ['escobar','tigre'],['escobar','malvinas'],['escobar','pilar'],['pilar','malvinas'],['pilar','josecpaz'],['pilar','generalrodriguez'],
+  ['exaltacion','escobar'],['exaltacion','pilar'],
+  ['dontorcuato','tigre'],['dontorcuato','malvinas'],['dontorcuato','josecpaz'],['dontorcuato','sanfernando'],
   // Oeste
-  ['generalrodriguez','moreno'],['generalrodriguez','pilar'],['generalrodriguez','marcospaz'],
-  ['marcospaz','merlo'],['marcospaz','lamatanza'],['marcospaz','generalrodriguez'],
+  ['generalrodriguez','moreno'],['generalrodriguez','pilar'],['generalrodriguez','marcospaz'],['generalrodriguez','lujan'],
+  ['marcospaz','merlo'],['marcospaz','lamatanza'],['marcospaz','generalrodriguez'],['marcospaz','lujan'],['marcospaz','canuelas'],
+  ['lujan','generalrodriguez'],['lujan','marcospaz'],
+  ['gonzalezcatan','lamatanza'],['gonzalezcatan','marcospaz'],
   ['moreno','merlo'],['moreno','josecpaz'],['moreno','malvinas'],['merlo','ituzaingo'],['merlo','lamatanza'],
   ['ituzaingo','merlo'],['ituzaingo','moron'],['ituzaingo','hurlingham'],
   ['moron','hurlingham'],['moron','ituzaingo'],['moron','tresdefebrero'],['moron','lamatanza'],
@@ -99,8 +109,10 @@ export const ADJ_PAIRS = [
   ['quilmes','avellaneda'],['quilmes','lanus'],['quilmes','brown'],['quilmes','berazategui'],
   ['berazategui','quilmes'],['berazategui','varela'],
   ['varela','berazategui'],['varela','brown'],['varela','presidenteperon'],
-  ['sanvicente','echeverria'],['sanvicente','brown'],['sanvicente','presidenteperon'],
-  ['presidenteperon','ezeiza'],['presidenteperon','sanvicente'],['presidenteperon','varela'],
+  ['sanvicente','echeverria'],['sanvicente','brown'],['sanvicente','presidenteperon'],['sanvicente','guernica'],
+  ['presidenteperon','ezeiza'],['presidenteperon','sanvicente'],['presidenteperon','varela'],['presidenteperon','guernica'],['presidenteperon','canuelas'],
+  ['canuelas','marcospaz'],['canuelas','presidenteperon'],
+  ['guernica','presidenteperon'],['guernica','sanvicente'],['guernica','echeverria'],
 ];
 
 export const ADJ = {};

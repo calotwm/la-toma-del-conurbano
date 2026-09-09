@@ -33,6 +33,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
 
   const animatingRef = useRef(false);
   const pendingStateRef = useRef(null);
+  const battleTokenRef = useRef(0); // evita que una animación vieja pise a una nueva si se solapan (pestaña en segundo plano, timers atrasados, etc.)
   const bannerT = useRef(null), flashT = useRef(null);
   useEffect(() => () => { clearTimeout(bannerT.current); clearTimeout(flashT.current); }, []);
 
@@ -62,16 +63,25 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
 
   async function runBattleAnimation(payload) {
     const { pid, o, t, aN, dN, aRoll, dRoll, al, dl, conquered, capital, capitalConquered, prevOwner } = payload;
+    // token propio: si mientras esta animación espera llega OTRA (p.ej. la pestaña estuvo en
+    // segundo plano y el navegador atrasó los timers, o el server mandó dos batallas seguidas),
+    // esta corrida vieja se da cuenta al despertar y se aborta en vez de pisar el battle/dice
+    // de la nueva — así nunca queda "ATACANTE ataca a DEFENSOR" colgado con datos de otra pelea.
+    const myToken = ++battleTokenRef.current;
+    const isCurrent = () => battleTokenRef.current === myToken;
+
     animatingRef.current = true;
     setBattle({ o, t, atkId: pid, defId: prevOwner });
     setDice({ a: Array(aN).fill('?'), d: Array(dN).fill('?'), aN, dN, rolling: true });
     if (capital) Sound.alarm(); else Sound.dice();
     const frames = Math.round(1200 / 80);
     for (let i = 0; i < frames; i++) {
+      if (!isCurrent()) return;
       setDice({ a: rollDice(aN), d: rollDice(dN), aN, dN, rolling: true });
       Sound.diceTick();
       await wait(80);
     }
+    if (!isCurrent()) return;
     setDice({ a: aRoll, d: dRoll, aN, dN, rolling: false });
 
     const iAttacked = pid === youAre;
@@ -96,6 +106,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
     }
 
     await wait(1900);
+    if (!isCurrent()) return;
     setDice(null); setBattle(null);
     animatingRef.current = false;
     if (pendingStateRef.current) { setS(pendingStateRef.current); pendingStateRef.current = null; }

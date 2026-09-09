@@ -20,7 +20,10 @@ const PORT = process.env.PORT || 8787;
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer, { cors: { origin: '*' } });
+// Sin cors abierto: este mismo server sirve la SPA (mismo origen) y en dev el proxy de
+// Vite hace que el navegador solo vea localhost:5173 — nunca hace falta cross-origin real.
+// origin:'*' dejaba que cualquier sitio de internet abriera un socket contra las salas.
+const io = new Server(httpServer);
 const store = new RoomStore();
 
 app.get('/healthz', (req, res) => res.json({ ok: true, rooms: store.rooms.size }));

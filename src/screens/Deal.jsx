@@ -118,7 +118,7 @@ export default function Deal({ S, setS }) {
             <div style={{ fontSize: 12, background: '#160d1f', borderLeft: '3px solid var(--pink)', padding: '8px 10px', borderRadius: '0 6px 6px 0' }}>
               <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'var(--celeste)', textTransform: 'uppercase', letterSpacing: 1 }}>Tu misión secreta</div>
               <b style={{ color: 'var(--pink)' }}>{myMis.name}</b><br/>
-              <span style={{ color: 'var(--txt)', fontSize: 11 }}>{myMis.desc}</span>
+              <span style={{ color: 'var(--txt)', fontSize: 11 }}>{myMis.desc(S)}</span>
             </div>
           )}
         </div>
