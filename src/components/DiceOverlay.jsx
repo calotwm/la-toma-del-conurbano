@@ -52,7 +52,8 @@ function pairStates(a, d) {
   for (let i = 0; i < n; i++) {
     const ai = aIdx[i], di = dIdx[i];
     if (a[ai] > d[di]) { aState[ai] = 'win'; dState[di] = 'lose'; }
-    else { aState[ai] = 'lose'; dState[di] = 'win'; }
+    else if (a[ai] < d[di]) { aState[ai] = 'lose'; dState[di] = 'win'; }
+    else { aState[ai] = 'tie'; dState[di] = 'tie'; } // empate: no pierde nadie (ver battleResult)
   }
   return { aState, dState };
 }

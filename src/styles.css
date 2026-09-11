@@ -337,6 +337,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .combat-die.win { animation: dieWin .5s ease-out; box-shadow: 0 0 0 3px #fff, 0 0 22px rgba(255,255,255,.7); }
 @keyframes dieWin { 0% { transform: scale(1); } 40% { transform: scale(1.22); } 100% { transform: scale(1.08); } }
 .combat-die.lose { opacity: .4; filter: grayscale(.6); transform: scale(.88) rotate(-6deg); }
+.combat-die.tie { box-shadow: 0 0 0 2px rgba(255,255,255,.35); }
 .combat-die.closed { opacity: .55; animation: dieBreathe 1.6s ease-in-out infinite; }
 @keyframes dieBreathe { 0%, 100% { transform: scale(1); opacity: .5; } 50% { transform: scale(1.05); opacity: .75; } }
 
