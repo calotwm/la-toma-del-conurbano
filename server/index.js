@@ -44,6 +44,7 @@ io.on('connection', (socket) => {
     const room = store.create(socket.id, name);
     socket.join(room.code);
     if (typeof ack === 'function') ack({ ok: true, code: room.code, room: roomSummary(room) });
+    socket.emit('chat:history', { chat: room.chat });
   });
 
   socket.on('room:join', ({ code, name } = {}, ack) => {
@@ -51,6 +52,7 @@ io.on('connection', (socket) => {
     if (res.error) { if (typeof ack === 'function') ack({ ok: false, error: res.error }); return; }
     socket.join(res.room.code);
     if (typeof ack === 'function') ack({ ok: true, code: res.room.code, room: roomSummary(res.room) });
+    socket.emit('chat:history', { chat: res.room.chat });
     if (res.reconnected && res.room.state) {
       const slot = res.room.slots.find(s => s.socketId === socket.id);
       socket.emit('game:start', { state: res.room.state, youAre: slot ? slot.id : null });
@@ -94,6 +96,17 @@ io.on('connection', (socket) => {
   socket.on('game:fortify', ({ code, o, t, amt } = {}) => { const r = store.get(code); if (r) handleFortify(io, r, socket.id, { o, t, amt }); });
   socket.on('game:endTurn', ({ code } = {}) => { const r = store.get(code); if (r) handleEndTurn(io, store, r, socket.id); });
   socket.on('game:tradeCards', ({ code, indices } = {}) => { const r = store.get(code); if (r) handleTradeCards(io, r, socket.id, { indices }); });
+
+  // chat "foro" por zona (Capital/Norte/Oeste/Sur): sin canal global, cada uno elige dónde hablar
+  socket.on('chat:send', ({ code, zone, text } = {}) => {
+    const msg = store.addChat(code, socket.id, zone, text);
+    if (msg) io.to(String(code || '').toUpperCase()).emit('chat:new', { zone, message: msg });
+  });
+  // pide el historial de nuevo (al entrar a la pantalla de juego, o tras reconectar)
+  socket.on('chat:sync', ({ code } = {}) => {
+    const r = store.get(code);
+    if (r) socket.emit('chat:history', { chat: r.chat });
+  });
 
   socket.on('disconnect', () => {
     const res = store.leave(socket.id);

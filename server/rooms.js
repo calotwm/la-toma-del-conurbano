@@ -7,6 +7,8 @@ import { PLAYER_COLORS } from '../src/data.js';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O/1/I para no confundir
 const MAX_PLAYERS = 6;
 const ROOM_TTL_MS = 6 * 60 * 60 * 1000; // 6hs sin actividad -> se limpia sola
+const CHAT_ZONES = ['capital', 'norte', 'oeste', 'sur'];
+const CHAT_HISTORY_MAX = 200;
 
 function genCode() {
   let c = '';
@@ -29,6 +31,8 @@ export class RoomStore {
       slots: [{ socketId, name: cleanName(name), human: true, connected: true, id: null }],
       bots: [], // { name, level }
       state: null, // estado del motor (engine.js) una vez arrancada
+      // chat "foro": no hay canal global, cada zona del mapa tiene su propia charla
+      chat: { capital: [], norte: [], oeste: [], sur: [] },
       createdAt: Date.now(), lastActivity: Date.now(),
     };
     this.rooms.set(code, room);
@@ -76,6 +80,21 @@ export class RoomStore {
     const slot = room.slots.find(s => s.socketId === socketId);
     if (slot) slot.connected = false;
     return { room };
+  }
+
+  addChat(code, socketId, zone, text) {
+    const room = this.get(code);
+    if (!room || !CHAT_ZONES.includes(zone)) return null;
+    const slot = room.slots.find(s => s.socketId === socketId);
+    if (!slot) return null;
+    const t = String(text || '').trim().slice(0, 300);
+    if (!t) return null;
+    room.lastActivity = Date.now();
+    const msg = { by: socketId, name: slot.name, text: t, ts: Date.now() };
+    const hist = room.chat[zone];
+    hist.push(msg);
+    if (hist.length > CHAT_HISTORY_MAX) hist.splice(0, hist.length - CHAT_HISTORY_MAX);
+    return msg;
   }
 
   addBot(code, name, level) {

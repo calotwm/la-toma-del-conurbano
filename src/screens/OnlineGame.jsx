@@ -2,11 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { PHRASES, ADJ, TIDS, pick } from '../data.js';
 import { rollDice, ownersCount, totalTroops, tName, playerName, MISSION_DEFS } from '../engine.js';
 import { Sound } from '../sound.js';
-import { getSocket, disconnectSocket } from '../net.js';
+import { getSocket, disconnectSocket, syncChat } from '../net.js';
 import MapView from '../components/MapView.jsx';
 import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
+import ChatPanel from '../components/ChatPanel.jsx';
 import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
@@ -28,6 +29,8 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
   const [banner, setBanner] = useState(null);
   const [flash, setFlash] = useState(false);
   const [mobileDrawer, setMobileDrawer] = useState(null);
+  const [logTab, setLogTab] = useState('log');
+  const [chat, setChat] = useState({ capital: [], norte: [], oeste: [], sur: [] });
   const [soundOn, setSoundOn] = useState(true);
   const [connLost, setConnLost] = useState(false);
 
@@ -53,11 +56,26 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
     const onBattle = (payload) => { runBattleAnimation(payload); };
     const onDisconnect = () => setConnLost(true);
     const onConnect = () => setConnLost(false);
+    // el chat se escucha acá (siempre montado mientras dura la partida) y no en el panel del
+    // chat en sí, que solo existe cuando el jugador tiene esa pestaña abierta — si no, se
+    // pierden los mensajes que llegan mientras está mirando la Bitácora u otra pantalla.
+    const onChatHistory = ({ chat: h } = {}) => { if (h) setChat(h); };
+    const onChatNew = ({ zone, message } = {}) => {
+      if (!zone || !message) return;
+      setChat(prev => ({ ...prev, [zone]: [...(prev[zone] || []), message] }));
+    };
     s.on('game:state', onState);
     s.on('game:battle', onBattle);
     s.on('disconnect', onDisconnect);
     s.on('connect', onConnect);
-    return () => { s.off('game:state', onState); s.off('game:battle', onBattle); s.off('disconnect', onDisconnect); s.off('connect', onConnect); };
+    s.on('chat:history', onChatHistory);
+    s.on('chat:new', onChatNew);
+    syncChat(code); // trae el historial por si nos perdimos algo (reconexión)
+    return () => {
+      s.off('game:state', onState); s.off('game:battle', onBattle);
+      s.off('disconnect', onDisconnect); s.off('connect', onConnect);
+      s.off('chat:history', onChatHistory); s.off('chat:new', onChatNew);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -277,7 +295,11 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
-            <LogPanel S={S}/>
+            <div className="log-chat-tabs">
+              <button className={logTab === 'log' ? 'on' : ''} onClick={() => setLogTab('log')}><span className="mat">campaign</span>Bitácora</button>
+              <button className={logTab === 'chat' ? 'on' : ''} onClick={() => setLogTab('chat')}><span className="mat">forum</span>Chat</button>
+            </div>
+            {logTab === 'log' ? <LogPanel S={S}/> : <ChatPanel code={code} chat={chat}/>}
           </div>
         </div>
 

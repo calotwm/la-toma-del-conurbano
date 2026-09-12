@@ -32,3 +32,11 @@ export function joinRoom(code, name) {
     });
   });
 }
+
+export function sendChat(code, zone, text) {
+  getSocket().emit('chat:send', { code, zone, text });
+}
+
+export function syncChat(code) {
+  getSocket().emit('chat:sync', { code });
+}
