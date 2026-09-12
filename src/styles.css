@@ -166,15 +166,20 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .log-section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .log-section .frame.panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .log-section .logbox { flex: 1; min-height: 0; max-height: none; }
-.chat-section, .mobile-inline-chat {
+.chat-section {
   flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; margin-top: 10px;
   background: linear-gradient(180deg, #3a7fc4 0%, #74b6e8 55%, #dcebf7 100%);
   border-radius: 10px; padding: 10px;
 } /* cielo porteño propio, distinto del resto (dark) del panel — ahí van las burbujas de chat */
-/* la versión inline (siempre a la vista, debajo de la bandeja de acciones) solo existe en
-   mobile — llena el hueco que antes quedaba vacío. En desktop el chat ya vive en la columna
-   de la derecha, junto a la Bitácora, así que acá no hace falta duplicarlo. */
-.mobile-inline-chat { display: none; }
+/* la misión + tropas para colocar, siempre a la vista debajo de la bandeja de acciones, solo
+   en mobile — llena el hueco que antes quedaba vacío. En desktop ya están en el panel "Vos". */
+.mobile-inline-mission { display: none; }
+.mission-strip { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+.mission-strip-mission {
+  background: #160d1f; border: 1px solid rgba(255,46,136,.4); border-left: 4px solid var(--pink);
+  border-radius: 0 10px 10px 0; padding: 10px; flex: none;
+}
+.mission-strip-name { font-family: 'Syne', sans-serif; font-size: 13px; color: #fff; margin: 4px 0; font-weight: 800; }
 .chat-section-hdr {
   display: flex; align-items: center; gap: 6px; font-size: 12px; color: #0f2a52;
   text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; flex: none;
@@ -598,10 +603,8 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   }
   /* llena el hueco que quedaba vacío debajo de la bandeja de acciones */
   .game-fit { overflow: hidden; }
-  .game-fit .mobile-inline-chat { display: flex; flex: 1 1 0; min-height: 0; margin-top: 8px; }
-  .mobile-inline-chat .chat-section-tabs { flex: none; }
-  .mobile-inline-chat .chat-list { min-height: 0; }
-  .mobile-inline-chat .chat-input-row { flex: none; }
+  .game-fit .mobile-inline-mission { display: block; flex: 0 0 auto; max-height: 30vh; margin-top: 8px; overflow-y: auto; }
+  .game-fit .mobile-inline-mission:empty { margin-top: 0; }
   .panel-actions .frame .corner { display: none; }
   .panel-actions .frame { padding: 7px 9px; }
   .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 3px; padding: 7px; position: relative; }

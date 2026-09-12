@@ -11,6 +11,7 @@ import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
 import ChatPanel from '../components/ChatPanel.jsx';
+import MissionStrip from '../components/MissionStrip.jsx';
 import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
@@ -516,11 +517,11 @@ onEndTurn={endHumanTurn}
           />
           </div>
 
-          {/* en mobile el chat vive acá, siempre a la vista debajo de la bandeja de acciones —
-              llena el espacio que sobraba en vez de dejarlo vacío. En desktop se oculta (ahí
-              el chat ya está en la columna de la derecha, junto a la Bitácora). */}
-          <div className="mobile-inline-chat">
-            <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={sendLocalChat}/>
+          {/* en mobile, la misión y las tropas para colocar van acá, siempre a la vista debajo
+              de la bandeja de acciones — llenan el espacio que sobraba en vez de dejarlo
+              vacío. En desktop se oculta (ya están en el panel "Vos" de la izquierda). */}
+          <div className="mobile-inline-mission">
+            <MissionStrip S={S} curP={curP} humanTurn={humanTurn}/>
           </div>
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>

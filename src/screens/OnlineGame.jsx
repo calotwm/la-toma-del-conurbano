@@ -8,6 +8,7 @@ import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
 import ChatPanel from '../components/ChatPanel.jsx';
+import MissionStrip from '../components/MissionStrip.jsx';
 import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
@@ -306,17 +307,11 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
             />
           </div>
 
-          {/* en mobile el chat vive acá, siempre a la vista debajo de la bandeja de acciones —
-              llena el espacio que sobraba en vez de dejarlo vacío. En desktop se oculta (ahí
-              el chat ya está en la columna de la derecha, junto a la Bitácora). */}
-          <div className="mobile-inline-chat">
-            <div className="chat-section-tabs">
-              <button className={chatTab === 'match' ? 'on' : ''} onClick={() => setChatTab('match')}><span className="mat">groups</span>Partida</button>
-              <button className={chatTab === 'global' ? 'on' : ''} onClick={() => setChatTab('global')}><span className="mat">public</span>General</button>
-            </div>
-            {chatTab === 'match'
-              ? <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
-              : <ChatPanel chat={globalChat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendGlobalChat(text)}/>}
+          {/* en mobile, la misión y las tropas para colocar van acá, siempre a la vista debajo
+              de la bandeja de acciones — llenan el espacio que sobraba en vez de dejarlo
+              vacío. En desktop se oculta (ya están en el panel "Vos" de la izquierda). */}
+          <div className="mobile-inline-mission">
+            <MissionStrip S={S} curP={S.players.find(p => p.id === youAre)} humanTurn={humanTurn}/>
           </div>
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
