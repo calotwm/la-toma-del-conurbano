@@ -426,6 +426,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .combat-loss { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; }
 .combat-loss.atk { background: rgba(255,77,77,.15); color: var(--red-l); border: 1px solid rgba(255,77,77,.4); }
 .combat-loss.def { background: rgba(251,191,36,.15); color: var(--gold-light); border: 1px solid rgba(251,191,36,.4); }
+.combat-tie-msg { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: .5px; background: rgba(148,163,184,.15); color: var(--muted); border: 1px solid var(--line); }
 
 @media (max-width: 480px) {
   .combat-die { width: clamp(38px, 15vw, 50px); height: clamp(38px, 15vw, 50px); }

@@ -146,6 +146,7 @@ export default function DiceOverlay({ S, dice, battle, armed, onRoll }) {
           <div className="combat-tally">
             {tally.al > 0 && <span className="combat-loss atk">{atkName} pierde {tally.al}</span>}
             {tally.dl > 0 && <span className="combat-loss def">{defName} pierde {tally.dl}</span>}
+            {tally.al === 0 && tally.dl === 0 && <span className="combat-tie-msg">Empate: no pierde nadie</span>}
           </div>
         )}
       </div>
