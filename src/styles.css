@@ -157,9 +157,12 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .log-section { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .log-section .frame.panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }
 .log-section .logbox { flex: 1; min-height: 0; max-height: none; }
-.chat-section { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.chat-section {
+  flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 6px; margin-top: 10px;
+  background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 10px;
+} /* fondo propio siempre oscuro debajo: antes quedaba expuesto al celeste/blanco del fondo de la página */
 .chat-section-hdr {
-  display: flex; align-items: center; gap: 6px; font-size: 12px; color: #3b82f6;
+  display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--celeste);
   text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; flex: none;
   border-bottom: 1px solid #2d3852; padding-bottom: 8px;
 }
@@ -171,10 +174,10 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   color: var(--muted); font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
 }
 .chat-section-tabs button .mat { font-size: 14px; }
-.chat-section-tabs button.on { background: rgba(56,189,248,.12); border-color: var(--celeste); color: #3b82f6; }
+.chat-section-tabs button.on { background: rgba(56,189,248,.12); border-color: var(--celeste); color: var(--celeste); }
 .chat-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 8px; }
 .chat-zone-picker { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: none; }
-.chat-zone-picker-lbl { font-size: 10px; color: #3b82f6; text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
+.chat-zone-picker-lbl { font-size: 10px; color: var(--blue-l); text-transform: uppercase; letter-spacing: .5px; font-weight: 700; }
 .chat-tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: none; }
 .chat-tab {
   padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase;
@@ -182,7 +185,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 }
 .chat-tab.on { background: color-mix(in srgb, var(--zc) 22%, transparent); border-color: var(--zc); color: var(--zc); }
 .chat-list { flex: 1; min-height: 60px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 4px 2px; }
-.chat-empty { font-size: 11px; color: #3b82f6; font-style: italic; text-align: center; margin-top: 12px; }
+.chat-empty { font-size: 11px; color: var(--blue-l); font-style: italic; text-align: center; margin-top: 12px; }
 .chat-msg { background: var(--surface2); border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; max-width: 92%; align-self: flex-start; }
 .chat-msg.mine { align-self: flex-end; background: rgba(56,189,248,.12); border-color: var(--celeste); }
 .chat-msg-name { display: block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px; color: var(--celeste); margin-bottom: 2px; }
