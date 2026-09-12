@@ -68,13 +68,13 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
         <strong style={{ color: 'var(--celeste)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 50% ({info.base}){info.zones ? ' · +' + info.zones * 4 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
       </div>
       {S.phase === 'reinforce' && isMyTurn && (
-        <div className="bastion" style={{ borderColor: 'var(--gold-ornate)', background: 'linear-gradient(90deg,#1f2410,#121826,#1f2410)' }}>
+        <div className="bastion" style={{ borderColor: 'var(--gold)', background: 'linear-gradient(90deg,#1f2410,#121826,#1f2410)', flexWrap: 'wrap' }}>
           <div className="bastion-ic"><span className="mat">payments</span></div>
-          <div style={{ flex: 1 }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
             <div className="bastion-t" style={{ fontSize: 13 }}>A COLOCAR AHORA</div>
             <div className="bastion-s" style={{ color: 'var(--celeste)', fontWeight: 800, fontSize: 20 }}>{S.pool} tropas</div>
           </div>
-          <div className="mat" style={{ fontSize: 28, color: 'var(--celeste)' }}>group_add</div>
+          <div className="mat" style={{ fontSize: 28, color: 'var(--celeste)', flex: 'none' }}>group_add</div>
         </div>
       )}
 

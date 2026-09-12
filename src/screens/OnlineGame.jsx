@@ -254,7 +254,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <PlayerPanel S={S} setS={setS} curP={S.players.find(p => p.id === youAre)} me={me} selCards={selCards} setSelCards={setSelCards}
               onTrade={(indices) => getSocket().emit('game:tradeCards', { code, indices })}/>
-            <div className="frame panel" style={{ flex: 1, minHeight: 0 }}>
+            <div className="frame panel" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
               <span className="corner corner-bl"></span><span className="corner corner-br"></span>
               <div className="panel-title"><h3>Elenco de facciones</h3></div>

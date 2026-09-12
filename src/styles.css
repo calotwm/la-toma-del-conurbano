@@ -219,7 +219,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .game-fit .col-right { overflow-y: auto; }
 
 .panel { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
-.panel-title { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2d3852; padding-bottom: 8px; }
+.panel-title { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid #2d3852; padding-bottom: 8px; }
 .panel-title h3 { font-size: 12px; color: var(--celeste); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 800; }
 .minitag { font-family: 'Inter', sans-serif; font-size: 9px; padding: 2px 8px; border-radius: 4px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
 
@@ -347,19 +347,22 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .action-group { display: contents; }
 .action-row button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
 /* la columna de acciones en desktop es angosta (240-320px, más angosta todavía entre 901-1280px):
-   los botones con la frase entera ("Cortar ataque → reagrupar", "Terminar turno") quedaban
-   amontonados y el texto se cortaba en dos líneas dentro de la píldora — versión corta */
+   la frase entera ("Cortar ataque → reagrupar", "Terminar turno") dejaba espacios desaprovechados
+   en la píldora — quedan solo como ícono, chiquitos y parejos con "Atacar"/"Quitar selección" */
 @media (min-width: 901px) {
   .panel-actions .action-group-final .lbl-full,
-  .panel-actions .btn-fill-row .lbl-full { display: none; }
-  .panel-actions .action-group-final .lbl-short,
-  .panel-actions .btn-fill-row .lbl-short { display: inline; }
-  .panel-actions .action-group-final { display: flex; flex-wrap: nowrap; gap: 6px; width: 100%; }
+  .panel-actions .action-group-final .lbl-short { display: none !important; }
+  .panel-actions .action-group-final { display: flex; flex-wrap: nowrap; gap: 6px; width: auto; margin-left: auto; }
   .panel-actions .action-group-final button {
-    flex: 1 1 0; min-width: 0; padding: 9px 6px; white-space: nowrap;
-    font-size: 11px !important; font-weight: 700 !important; gap: 5px !important;
+    flex: none; width: 34px; height: 34px; min-width: 0; padding: 0 !important;
+    display: flex; align-items: center; justify-content: center; gap: 0 !important;
   }
-  .panel-actions .action-group-final button .mat { font-size: 15px !important; }
+  .panel-actions .action-group-final button .mat { font-size: 17px !important; }
+  .panel-actions .action-row { justify-content: space-between; align-items: center; }
+  /* "Atacar" (tirar los dados), junto a Quitar selección: mismo tratamiento, solo ícono */
+  .panel-actions .subhud .tirar-subhud { width: 34px !important; height: 34px; padding: 0 !important; }
+  .panel-actions .subhud .tirar-subhud .btn-label { display: none; }
+  .panel-actions .subhud .tirar-subhud .mat { font-size: 17px !important; }
   /* el botón de atacar (tirar los dados) va al lado de "Quitar selección" arriba, en vez de
      abajo en su propia fila junto a los dados — aprovecha el espacio que quedaba vacío */
   .panel-actions .action-group-dice .tirar-inline { display: none !important; }

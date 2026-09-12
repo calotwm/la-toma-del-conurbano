@@ -417,7 +417,7 @@ export default function Game({ S, setS }) {
           <div className={'col panel-you' + (mobileDrawer === 'you' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <PlayerPanel S={S} setS={setS} curP={curP} me={me} selCards={selCards} setSelCards={setSelCards}/>
-            <div className="frame panel" style={{ flex: 1, minHeight: 0 }}>
+            <div className="frame panel" style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
               <span className="corner corner-tl"></span><span className="corner corner-tr"></span>
               <span className="corner corner-bl"></span><span className="corner corner-br"></span>
               <div className="panel-title"><h3>Elenco de facciones</h3></div>
