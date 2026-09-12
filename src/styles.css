@@ -573,7 +573,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   /* el mapa ya NO se estira a ocupar todo el alto disponible (flex:1): se achica al tamaño
      que le corresponde según su propia proporción (el viewBox mobile es 900x830), y el resto
      del alto libre queda para la bandeja de botones de abajo, que ahora puede ser más grande */
-  .map-wrap { grid-area: auto; width: 100%; flex: 1; min-height: 0; background: #0b0e14; border-radius: 10px; overflow: hidden; }
+  .map-wrap { grid-area: auto; width: 100%; flex: 0 0 auto; max-height: 44vh; min-height: 0; background: #0b0e14; border-radius: 10px; overflow: hidden; }
   /* sin borde ni sombra: que el mapa ocupe exactamente el espacio que tiene, sin "marco" que le
      robe unos pixeles de alto */
   .map-wrap .map-frame { height: 100%; border: none; box-shadow: none; border-radius: 0; }
