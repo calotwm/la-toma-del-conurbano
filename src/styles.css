@@ -48,6 +48,15 @@ button:disabled { opacity: .4; cursor: not-allowed; }
 .action-row button:active:not(:disabled), .chat-send:active:not(:disabled) { transform: scale(.94); }
 .mono { font-family: 'Inter', sans-serif; font-variant-numeric: tabular-nums; }
 
+/* fuente de íconos autohospedada (antes venía de Google Fonts): si esa conexión anda
+   lenta o está bloqueada, antes se veían los nombres de los íconos como texto en vez
+   del ícono — ahora no depende de terceros para algo tan básico */
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  src: url('/MaterialSymbolsOutlined.ttf') format('truetype');
+  font-weight: 100 700;
+  font-display: block;
+}
 .mat {
   font-family: 'Material Symbols Outlined';
   font-weight: normal; font-style: normal; line-height: 1; display: inline-block;
