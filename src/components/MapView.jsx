@@ -185,7 +185,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
         {/* MAR al este (Río de la Plata), con costa suave */}
         <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterGrad)"/>
         <path d="M 810,0 L 1000,0 L 1000,800 L 860,800 C 830,720 810,640 810,560 C 810,440 795,300 800,150 C 802,90 806,40 810,0 Z" fill="url(#waterRipple)"/>
-        <text x={W - OX - 40} y={H / 2} transform={`rotate(90 ${W - OX - 40} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="18" letterSpacing="8" fontStyle="italic" fontFamily="'Archivo', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
+        <text x={W - OX - 40} y={H / 2} transform={`rotate(90 ${W - OX - 40} ${H / 2})`} fill="#5fa8d3" opacity="0.6" fontSize="18" letterSpacing="8" fontStyle="italic" fontFamily="'Syne', sans-serif" textAnchor="middle">RÍO DE LA PLATA</text>
 
         {/* CAPA 1: REGIONES DE ZONA (dibujadas a mano) */}
         <g id="capa-regiones">
@@ -194,7 +194,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
             return (
               <g key={k} pointerEvents="none">
                 <path d={z.bgPath} fill={z.color} fillOpacity="0.18" stroke={z.stroke} strokeWidth="3" strokeLinejoin="round"/>
-                <text x={bgLabelPos(k).x} y={bgLabelPos(k).y} textAnchor="middle" fill={z.color} fontSize="16" fontWeight="800" letterSpacing="4" fontFamily="'Archivo', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.85)', strokeWidth: 3 }}>
+                <text x={bgLabelPos(k).x} y={bgLabelPos(k).y} textAnchor="middle" fill={z.color} fontSize="16" fontWeight="800" letterSpacing="4" fontFamily="'Syne', sans-serif" style={{ paintOrder: 'stroke', stroke: 'rgba(5,7,13,.85)', strokeWidth: 3 }}>
                   {z.label.toUpperCase()}
                 </text>
               </g>

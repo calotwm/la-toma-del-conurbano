@@ -79,12 +79,12 @@ export default function Deal({ S, setS }) {
               {rollingPlayer === p.id
                 ? <span className="deal-die" style={{ fontWeight: 900, fontSize: 24 }}>?</span>
                 : rolls[p.id] != null
-                  ? <span style={{ fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 26, color: 'var(--celeste)' }}>{rolls[p.id]}</span>
+                  ? <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 900, fontSize: 26, color: 'var(--celeste)' }}>{rolls[p.id]}</span>
                   : p.human
                     ? <button className="btn-gold" style={{ padding: '8px 14px', borderRadius: 8, fontWeight: 900, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => rollOne(p.id)} disabled={rolling}>
                         <span className="mat" style={{ fontSize: 18 }}>casino</span>TIRAR
                       </button>
-                    : <span style={{ color: 'var(--muted)', fontFamily: "'Space Mono', monospace", fontSize: 12 }}>{rolling ? 'tirando...' : '...'}</span>}
+                    : <span style={{ color: 'var(--muted)', fontFamily: "'Inter', sans-serif", fontSize: 12 }}>{rolling ? 'tirando...' : '...'}</span>}
             </div>
           ))}
         </div>
@@ -105,7 +105,7 @@ export default function Deal({ S, setS }) {
             <span className="dot" style={{ background: human.color, width: 16, height: 16, borderRadius: '50%', boxShadow: '0 0 6px ' + human.color }}/>
             <b style={{ color: human.color, fontSize: 15 }}>{human.name}</b>
             <span className="minitag" style={{ color: 'var(--celeste)', background: 'rgba(116,182,232,.15)', padding: '2px 8px' }}>VOS</span>
-            <span style={{ marginLeft: 'auto', fontFamily: "'Space Mono', monospace", fontSize: 12, color: 'var(--muted)' }}>{mine.length} territorios</span>
+            <span style={{ marginLeft: 'auto', fontFamily: "'Inter', sans-serif", fontSize: 12, color: 'var(--muted)' }}>{mine.length} territorios</span>
           </div>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5, margin: '10px 0' }}>
             {mine.map(t => (
@@ -116,7 +116,7 @@ export default function Deal({ S, setS }) {
           </div>
           {myMis && (
             <div style={{ fontSize: 12, background: '#160d1f', borderLeft: '3px solid var(--pink)', padding: '8px 10px', borderRadius: '0 6px 6px 0' }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: 'var(--celeste)', textTransform: 'uppercase', letterSpacing: 1 }}>Tu misión secreta</div>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: 'var(--celeste)', textTransform: 'uppercase', letterSpacing: 1 }}>Tu misión secreta</div>
               <b style={{ color: 'var(--pink)' }}>{myMis.name}</b><br/>
               <span style={{ color: 'var(--txt)', fontSize: 11 }}>{myMis.desc(S)}</span>
             </div>

@@ -100,7 +100,7 @@ export default function Online({ onBack, onGameStart }) {
           {isJoin && (
             <label style={{ textAlign: 'left', fontSize: 12, color: 'var(--muted)' }}>Código de sala
               <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} maxLength={5} placeholder="Ej: 7K3QP"
-                style={{ display: 'block', width: '100%', marginTop: 4, padding: '9px 10px', borderRadius: 8, background: '#0d1017', border: '1px solid var(--line)', color: 'var(--celeste)', fontSize: 18, letterSpacing: 4, fontFamily: "'Space Mono', monospace", textTransform: 'uppercase' }}/>
+                style={{ display: 'block', width: '100%', marginTop: 4, padding: '9px 10px', borderRadius: 8, background: '#0d1017', border: '1px solid var(--line)', color: 'var(--celeste)', fontSize: 18, letterSpacing: 4, fontFamily: "'Inter', sans-serif", textTransform: 'uppercase' }}/>
             </label>
           )}
           {err && <div style={{ color: 'var(--red-l)', fontSize: 12 }}>{err}</div>}
@@ -125,7 +125,7 @@ export default function Online({ onBack, onGameStart }) {
         <span className="corner corner-bl"></span><span className="corner corner-br"></span>
         <div style={{ textAlign: 'center', marginBottom: 10 }}>
           <div style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 1 }}>Código de sala — pasaselo a tus amigos</div>
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 34, fontWeight: 900, color: 'var(--celeste)', letterSpacing: 8 }}>{myCode.current}</div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 34, fontWeight: 900, color: 'var(--celeste)', letterSpacing: 8 }}>{myCode.current}</div>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
           {room && room.players.map((p, i) => (

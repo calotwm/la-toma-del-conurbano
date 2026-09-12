@@ -358,8 +358,8 @@ export default function Game({ S, setS }) {
             <div className="turn-crest">
               <span className="turn-dot"></span>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: 'var(--celeste)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>RONDA {S.round}</div>
-                <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 11, color: '#c4d0e5' }}>Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{curP && curP.human ? ' (vos)' : curP && !curP.human ? ` · ${LEVEL_LABELS[curP.level]}` : ''}</div>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: 'var(--celeste)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: 2 }}>RONDA {S.round}</div>
+                <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 11, color: '#c4d0e5' }}>Turno de <b style={{ color: curP ? curP.color : '#fff' }}>{curP ? curP.name : '—'}</b>{curP && curP.human ? ' (vos)' : curP && !curP.human ? ` · ${LEVEL_LABELS[curP.level]}` : ''}</div>
               </div>
             </div>
 

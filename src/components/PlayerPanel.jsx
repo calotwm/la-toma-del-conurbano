@@ -57,13 +57,13 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
       {misDef && (
         <div style={{ background: '#160d1f', border: '1px solid rgba(255,46,136,.4)', borderLeft: '4px solid var(--pink)', borderRadius: '0 10px 10px 0', padding: 10 }}>
           <div className="mission-op"><span className="mat" style={{ fontSize: 16, color: 'var(--warn)' }}>verified_user</span>Tu misión</div>
-          <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 13, color: '#fff', margin: '4px 0', fontWeight: 800 }}>{misDef.name}</div>
+          <div style={{ fontFamily: "'Syne', sans-serif", fontSize: 13, color: '#fff', margin: '4px 0', fontWeight: 800 }}>{misDef.name}</div>
           <div className="mission-desc">{misDef.desc(S)}</div>
         </div>
       )}
 
       {/* próximo refuerzo (TEG: 50% de países + bonus zona/CABA) */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--muted)' }}>
         <span>REFUERZO PRÓXIMO</span>
         <strong style={{ color: 'var(--celeste)' }}>{info.total}<span style={{ fontSize: 9, color: 'var(--muted)' }}> 50% ({info.base}){info.zones ? ' · +' + info.zones * 4 + ' zonas' : ''}{info.cap ? ' · +10 CABA' : ''}</span></strong>
       </div>
@@ -92,7 +92,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
       {(() => {
         const full = ZKEYS.filter(k => ZONES[k].ids.every(t => S.terr[t].owner === curP.id)).length;
         return (
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--muted)' }}>
             <span>Zonas completas</span>
             <strong style={{ color: 'var(--celeste)' }}>{full} {full > 0 ? `(+${full * 3} refuerzo)` : ''}</strong>
           </div>
@@ -127,10 +127,10 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
 
         {canTrade && selCount >= 3 && (
           <div className="trade-banner" style={{ marginTop: 10 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--celeste)', fontFamily: "'Archivo', sans-serif", fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--celeste)', fontFamily: "'Syne', sans-serif", fontSize: 11, fontWeight: 900, textTransform: 'uppercase' }}>
               <span className="mat" style={{ fontSize: 17 }}>workspace_premium</span>Canje Habilitado
             </div>
-            <button className="btn-gold" style={{ width: '100%', marginTop: 8, padding: '9px 12px', borderRadius: 8, fontFamily: "'Archivo', sans-serif", fontWeight: 900, fontSize: 11, textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => {
+            <button className="btn-gold" style={{ width: '100%', marginTop: 8, padding: '9px 12px', borderRadius: 8, fontFamily: "'Syne', sans-serif", fontWeight: 900, fontSize: 11, textTransform: 'uppercase', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }} onClick={() => {
               if (onTrade) { onTrade(selected); setSelCards([]); return; }
               const s = clone(S);
               const p = s.players.find(x => x.id === me);

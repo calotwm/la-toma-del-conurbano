@@ -48,7 +48,7 @@ export default function Setup({ onStart, onBack, initial }) {
       <button className="btn-ghost" style={{ alignSelf: 'flex-start' }} onClick={onBack}><span className="mat" style={{ fontSize: 18, verticalAlign: -3 }}>arrow_back</span> Volver</button>
       <h1 className="logo embossed" style={{ fontSize: 30 }}>ARMAR LA PELOTERA</h1>
 
-      <div style={{ fontFamily: "'Space Mono', monospace", color: 'var(--muted)', fontSize: 12 }}>JUGADORES: <strong style={{ color: 'var(--celeste)' }}>{count}</strong></div>
+      <div style={{ fontFamily: "'Inter', sans-serif", color: 'var(--muted)', fontSize: 12 }}>JUGADORES: <strong style={{ color: 'var(--celeste)' }}>{count}</strong></div>
       <div className="countrow">
         {[2, 3, 4, 5, 6].map(n => (
           <button key={n} className={'countbtn' + (n === count ? ' on' : '')} onClick={() => setCount(n)}>{n}</button>
@@ -59,7 +59,7 @@ export default function Setup({ onStart, onBack, initial }) {
         <input type="checkbox" checked={missions} onChange={e => setMissions(e.target.checked)}/>
         Misiones especiales (ganás apenas cumplís la tuya: dominar La Capital, el Norte, el Oeste o el Sur, o eliminar a un rival)
       </label>
-      <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, color: 'var(--muted)' }}>Mínimo 1 humano. La Capital arranca NEUTRAL con 8 tropas (El Estado defiende).</div>
+      <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: 'var(--muted)' }}>Mínimo 1 humano. La Capital arranca NEUTRAL con 8 tropas (El Estado defiende).</div>
 
       {metas.map((m, i) => (
         <div className="pcard" key={i} style={{ gridTemplateColumns: 'auto 1fr auto' }}>
