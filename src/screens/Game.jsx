@@ -337,6 +337,11 @@ export default function Game({ S, setS }) {
   const maxD = originT ? Math.min(3, originT.troops - 1) : 1;
   const isCapT = !!(sel && sel.t === 'capital');
 
+  const sendLocalChat = (text) => {
+    const from = curP ? curP.name : 'Vos';
+    setChat(c => [...c, { name: from, zone: myZone, text, ts: Date.now() }]);
+  };
+
   return (
     <div className="game-shell">
       {/* ======= HEADER FILETEADO ======= */}
@@ -511,6 +516,13 @@ onEndTurn={endHumanTurn}
           />
           </div>
 
+          {/* en mobile el chat vive acá, siempre a la vista debajo de la bandeja de acciones —
+              llena el espacio que sobraba en vez de dejarlo vacío. En desktop se oculta (ahí
+              el chat ya está en la columna de la derecha, junto a la Bitácora). */}
+          <div className="mobile-inline-chat">
+            <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={sendLocalChat}/>
+          </div>
+
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <div className="log-section">
@@ -518,10 +530,7 @@ onEndTurn={endHumanTurn}
             </div>
             <div className="chat-section">
               <div className="chat-section-hdr"><span className="mat">forum</span>Chat</div>
-              <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={(text) => {
-                const from = curP ? curP.name : 'Vos';
-                setChat(c => [...c, { name: from, zone: myZone, text, ts: Date.now() }]);
-              }}/>
+              <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={sendLocalChat}/>
             </div>
           </div>
         </div>

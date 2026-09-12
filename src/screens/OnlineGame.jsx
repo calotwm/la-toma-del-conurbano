@@ -306,6 +306,19 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
             />
           </div>
 
+          {/* en mobile el chat vive acá, siempre a la vista debajo de la bandeja de acciones —
+              llena el espacio que sobraba en vez de dejarlo vacío. En desktop se oculta (ahí
+              el chat ya está en la columna de la derecha, junto a la Bitácora). */}
+          <div className="mobile-inline-chat">
+            <div className="chat-section-tabs">
+              <button className={chatTab === 'match' ? 'on' : ''} onClick={() => setChatTab('match')}><span className="mat">groups</span>Partida</button>
+              <button className={chatTab === 'global' ? 'on' : ''} onClick={() => setChatTab('global')}><span className="mat">public</span>General</button>
+            </div>
+            {chatTab === 'match'
+              ? <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
+              : <ChatPanel chat={globalChat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendGlobalChat(text)}/>}
+          </div>
+
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
             <div className="log-section">
