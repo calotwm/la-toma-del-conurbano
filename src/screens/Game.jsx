@@ -3,7 +3,7 @@ import { PHRASES, ADJ, TIDS, pick } from '../data.js';
 import {
   advanceTurn, aiPlacementPlan, aiPickAttack, aiFortifyPlan, canAttack,
   rollDice, battleResult, applyConquest, clone, log, saveGame,
-  ownersCount, tName, playerName, MISSION_DEFS,
+  ownersCount, totalTroops, tName, playerName, MISSION_DEFS,
 } from '../engine.js';
 import { Sound } from '../sound.js';
 import MapView from '../components/MapView.jsx';
@@ -397,6 +397,9 @@ export default function Game({ S, setS }) {
             </div>
             <div className="chip">
               <b>{curP.hand.length}</b><span>Naipes</span>
+            </div>
+            <div className="chip">
+              <b>{totalTroops(S, curP.id)}</b><span>Tropas</span>
             </div>
           </div>
         )}

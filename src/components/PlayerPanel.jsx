@@ -1,6 +1,6 @@
 import { ZONES, ZKEYS, PHRASES, pick } from '../data.js';
 import {
-  ownersCount, reinforceInfo, repTitleFor, playerName, emblemName, tradeValue, log, clone, MISSION_DEFS,
+  ownersCount, totalTroops, reinforceInfo, repTitleFor, playerName, emblemName, tradeValue, log, clone, MISSION_DEFS,
 } from '../engine.js';
 import { Sound } from '../sound.js';
 
@@ -50,6 +50,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
         <div className="counter"><b>{n}</b><span>Municipios</span></div>
         <div className="counter blue"><b>{S.terr.capital.owner === curP.id ? 'SÍ' : 'NO'}</b><span>La Capital</span></div>
         <div className="counter red"><b>{curP.hand.length}</b><span>Naipes</span></div>
+        <div className="counter green"><b>{totalTroops(S, curP.id)}</b><span>Tropas</span></div>
       </div>
 
       {/* misión (prominente, arriba) */}
@@ -57,7 +58,7 @@ export default function PlayerPanel({ S, setS, curP, me, selCards, setSelCards, 
         <div style={{ background: '#160d1f', border: '1px solid rgba(255,46,136,.4)', borderLeft: '4px solid var(--pink)', borderRadius: '0 10px 10px 0', padding: 10 }}>
           <div className="mission-op"><span className="mat" style={{ fontSize: 16, color: 'var(--warn)' }}>verified_user</span>Tu misión</div>
           <div style={{ fontFamily: "'Archivo', sans-serif", fontSize: 13, color: '#fff', margin: '4px 0', fontWeight: 800 }}>{misDef.name}</div>
-          <div className="mission-desc">{misDef.desc}</div>
+          <div className="mission-desc">{misDef.desc(S)}</div>
         </div>
       )}
 

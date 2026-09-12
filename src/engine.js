@@ -10,6 +10,7 @@ export const tName = id => (TERR.find(t => t.id === id) || { name: id }).name;
 
 export const ownersCount = (s, p) => TIDS.filter(t => s.terr[t].owner === p).length;
 export const ownedTerrs = (s, p) => TIDS.filter(t => s.terr[t].owner === p);
+export const totalTroops = (s, p) => TIDS.filter(t => s.terr[t].owner === p).reduce((sum, t) => sum + s.terr[t].troops, 0);
 
 export function leaderId(s) {
   let best = null, bn = -1;
@@ -46,19 +47,27 @@ export function repTitleFor(terrCount, ownsCap) {
 function zoneOwned(s, p, k) { return ZONES[k].ids.every(t => s.terr[t].owner === p); }
 function otherZones(s, p, excl) { return ZKEYS.filter(k => k !== excl && k !== 'capital').reduce((acc, k) => acc + ZONES[k].ids.filter(t => s.terr[t].owner === p).length, 0); }
 
+// Con más jugadores el mapa se reparte en más pedazos, así que juntar una porción grande
+// cuesta más — el umbral baja a medida que se suman jugadores (2 = el máximo exigido,
+// 6 = el mínimo). Todas las misiones "de cantidad" escalan con esta función.
+function scaleByPlayers(s, base, step, min) {
+  return Math.max(min, base - (s.players.length - 2) * step);
+}
+
 export const MISSION_DEFS = {
-  capital: { name: 'Dominar la Capital', desc: 'Tener La Capital y al menos 17 territorios del conurbano.', check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= 17 },
-  norte:   { name: 'Conquistar el Norte', desc: 'Ocupar TODA la Zona Norte y 7 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= 7 },
-  oeste:   { name: 'Conquistar el Oeste', desc: 'Ocupar TODA la Zona Oeste y 5 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= 5 },
-  sur:     { name: 'Conquistar el Sur', desc: 'Ocupar TODA la Zona Sur y 6 territorios de otras zonas.', check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= 6 },
-  eliminar:{ name: 'El Intocable', desc: 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
-  suroeste:{ name: 'Conquistar el Suroeste', desc: 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
-  contorno:{ name: 'Cercar la Capital', desc: 'Controlar todos los territorios que limitan con La Capital y 5 territorios más de cualquier zona.', check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) && ownersCount(s, p) >= ADJ['capital'].length + 5 },
-  el10:    { name: 'El 10 del Sur', desc: 'Tener La Capital y 10 territorios de la Zona Sur.', check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= 10 },
-  triple:  { name: 'La Triple Corona', desc: 'Controlar 8 territorios de cada zona (Norte, Oeste y Sur).', check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= 8) },
+  capital: { name: 'Dominar la Capital', desc: (s) => `Tener La Capital y al menos ${scaleByPlayers(s, 16, 2, 9)} territorios del conurbano.`, check: (s, p) => s.terr.capital.owner === p && ownersCount(s, p) >= scaleByPlayers(s, 16, 2, 9) },
+  norte:   { name: 'Conquistar el Norte', desc: (s) => `Ocupar TODA la Zona Norte y ${scaleByPlayers(s, 6, 2, 2)} territorios de otras zonas.`, check: (s, p) => zoneOwned(s, p, 'norte') && otherZones(s, p, 'norte') >= scaleByPlayers(s, 6, 2, 2) },
+  oeste:   { name: 'Conquistar el Oeste', desc: (s) => `Ocupar TODA la Zona Oeste y ${scaleByPlayers(s, 5, 1, 2)} territorios de otras zonas.`, check: (s, p) => zoneOwned(s, p, 'oeste') && otherZones(s, p, 'oeste') >= scaleByPlayers(s, 5, 1, 2) },
+  sur:     { name: 'Conquistar el Sur', desc: (s) => `Ocupar TODA la Zona Sur y ${scaleByPlayers(s, 6, 1, 2)} territorios de otras zonas.`, check: (s, p) => zoneOwned(s, p, 'sur') && otherZones(s, p, 'sur') >= scaleByPlayers(s, 6, 1, 2) },
+  eliminar:{ name: 'El Intocable', desc: () => 'Destruir por completo a un color rival.', check: (s, p) => s.players.some(o => o.id !== p && o.alive === false) },
+  suroeste:{ name: 'Conquistar el Suroeste', desc: () => 'Ocupar La Matanza, San Justo, Flores y Ezeiza a la vez.', check: (s, p) => ['lamatanza','sanjusto','flores','ezeiza'].every(t => s.terr[t].owner === p) },
+  contorno:{ name: 'Cercar la Capital', desc: (s) => `Controlar todos los territorios que limitan con La Capital y ${scaleByPlayers(s, 5, 2, 1)} territorios más de cualquier zona.`, check: (s, p) => ADJ['capital'].every(t => s.terr[t].owner === p) && ownersCount(s, p) >= ADJ['capital'].length + scaleByPlayers(s, 5, 2, 1) },
+  el10:    { name: 'El 10 del Sur', desc: (s) => `Tener La Capital y ${scaleByPlayers(s, 7, 1, 5)} territorios de la Zona Sur.`, check: (s, p) => s.terr.capital.owner === p && ZONES.sur.ids.filter(t => s.terr[t].owner === p).length >= scaleByPlayers(s, 7, 1, 5) },
+  triple:  { name: 'La Triple Corona', desc: (s) => `Controlar ${scaleByPlayers(s, 7, 1, 5)} territorios de cada zona (Norte, Oeste y Sur).`, check: (s, p) => ['norte','oeste','sur'].every(k => ZONES[k].ids.filter(t => s.terr[t].owner === p).length >= scaleByPlayers(s, 7, 1, 5)) },
 };
-// Objetivo común (TEG real): ocupar 30 de los 35 territorios
-export const COMMON_GOAL = 30;
+// Objetivo común (TEG real): ocupar la gran mayoría del mapa — el número baja con más
+// jugadores (repartir 41 territorios entre 6 personas deja porciones más chicas que entre 2).
+export function commonGoal(s) { return scaleByPlayers(s, 24, 3, 15); }
 
 // ---------- Eventos del Informe Metropolitano ----------
 export const EVENTS = [
@@ -137,11 +146,17 @@ export function tradeValue(s, pid, cards) {
 }
 
 // ---------- Batallas ----------
+// dado justo: cada cara 1/6 (16.67%) exacto, sin sesgo — Math.random() ya es uniforme.
 export function rollDice(n) { return Array.from({ length: n }, () => 1 + Math.floor(Math.random() * 6)); }
 export function battleResult(atk, def) {
   const a = [...atk].sort((x, y) => y - x), d = [...def].sort((x, y) => y - x);
   let al = 0, dl = 0;
-  for (let i = 0; i < Math.min(a.length, d.length); i++) { if (a[i] > d[i]) dl++; else al++; }
+  for (let i = 0; i < Math.min(a.length, d.length); i++) {
+    if (a[i] > d[i]) dl++;
+    else if (a[i] < d[i]) al++;
+    // empate exacto: no pierde nadie (antes el empate lo ganaba siempre el defensor,
+    // la regla clásica del TEG/Risk — hacía que atacar se sintiera injustamente difícil)
+  }
   return { al, dl, a, d };
 }
 export function canAttack(s, pid, o, t, diceN) {
@@ -205,7 +220,7 @@ export function startTurn(s, pid) {
       log(s, `» ${p.name} canjea cartas y suma ${v} tropas.`, 'card');
     }
   }
-  let bonusText = `50% de ${info.own} países = ${info.base}`;
+  let bonusText = `50% de ${info.own} localidades = ${info.base}`;
   if (info.zones) bonusText += `, +${info.zones * 4} zonas`;
   if (info.cap) bonusText += ', +10 CABA';
   log(s, `» Turno de ${p.name}. Refuerzos: ${info.total} (${bonusText}).`, 'sys');
@@ -268,8 +283,7 @@ export function applyConquest(s, pid, o, t, diceN, al, dl) {
       log(s, `» ${lost.name} quedó sin territorios: ELIMINADO. Sus cartas van para ${playerName(s, pid)}.`, 'lose');
     }
   }
-  // Objetivo común (TEG real): ocupar 25 territorios
-  if (!s.winner && ownersCount(s, pid) >= COMMON_GOAL) { s.winner = pid; s.winReason = 'common'; }
+  if (!s.winner && ownersCount(s, pid) >= commonGoal(s)) { s.winner = pid; s.winReason = 'common'; }
   if (s.missionsOn && !s.winner) {
     const mp = s.players.find(p => p.id === pid);
     if (mp && MISSION_DEFS[mp.mission] && MISSION_DEFS[mp.mission].check(s, pid)) {
