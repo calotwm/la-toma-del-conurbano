@@ -31,8 +31,9 @@ export class RoomStore {
       slots: [{ socketId, name: cleanName(name), human: true, connected: true, id: null }],
       bots: [], // { name, level }
       state: null, // estado del motor (engine.js) una vez arrancada
-      // chat "foro": no hay canal global, cada zona del mapa tiene su propia charla
-      chat: { capital: [], norte: [], oeste: [], sur: [] },
+      // chat: un solo feed compartido por sala — cada uno elige su zona como identidad/bandera,
+      // no como canal separado (todos leen y escriben en el mismo lugar)
+      chat: [],
       createdAt: Date.now(), lastActivity: Date.now(),
     };
     this.rooms.set(code, room);
@@ -84,16 +85,15 @@ export class RoomStore {
 
   addChat(code, socketId, zone, text) {
     const room = this.get(code);
-    if (!room || !CHAT_ZONES.includes(zone)) return null;
+    if (!room) return null;
     const slot = room.slots.find(s => s.socketId === socketId);
     if (!slot) return null;
     const t = String(text || '').trim().slice(0, 300);
     if (!t) return null;
     room.lastActivity = Date.now();
-    const msg = { by: socketId, name: slot.name, text: t, ts: Date.now() };
-    const hist = room.chat[zone];
-    hist.push(msg);
-    if (hist.length > CHAT_HISTORY_MAX) hist.splice(0, hist.length - CHAT_HISTORY_MAX);
+    const msg = { by: socketId, name: slot.name, zone: CHAT_ZONES.includes(zone) ? zone : null, text: t, ts: Date.now() };
+    room.chat.push(msg);
+    if (room.chat.length > CHAT_HISTORY_MAX) room.chat.splice(0, room.chat.length - CHAT_HISTORY_MAX);
     return msg;
   }
 

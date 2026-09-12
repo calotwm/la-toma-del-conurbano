@@ -152,33 +152,18 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .panel-actions { overflow-y: auto; }
 .panel-log { overflow-y: auto; display: flex; flex-direction: column; min-height: 0; }
 
-/* ---------- Chat foro (por zona: sin canal global), chiquito y siempre activo abajo a la derecha ---------- */
-.floating-chat { position: fixed; right: 12px; bottom: 16px; z-index: 75; pointer-events: none; }
-.floating-chat-panel {
-  pointer-events: auto;
-  width: min(230px, calc(100vw - 24px)); height: 220px; display: flex; flex-direction: column;
-  background: rgba(17,20,27,.94); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: 12px;
-  padding: 8px; box-shadow: 0 10px 30px rgba(0,0,0,.5);
+/* ---------- Chat foro: un solo feed compartido, con pestañas Partida/Chat en el panel lateral ---------- */
+.log-chat-tabs { display: flex; gap: 6px; flex: none; margin-bottom: 8px; }
+.log-chat-tabs button {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 7px 8px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--line);
+  color: var(--muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
 }
-@media (max-width: 900px) {
-  /* abajo ya está ocupado por la bandeja fija de Auto/Atacar: en mobile va arriba a la derecha,
-     debajo del header, para no taparse con nada */
-  .floating-chat { right: 6px; bottom: auto; top: 118px; }
-  .floating-chat-panel { width: min(170px, calc(100vw - 12px)); height: 150px; padding: 5px; }
-}
-/* versión compacta del chat dentro de la cajita flotante */
-.floating-chat-panel .chat-panel { gap: 5px; }
-.floating-chat-panel .chat-tabs { gap: 3px; }
-.floating-chat-panel .chat-tab { padding: 3px 7px; font-size: 8.5px; }
-.floating-chat-panel .chat-list { min-height: 0; gap: 4px; padding: 2px 1px; }
-.floating-chat-panel .chat-empty { font-size: 9.5px; margin-top: 6px; }
-.floating-chat-panel .chat-msg { padding: 4px 7px; }
-.floating-chat-panel .chat-msg-name { font-size: 8px; margin-bottom: 1px; }
-.floating-chat-panel .chat-msg-text { font-size: 11px; }
-.floating-chat-panel .chat-input { padding: 6px 8px; font-size: 11px; }
-.floating-chat-panel .chat-send { width: 32px; height: 32px; }
-.floating-chat-panel .chat-send .mat { font-size: 15px; }
+.log-chat-tabs button .mat { font-size: 15px; }
+.log-chat-tabs button.on { background: rgba(56,189,248,.12); border-color: var(--celeste); color: var(--celeste); }
 .chat-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 8px; }
+.chat-zone-picker { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: none; }
+.chat-zone-picker-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
 .chat-tabs { display: flex; gap: 4px; flex-wrap: wrap; flex: none; }
 .chat-tab {
   padding: 5px 10px; border-radius: 20px; font-size: 10px; font-weight: 800; text-transform: uppercase;

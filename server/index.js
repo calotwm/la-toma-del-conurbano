@@ -100,7 +100,7 @@ io.on('connection', (socket) => {
   // chat "foro" por zona (Capital/Norte/Oeste/Sur): sin canal global, cada uno elige dónde hablar
   socket.on('chat:send', ({ code, zone, text } = {}) => {
     const msg = store.addChat(code, socket.id, zone, text);
-    if (msg) io.to(String(code || '').toUpperCase()).emit('chat:new', { zone, message: msg });
+    if (msg) io.to(String(code || '').toUpperCase()).emit('chat:new', { message: msg });
   });
   // pide el historial de nuevo (al entrar a la pantalla de juego, o tras reconectar)
   socket.on('chat:sync', ({ code } = {}) => {
