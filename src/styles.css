@@ -340,6 +340,9 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
     font-size: 11px !important; font-weight: 700 !important; gap: 5px !important;
   }
   .panel-actions .action-group-final button .mat { font-size: 15px !important; }
+  /* el botón de atacar (tirar los dados) va al lado de "Quitar selección" arriba, en vez de
+     abajo en su propia fila junto a los dados — aprovecha el espacio que quedaba vacío */
+  .panel-actions .action-group-dice .tirar-inline { display: none !important; }
 }
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(251,191,36,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(252,211,77,.8)); }
@@ -588,6 +591,8 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-actions .phase-pill .lbl { font-size: 8px; }
   /* el div espaciador flex:1 (para separar en desktop) no aporta nada apilado en columna: fuera */
   .panel-actions .subhud > div:empty { display: none; }
+  /* en mobile "Atacar" sigue abajo junto a los dados (tirar-inline), no acá arriba */
+  .panel-actions .tirar-subhud { display: none !important; }
   /* "quitar selección" flota arriba a la derecha, sobre el espacio vacío de la píldora de fase,
      en vez de ocupar su propia fila entera solo para un ícono */
   .panel-actions .subhud > button:last-child {

@@ -71,6 +71,11 @@ export default function ActionBar(props) {
               ? <div className="bastion-s" style={{ color: 'var(--muted)' }}>Desde <b style={{ color: '#fff' }}>{tName(sel.o)}</b> ({oT.troops}) — elegí un territorio lindero enemigo o neutral.</div>
               : <div className="bastion-s" style={{ color: 'var(--muted)' }}><b style={{ color: '#fff' }}>{tName(sel.o)}</b> ataca a <b style={{ color: 'var(--warn)' }}>{tName(sel.t)}</b> ({tT.troops}){sel.t === 'capital' ? ' — ¡LA JOYA!' : ''}</div>}
           <div style={{ flex: 1 }}></div>
+          {sel && sel.o && sel.t && (
+            <button className="btn-red tirar-subhud" disabled={dn == null || dn > maxD} style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
+              <span className="mat" style={{ fontSize: 15 }}>casino</span><span className="btn-label">Atacar</span>
+            </button>
+          )}
           <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setSel(null)}>
             <span className="mat" style={{ fontSize: 15 }}>close</span><span className="btn-label">Quitar selección</span>
           </button>
@@ -83,7 +88,7 @@ export default function ActionBar(props) {
               {opts.filter(n => n >= minD).map(n => (
                 <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
               ))}
-              <button className="btn-red" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
+              <button className="btn-red tirar-inline" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
                 <span className="mat" style={{ fontSize: 16 }}>casino</span><span className="btn-label">TIRAR</span>
               </button>
               <span className="action-row-sep"/>
