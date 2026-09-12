@@ -160,7 +160,7 @@ export default function MapView({ S, sel, battle, onTerr }) {
       onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={endPointer} onPointerCancel={endPointer}
     >
       <svg
-        viewBox={vb} preserveAspectRatio={isMobile ? 'xMidYMid slice' : 'xMidYMid meet'} className="w-full h-full select-none"
+        viewBox={vb} preserveAspectRatio="xMidYMid meet" className="w-full h-full select-none"
         style={isMobile ? { transform: `translate(${view.x}px, ${view.y}px) scale(${view.scale})`, transformOrigin: '0 0', transition: gesture.current.mode ? 'none' : 'transform .2s ease-out' } : undefined}
       >
         <defs>
