@@ -573,7 +573,7 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   /* el mapa ya NO se estira a ocupar todo el alto disponible (flex:1): se achica al tamaño
      que le corresponde según su propia proporción (el viewBox mobile es 900x830), y el resto
      del alto libre queda para la bandeja de botones de abajo, que ahora puede ser más grande */
-  .map-wrap { grid-area: auto; width: 100%; flex: 0 0 auto; aspect-ratio: 900 / 830; max-height: 58vh; background: #0b0e14; border-radius: 10px; overflow: hidden; }
+  .map-wrap { grid-area: auto; width: 100%; flex: 1; min-height: 0; background: #0b0e14; border-radius: 10px; overflow: hidden; }
   /* sin borde ni sombra: que el mapa ocupe exactamente el espacio que tiene, sin "marco" que le
      robe unos pixeles de alto */
   .map-wrap .map-frame { height: 100%; border: none; box-shadow: none; border-radius: 0; }
@@ -586,14 +586,12 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
      visible arriba. Sigue "desplegándose sola" porque nunca es una pestaña que haya que
      abrir: siempre está ahí, debajo del mapa, con su propio scroll interno si hace falta. */
   .game-fit .panel-actions {
-    display: flex !important; flex-direction: column; justify-content: center; flex: 1; width: 100%;
-    min-height: 0; overflow-y: auto;
+    display: flex !important; flex-direction: column; flex: none; width: 100%;
+    min-height: 0; max-height: 42vh; overflow-y: auto;
     padding: 8px; background: #0d131fef;
     border: 1px solid var(--line); border-top: 2px solid var(--gold);
     border-radius: 14px 14px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,.4);
   }
-  /* en el turno del bot, ActionBar no renderiza nada: no dejar una caja vacía flotando */
-  .game-fit .panel-actions:empty { flex: 0 0 auto; min-height: 0; padding: 0; border: none; box-shadow: none; }
   .panel-actions .frame .corner { display: none; }
   .panel-actions .frame { padding: 7px 9px; }
   .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 3px; padding: 7px; position: relative; }
