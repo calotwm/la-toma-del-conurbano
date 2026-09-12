@@ -92,6 +92,7 @@ button:disabled { opacity: .4; cursor: not-allowed; }
 .btn-ghost { background: transparent; color: var(--txt); border: 1px solid var(--line); padding: 12px 22px; font-weight: 600; }
 .btn-ghost:hover { border-color: var(--gold); color: var(--gold-light); }
 .btn-big { font-size: 16px; padding: 14px 30px; border-radius: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+.lbl-short { display: none; } /* versión corta del texto del botón, solo se muestra en mobile */
 
 /* ---------- Ticker ---------- */
 @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
@@ -325,6 +326,19 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
    en desktop es transparente al layout, como si no estuviera */
 .action-group { display: contents; }
 .action-row button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
+/* la columna de acciones en desktop es angosta (240-320px, más angosta todavía entre 901-1280px):
+   los botones con la frase entera ("Cortar ataque → reagrupar", "Terminar turno") quedaban
+   amontonados y el texto se cortaba en dos líneas dentro de la píldora — versión corta */
+@media (min-width: 901px) {
+  .panel-actions .action-group-final .lbl-full,
+  .panel-actions .btn-fill-row .lbl-full { display: none; }
+  .panel-actions .action-group-final .lbl-short,
+  .panel-actions .btn-fill-row .lbl-short { display: inline; }
+  .panel-actions .action-group-final { display: flex; flex-wrap: nowrap; gap: 6px; width: 100%; }
+  .panel-actions .action-group-final button {
+    flex: 1 1 0; min-width: 0; padding: 9px 8px; white-space: nowrap;
+  }
+}
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(251,191,36,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(252,211,77,.8)); }
 .outcome-title { font-size: 15px; color: var(--gold-light); font-weight: 900; }
@@ -595,8 +609,11 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
     flex-direction: column !important; gap: 3px !important; padding: 6px 4px !important;
   }
   .panel-actions .btn-fill-row { width: 100%; }
-  .panel-actions .action-group-final .btn-label,
-  .panel-actions .btn-fill-row .btn-label {
+  .panel-actions .lbl-short { display: none !important; }
+  .panel-actions .action-group-final .lbl-full,
+  .panel-actions .btn-fill-row .lbl-full,
+  .panel-actions .action-group-final .btn-label:not(.lbl-short),
+  .panel-actions .btn-fill-row .btn-label:not(.lbl-short) {
     display: block !important; font-size: 9.5px !important; white-space: normal; text-align: center; line-height: 1.15;
   }
   /* botones de la bandeja: solo ícono en móvil (sin texto), chicos y cuadrados */

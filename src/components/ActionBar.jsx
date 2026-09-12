@@ -91,10 +91,12 @@ export default function ActionBar(props) {
           )}
           <div className="action-group action-group-final">
             <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
-              <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span><span className="btn-label">Cortar ataque → reagrupar</span>
+              <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span>
+              <span className="btn-label lbl-full">Cortar ataque → reagrupar</span><span className="btn-label lbl-short">Cortar</span>
             </button>
             <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-              <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
+              <span className="mat" style={{ fontSize: 18 }}>forward</span>
+              <span className="btn-label lbl-full">Terminar turno</span><span className="btn-label lbl-short">Terminar</span>
             </button>
           </div>
         </div>
@@ -143,7 +145,8 @@ export default function ActionBar(props) {
         )}
         <div className="action-group action-group-final">
           <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span><span className="btn-label">Terminar turno</span>
+            <span className="mat" style={{ fontSize: 18 }}>forward</span>
+            <span className="btn-label lbl-full">Terminar turno</span><span className="btn-label lbl-short">Terminar</span>
           </button>
         </div>
       </div>
