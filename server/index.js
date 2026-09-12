@@ -8,7 +8,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { RoomStore, roomSummary } from './rooms.js';
+import { RoomStore, roomSummary, CHAT_ZONES } from './rooms.js';
 import {
   startGame, broadcastState, maybeRunBots,
   handleReinforcePlace, handleReinforceAuto, handleAttack,
@@ -30,13 +30,13 @@ const store = new RoomStore();
 // separado del chat de cada partida, que vive en room.chat (server/rooms.js)
 const GLOBAL_CHAT_MAX = 300;
 const globalChat = [];
-function addGlobalChat(socket, text) {
+function addGlobalChat(socket, zone, text) {
   const room = store.bySocket(socket.id);
   const slot = room && room.slots.find(s => s.socketId === socket.id);
   const name = slot ? slot.name : 'Anónimo';
   const t = String(text || '').trim().slice(0, 300);
   if (!t) return null;
-  const msg = { by: socket.id, name, text: t, ts: Date.now() };
+  const msg = { by: socket.id, name, zone: CHAT_ZONES.includes(zone) ? zone : null, text: t, ts: Date.now() };
   globalChat.push(msg);
   if (globalChat.length > GLOBAL_CHAT_MAX) globalChat.splice(0, globalChat.length - GLOBAL_CHAT_MAX);
   return msg;
@@ -113,9 +113,9 @@ io.on('connection', (socket) => {
   socket.on('game:endTurn', ({ code } = {}) => { const r = store.get(code); if (r) handleEndTurn(io, store, r, socket.id); });
   socket.on('game:tradeCards', ({ code, indices } = {}) => { const r = store.get(code); if (r) handleTradeCards(io, r, socket.id, { indices }); });
 
-  // chat "foro" por zona (Capital/Norte/Oeste/Sur): sin canal global, cada uno elige dónde hablar
-  socket.on('chat:send', ({ code, zone, text } = {}) => {
-    const msg = store.addChat(code, socket.id, zone, text);
+  // chat de la partida: un solo feed para la sala, sin zona (ya sabés con quién jugás)
+  socket.on('chat:send', ({ code, text } = {}) => {
+    const msg = store.addChat(code, socket.id, text);
     if (msg) io.to(String(code || '').toUpperCase()).emit('chat:new', { message: msg });
   });
   // pide el historial de nuevo (al entrar a la pantalla de juego, o tras reconectar)
@@ -124,9 +124,10 @@ io.on('connection', (socket) => {
     if (r) socket.emit('chat:history', { chat: r.chat });
   });
 
-  // chat general: mismo mecanismo, pero para TODOS los conectados al server, no solo la sala
-  socket.on('chat:sendGlobal', ({ text } = {}) => {
-    const msg = addGlobalChat(socket, text);
+  // chat general: para TODOS los conectados al server, no solo la sala — acá sí tiene
+  // sentido el picker de zona (Capital/Norte/Oeste/Sur) como bandera de identidad
+  socket.on('chat:sendGlobal', ({ zone, text } = {}) => {
+    const msg = addGlobalChat(socket, zone, text);
     if (msg) io.emit('chat:globalNew', { message: msg });
   });
   socket.on('chat:syncGlobal', () => {

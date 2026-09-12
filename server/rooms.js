@@ -7,7 +7,7 @@ import { PLAYER_COLORS } from '../src/data.js';
 const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // sin 0/O/1/I para no confundir
 const MAX_PLAYERS = 6;
 const ROOM_TTL_MS = 6 * 60 * 60 * 1000; // 6hs sin actividad -> se limpia sola
-const CHAT_ZONES = ['capital', 'norte', 'oeste', 'sur'];
+export const CHAT_ZONES = ['capital', 'norte', 'oeste', 'sur'];
 const CHAT_HISTORY_MAX = 200;
 
 function genCode() {
@@ -83,7 +83,9 @@ export class RoomStore {
     return { room };
   }
 
-  addChat(code, socketId, zone, text) {
+  // el picker de zona (Capital/Norte/Oeste/Sur) es solo para el chat General del server,
+  // no para el chat de la partida — acá ya se sabe con quién estás jugando, no hace falta
+  addChat(code, socketId, text) {
     const room = this.get(code);
     if (!room) return null;
     const slot = room.slots.find(s => s.socketId === socketId);
@@ -91,7 +93,7 @@ export class RoomStore {
     const t = String(text || '').trim().slice(0, 300);
     if (!t) return null;
     room.lastActivity = Date.now();
-    const msg = { by: socketId, name: slot.name, zone: CHAT_ZONES.includes(zone) ? zone : null, text: t, ts: Date.now() };
+    const msg = { by: socketId, name: slot.name, text: t, ts: Date.now() };
     room.chat.push(msg);
     if (room.chat.length > CHAT_HISTORY_MAX) room.chat.splice(0, room.chat.length - CHAT_HISTORY_MAX);
     return msg;

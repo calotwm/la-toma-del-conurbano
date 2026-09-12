@@ -10,7 +10,7 @@ export const CHAT_ZONES = [
   { key: 'sur', label: 'Sur', color: '#22c55e' },
 ];
 
-export default function ChatPanel({ chat, myId, myZone, setMyZone, onSend }) {
+export default function ChatPanel({ chat, myId, myZone, setMyZone, onSend, showZonePicker }) {
   const [text, setText] = useState('');
   const listRef = useRef(null);
 
@@ -29,17 +29,19 @@ export default function ChatPanel({ chat, myId, myZone, setMyZone, onSend }) {
 
   return (
     <div className="chat-panel">
-      <div className="chat-zone-picker">
-        <span className="chat-zone-picker-lbl">Vos sos de:</span>
-        <div className="chat-tabs">
-          {CHAT_ZONES.map(z => (
-            <button key={z.key} className={'chat-tab' + (myZone === z.key ? ' on' : '')}
-              style={{ '--zc': z.color }} onClick={() => setMyZone(z.key)}>
-              {z.label}
-            </button>
-          ))}
+      {showZonePicker && (
+        <div className="chat-zone-picker">
+          <span className="chat-zone-picker-lbl">Vos sos de:</span>
+          <div className="chat-tabs">
+            {CHAT_ZONES.map(z => (
+              <button key={z.key} className={'chat-tab' + (myZone === z.key ? ' on' : '')}
+                style={{ '--zc': z.color }} onClick={() => setMyZone(z.key)}>
+                {z.label}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="chat-list" ref={listRef}>
         {msgs.length === 0 && <div className="chat-empty">Nadie escribió nada todavía. Rompé el hielo.</div>}
         {msgs.map((m, i) => {

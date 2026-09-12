@@ -325,8 +325,8 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
                 <button className={chatTab === 'global' ? 'on' : ''} onClick={() => setChatTab('global')}><span className="mat">public</span>General</button>
               </div>
               {chatTab === 'match'
-                ? <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
-                : <ChatPanel chat={globalChat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendGlobalChat(text)}/>}
+                ? <ChatPanel chat={chat} myId={getSocket().id} onSend={(text) => sendChat(code, text)} showZonePicker={false}/>
+                : <ChatPanel chat={globalChat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendGlobalChat(myZone, text)} showZonePicker/>}
             </div>
           </div>
         </div>

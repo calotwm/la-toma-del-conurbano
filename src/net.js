@@ -33,16 +33,16 @@ export function joinRoom(code, name) {
   });
 }
 
-export function sendChat(code, zone, text) {
-  getSocket().emit('chat:send', { code, zone, text });
+export function sendChat(code, text) {
+  getSocket().emit('chat:send', { code, text });
 }
 
 export function syncChat(code) {
   getSocket().emit('chat:sync', { code });
 }
 
-export function sendGlobalChat(text) {
-  getSocket().emit('chat:sendGlobal', { text });
+export function sendGlobalChat(zone, text) {
+  getSocket().emit('chat:sendGlobal', { zone, text });
 }
 
 export function syncGlobalChat() {
