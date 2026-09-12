@@ -644,11 +644,11 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
      bien grandes para tocar */
   .panel-actions .action-uniform-row .uniform-btn,
   .panel-actions .action-uniform-row .uniform-amt {
-    width: auto !important; min-width: 0 !important; max-width: 68px !important; flex: 1 1 0 !important;
-    aspect-ratio: 1; min-height: 56px !important; padding: 0 !important;
+    width: auto !important; min-width: 0 !important; max-width: 42px !important; flex: 1 1 0 !important;
+    aspect-ratio: 1; min-height: 42px !important; padding: 0 !important; font-size: 14px !important;
   }
-  .panel-actions .action-uniform-row .uniform-btn .mat { font-size: 24px !important; }
-  .panel-actions .action-uniform-row { min-height: 56px; margin-top: auto; margin-bottom: auto; }
+  .panel-actions .action-uniform-row .uniform-btn .mat { font-size: 18px !important; }
+  .panel-actions .action-uniform-row { min-height: 42px; margin-top: auto; margin-bottom: auto; gap: 6px !important; }
   .panel-actions .outcome { padding: 8px 10px !important; gap: 8px !important; }
   .panel-actions .outcome-title { font-size: 12px !important; }
   .panel-actions .outcome-body { font-size: 10.5px !important; }
