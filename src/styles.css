@@ -30,9 +30,9 @@
 html, body { margin: 0; padding: 0; }
 body {
   background:
-    radial-gradient(1200px 700px at 15% -10%, rgba(251,191,36,.08) 0%, transparent 55%),
-    radial-gradient(900px 600px at 100% 110%, rgba(56,189,248,.07) 0%, transparent 55%),
-    linear-gradient(180deg, #0b0d12 0%, #0d1017 50%, #0b0d12 100%);
+    radial-gradient(1300px 750px at 50% -10%, rgba(116,182,232,.22) 0%, transparent 60%),
+    radial-gradient(900px 600px at 100% 110%, rgba(245,247,250,.10) 0%, transparent 55%),
+    linear-gradient(180deg, #123a6b 0%, #1a4f8a 38%, #3a7fc4 62%, #74b6e8 80%, #dcebf7 100%);
   background-attachment: fixed;
   color: var(--txt);
   font-family: 'Inter', system-ui, sans-serif;
@@ -336,8 +336,10 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-actions .btn-fill-row .lbl-short { display: inline; }
   .panel-actions .action-group-final { display: flex; flex-wrap: nowrap; gap: 6px; width: 100%; }
   .panel-actions .action-group-final button {
-    flex: 1 1 0; min-width: 0; padding: 9px 8px; white-space: nowrap;
+    flex: 1 1 0; min-width: 0; padding: 9px 6px; white-space: nowrap;
+    font-size: 11px !important; font-weight: 700 !important; gap: 5px !important;
   }
+  .panel-actions .action-group-final button .mat { font-size: 15px !important; }
 }
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(251,191,36,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(252,211,77,.8)); }
