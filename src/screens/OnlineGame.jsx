@@ -324,7 +324,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
         </div>
 
         <div className="mobile-tabs">
-          <button className={'tab' + (mobileDrawer === 'you' ? ' on' : '')} onClick={() => setMobileDrawer(d => d === 'you' ? null : 'you')}><span className="mat">person</span>Vos</button>
+          <button className={'tab' + (mobileDrawer === 'you' ? ' on' : '')} onClick={() => setMobileDrawer(d => d === 'you' ? null : 'you')}><span className="mat">flag</span>Objetivo</button>
           <button className={'tab' + (mobileDrawer === 'log' ? ' on' : '')} onClick={() => setMobileDrawer(d => d === 'log' ? null : 'log')}><span className="mat">campaign</span>Bitácora</button>
         </div>
 
