@@ -42,7 +42,6 @@ export default function Game({ S, setS }) {
   // que cada mensaje queda firmado con el jugador que tiene el turno en ese momento
   const [chat, setChat] = useState([]);
   const [myZone, setMyZone] = useState('capital');
-  const [logTab, setLogTab] = useState('log');
 
   const Sref = useRef(S); Sref.current = S;
   const pendingRollResolve = useRef(null);
@@ -514,16 +513,16 @@ onEndTurn={endHumanTurn}
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
-            <div className="log-chat-tabs">
-              <button className={logTab === 'log' ? 'on' : ''} onClick={() => setLogTab('log')}><span className="mat">campaign</span>Partida</button>
-              <button className={logTab === 'chat' ? 'on' : ''} onClick={() => setLogTab('chat')}><span className="mat">forum</span>Chat</button>
+            <div className="log-section">
+              <LogPanel S={S}/>
             </div>
-            {logTab === 'log'
-              ? <LogPanel S={S}/>
-              : <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={(text) => {
-                  const from = curP ? curP.name : 'Vos';
-                  setChat(c => [...c, { name: from, zone: myZone, text, ts: Date.now() }]);
-                }}/>}
+            <div className="chat-section">
+              <div className="chat-section-hdr"><span className="mat">forum</span>Chat</div>
+              <ChatPanel chat={chat} myId="local" myZone={myZone} setMyZone={setMyZone} onSend={(text) => {
+                const from = curP ? curP.name : 'Vos';
+                setChat(c => [...c, { name: from, zone: myZone, text, ts: Date.now() }]);
+              }}/>
+            </div>
           </div>
         </div>
 

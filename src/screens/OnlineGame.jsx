@@ -29,7 +29,6 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
   const [banner, setBanner] = useState(null);
   const [flash, setFlash] = useState(false);
   const [mobileDrawer, setMobileDrawer] = useState(null);
-  const [logTab, setLogTab] = useState('log');
   const [chat, setChat] = useState([]);
   const [myZone, setMyZone] = useState('capital');
   const [soundOn, setSoundOn] = useState(true);
@@ -296,13 +295,13 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
-            <div className="log-chat-tabs">
-              <button className={logTab === 'log' ? 'on' : ''} onClick={() => setLogTab('log')}><span className="mat">campaign</span>Partida</button>
-              <button className={logTab === 'chat' ? 'on' : ''} onClick={() => setLogTab('chat')}><span className="mat">forum</span>Chat</button>
+            <div className="log-section">
+              <LogPanel S={S}/>
             </div>
-            {logTab === 'log'
-              ? <LogPanel S={S}/>
-              : <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>}
+            <div className="chat-section">
+              <div className="chat-section-hdr"><span className="mat">forum</span>Chat</div>
+              <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
+            </div>
           </div>
         </div>
 
