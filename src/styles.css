@@ -550,20 +550,17 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
      (el zoom real ahora se controla tocando el mapa) — se saca para darle más alto al mapa */
   .map-ribbon { display: none; }
 
-  /* la bandeja de acciones va FIJA pegada abajo (por encima del mapa, debajo de la barra de
-     pestañas): así se "despliega sola" siempre, sin depender de cuánto mida el mapa arriba
-     ni de que el usuario haga nada para verla — nunca queda recortada ni hay que scrollear. */
+  /* la bandeja de acciones queda DENTRO del flujo (no fixed): así el mapa se achica para
+     dejarle lugar en vez de que ella lo tape por encima — el mapa completo queda siempre
+     visible arriba. Sigue "desplegándose sola" porque nunca es una pestaña que haya que
+     abrir: siempre está ahí, debajo del mapa, con su propio scroll interno si hace falta. */
   .game-fit .panel-actions {
     display: flex !important; flex-direction: column; flex: none; width: 100%;
-    position: fixed; left: 0; right: 0; bottom: 50px; z-index: 63;
-    min-height: 0; max-height: 42vh; overflow-y: auto;
-    padding: 8px; background: #0d131fef; backdrop-filter: blur(6px);
+    min-height: 0; max-height: 38vh; overflow-y: auto;
+    padding: 8px; background: #0d131fef;
     border: 1px solid var(--line); border-top: 2px solid var(--gold);
-    border-radius: 14px 14px 0 0; box-shadow: 0 -8px 24px rgba(0,0,0,.55);
-    animation: actionsDeploy .25s cubic-bezier(.16,.8,.32,1);
+    border-radius: 14px 14px 0 0; box-shadow: 0 -4px 16px rgba(0,0,0,.4);
   }
-  @keyframes actionsDeploy { from { transform: translateY(100%); } to { transform: translateY(0); } }
-  .map-wrap { padding-bottom: 4px; }
   .panel-actions .frame .corner { display: none; }
   .panel-actions .frame { padding: 7px 9px; }
   .panel-actions .subhud { flex-direction: column; align-items: stretch; gap: 3px; padding: 7px; position: relative; }
