@@ -10,6 +10,7 @@ import MapView from '../components/MapView.jsx';
 import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
+import FloatingChat from '../components/FloatingChat.jsx';
 import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
@@ -37,6 +38,9 @@ export default function Game({ S, setS }) {
   const [battle, setBattle] = useState(null);   // {o, t, atkId, defId} — ataque visible en el mapa
   const [armedRoll, setArmedRoll] = useState(null); // {o,t,atkId,defId,aN,dN,isCapital} — dados listos, esperando que el humano los tire
   const [mobileDrawer, setMobileDrawer] = useState(null); // cajón móvil: null|you|log (mapa + acciones siempre visibles)
+  // charla local: sin server, todos comparten el mismo dispositivo (pasando el celu/PC), así
+  // que cada mensaje queda firmado con el jugador que tiene el turno en ese momento
+  const [chat, setChat] = useState({ capital: [], norte: [], oeste: [], sur: [] });
 
   const Sref = useRef(S); Sref.current = S;
   const pendingRollResolve = useRef(null);
@@ -524,6 +528,10 @@ onEndTurn={endHumanTurn}
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>
       <DiceOverlay S={S} dice={S.dice} battle={battle} armed={armedRoll} onRoll={onRoll}/>
+      <FloatingChat chat={chat} myId="local" onSend={(zone, text) => {
+        const from = curP ? curP.name : 'Vos';
+        setChat(c => ({ ...c, [zone]: [...c[zone], { name: from, text, ts: Date.now() }] }));
+      }}/>
     </div>
   );
 }

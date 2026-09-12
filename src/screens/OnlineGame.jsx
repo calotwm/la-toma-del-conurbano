@@ -2,12 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { PHRASES, ADJ, TIDS, pick } from '../data.js';
 import { rollDice, ownersCount, totalTroops, tName, playerName, MISSION_DEFS } from '../engine.js';
 import { Sound } from '../sound.js';
-import { getSocket, disconnectSocket, syncChat } from '../net.js';
+import { getSocket, disconnectSocket, syncChat, sendChat } from '../net.js';
 import MapView from '../components/MapView.jsx';
 import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
 import LogPanel from '../components/LogPanel.jsx';
-import ChatPanel from '../components/ChatPanel.jsx';
+import FloatingChat from '../components/FloatingChat.jsx';
 import DiceOverlay from '../components/DiceOverlay.jsx';
 import { Copyright } from '../components/common.jsx';
 
@@ -29,7 +29,6 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
   const [banner, setBanner] = useState(null);
   const [flash, setFlash] = useState(false);
   const [mobileDrawer, setMobileDrawer] = useState(null);
-  const [logTab, setLogTab] = useState('log');
   const [chat, setChat] = useState({ capital: [], norte: [], oeste: [], sur: [] });
   const [soundOn, setSoundOn] = useState(true);
   const [connLost, setConnLost] = useState(false);
@@ -295,11 +294,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
 
           <div className={'panel-log' + (mobileDrawer === 'log' ? ' show' : '')}>
             <button className="drawer-close" onClick={() => setMobileDrawer(null)}><span className="mat">expand_more</span></button>
-            <div className="log-chat-tabs">
-              <button className={logTab === 'log' ? 'on' : ''} onClick={() => setLogTab('log')}><span className="mat">campaign</span>Bitácora</button>
-              <button className={logTab === 'chat' ? 'on' : ''} onClick={() => setLogTab('chat')}><span className="mat">forum</span>Chat</button>
-            </div>
-            {logTab === 'log' ? <LogPanel S={S}/> : <ChatPanel code={code} chat={chat}/>}
+            <LogPanel S={S}/>
           </div>
         </div>
 
@@ -314,6 +309,7 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
       <div className={'banner' + (banner ? ' show' : '') + (banner && banner.small ? ' small' : '')}>{banner ? banner.txt : ''}</div>
       <div className={'flash' + (flash ? ' on' : '')}/>
       <DiceOverlay S={S} dice={dice} battle={battle} armed={null} onRoll={() => {}}/>
+      <FloatingChat chat={chat} myId={getSocket().id} onSend={(zone, text) => sendChat(code, zone, text)}/>
 
       {S.winner && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 95, background: 'rgba(4,7,13,.86)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, textAlign: 'center', padding: 20 }}>
