@@ -338,35 +338,18 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
 .dice-picker { display: flex; gap: 8px; align-items: center; }
 .dice-picker button { padding: 8px 14px; border-radius: 8px; font-weight: 900; }
 .dice-picker button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
-/* fila única de acciones (dados/mover + cortar/terminar turno), todo junto en vez de filas separadas */
-.action-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
-.action-row-label { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--muted); }
-.action-row-sep { flex: 1 1 auto; min-width: 8px; }
-/* agrupa botones (dados+tirar / cortar+terminar) para poder acomodarlos distinto en mobile;
-   en desktop es transparente al layout, como si no estuviera */
-.action-group { display: contents; }
-.action-row button.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
-/* la columna de acciones en desktop es angosta (240-320px, más angosta todavía entre 901-1280px):
-   la frase entera ("Cortar ataque → reagrupar", "Terminar turno") dejaba espacios desaprovechados
-   en la píldora — quedan solo como ícono, chiquitos y parejos con "Atacar"/"Quitar selección" */
-@media (min-width: 901px) {
-  .panel-actions .action-group-final .lbl-full,
-  .panel-actions .action-group-final .lbl-short { display: none !important; }
-  .panel-actions .action-group-final { display: flex; flex-wrap: nowrap; gap: 6px; width: auto; margin-left: auto; }
-  .panel-actions .action-group-final button {
-    flex: none; width: 34px; height: 34px; min-width: 0; padding: 0 !important;
-    display: flex; align-items: center; justify-content: center; gap: 0 !important;
-  }
-  .panel-actions .action-group-final button .mat { font-size: 17px !important; }
-  .panel-actions .action-row { justify-content: space-between; align-items: center; }
-  /* "Atacar" (tirar los dados), junto a Quitar selección: mismo tratamiento, solo ícono */
-  .panel-actions .subhud .tirar-subhud { width: 34px !important; height: 34px; padding: 0 !important; }
-  .panel-actions .subhud .tirar-subhud .btn-label { display: none; }
-  .panel-actions .subhud .tirar-subhud .mat { font-size: 17px !important; }
-  /* el botón de atacar (tirar los dados) va al lado de "Quitar selección" arriba, en vez de
-     abajo en su propia fila junto a los dados — aprovecha el espacio que quedaba vacío */
-  .panel-actions .action-group-dice .tirar-inline { display: none !important; }
-}
+/* fila única de acciones (dados/mover + atacar/cortar/terminar), todos botones cuadrados del
+   mismo tamaño repartiendo el ancho disponible — funciona igual en mobile y desktop, así que
+   no hace falta un tratamiento distinto por breakpoint como antes */
+.action-uniform-row { display: flex; gap: 8px; margin-top: 10px; width: 100%; justify-content: center; }
+.uniform-btn, .uniform-amt {
+  flex: 1 1 0; min-width: 0; max-width: 54px; aspect-ratio: 1; height: auto; padding: 0 !important;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 10px; font-size: 17px; font-weight: 900;
+} /* max-width evita que 1-2 botones solos (sin selección todavía) se vuelvan gigantes */
+.uniform-btn .mat { font-size: 20px; }
+.uniform-btn.sel { box-shadow: 0 0 0 2px #fff inset, 0 4px 14px rgba(255,107,107,.5); }
+.uniform-amt { background: var(--surface2); border: 1px solid var(--line); color: var(--celeste); font-size: 18px; }
 .outcome { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: linear-gradient(90deg, #172033, #0b1220, #172033); border: 1px solid rgba(251,191,36,.6); border-radius: 8px; padding: 12px 14px; }
 .outcome .win-ic .mat { font-size: 30px; color: var(--gold-light); filter: drop-shadow(0 0 8px rgba(252,211,77,.8)); }
 .outcome-title { font-size: 15px; color: var(--gold-light); font-weight: 900; }
@@ -587,7 +570,9 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   /* layout en columna: mapa (llena todo el alto disponible) + bandeja de acciones siempre pegada abajo */
   .game-fit { display: flex; flex-direction: column; gap: 6px; flex: 1; min-height: 0; }
   .map-wrap { grid-area: auto; width: 100%; flex: 1; min-height: 0; background: #0b0e14; border-radius: 10px; overflow: hidden; }
-  .map-wrap .map-frame { height: 100%; }
+  /* sin borde ni sombra: que el mapa ocupe exactamente el espacio que tiene, sin "marco" que le
+     robe unos pixeles de alto — más lugar para la hilera de botones de abajo */
+  .map-wrap .map-frame { height: 100%; border: none; box-shadow: none; border-radius: 0; }
   /* la etiqueta "Cartografía Estratégica AMBA" es decorativa y el botón no hace nada útil
      (el zoom real ahora se controla tocando el mapa) — se saca para darle más alto al mapa */
   .map-ribbon { display: none; }
@@ -614,8 +599,6 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   .panel-actions .phase-pill .lbl { font-size: 8px; }
   /* el div espaciador flex:1 (para separar en desktop) no aporta nada apilado en columna: fuera */
   .panel-actions .subhud > div:empty { display: none; }
-  /* en mobile "Atacar" sigue abajo junto a los dados (tirar-inline), no acá arriba */
-  .panel-actions .tirar-subhud { display: none !important; }
   /* "quitar selección" flota arriba a la derecha, sobre el espacio vacío de la píldora de fase,
      en vez de ocupar su propia fila entera solo para un ícono */
   .panel-actions .subhud > button:last-child {
@@ -624,28 +607,16 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
     padding: 4px !important; border-radius: 7px !important; flex: none !important;
   }
   .panel-actions .subhud > button:last-child .mat { font-size: 14px !important; }
-  /* fila de acciones: cada grupo (dados/mover, y los botones finales) ocupa su propia fila completa */
-  .panel-actions .action-row { flex-direction: column; align-items: stretch; gap: 6px !important; margin-top: 6px; }
-  .panel-actions .action-row-sep { display: none; }
-  .panel-actions .action-row-label { display: none; } /* "DADOS:"/"MOVER:" — de más al lado de botones ícono-solo */
-  .panel-actions .action-group { display: flex; width: 100%; gap: 6px; align-items: center; }
-  .panel-actions .action-group-dice { flex-wrap: wrap; }
-  /* botones finales (terminar turno, cortar ataque, mover): grandes, se reparten todo el ancho, sin hueco muerto,
-     e ícono + texto apilados porque ahora sobra ancho para mostrar la etiqueta */
-  .panel-actions .action-group-final { gap: 8px; }
-  .panel-actions .action-group-final button,
+  /* botones finales (Auto/Atacar del refuerzo): grandes, ícono + texto apilados */
   .panel-actions .btn-fill-row button {
     flex: 1 1 0 !important; width: auto !important; min-height: 50px !important;
     flex-direction: column !important; gap: 3px !important; padding: 6px 4px !important;
   }
   .panel-actions .btn-fill-row { width: 100%; }
-  .panel-actions .lbl-short { display: none !important; }
-  .panel-actions .action-group-final .lbl-full,
-  .panel-actions .btn-fill-row .lbl-full,
-  .panel-actions .action-group-final .btn-label:not(.lbl-short),
-  .panel-actions .btn-fill-row .btn-label:not(.lbl-short) {
-    display: block !important; font-size: 9.5px !important; white-space: normal; text-align: center; line-height: 1.15;
-  }
+  .panel-actions .btn-fill-row .btn-label { display: block !important; font-size: 9.5px !important; white-space: normal; text-align: center; line-height: 1.15; }
+  /* la hilera de acciones (dados/atacar/cortar/terminar, o mover/terminar): más alta en mobile
+     para que cada botón cuadrado sea un target grande y cómodo de tocar */
+  .panel-actions .action-uniform-row { min-height: 46px; }
   /* botones de la bandeja: solo ícono en móvil (sin texto), chicos y cuadrados */
   .panel-actions .btn-label { display: none; }
   .panel-actions button {
@@ -654,8 +625,15 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
     gap: 0 !important;
   }
   .panel-actions button .mat { font-size: 18px !important; }
-  /* excepciones: los botones que muestran un número o +/- necesitan su propio ancho, no son "solo ícono" */
-  .panel-actions .action-row button:not(:has(.mat)) { width: auto; min-width: 30px !important; padding: 9px 10px !important; }
+  /* la hilera pareja (dados/atacar/cortar/terminar) no sigue la regla de "solo ícono chico" de
+     arriba: todos sus botones (con número, +/-, o ícono) reparten el ancho por igual y son
+     bien grandes para tocar */
+  .panel-actions .action-uniform-row .uniform-btn,
+  .panel-actions .action-uniform-row .uniform-amt {
+    width: auto !important; min-width: 0 !important; flex: 1 1 0 !important;
+    aspect-ratio: 1; min-height: 46px !important; padding: 0 !important;
+  }
+  .panel-actions .action-uniform-row .uniform-btn .mat { font-size: 20px !important; }
   .panel-actions .outcome { padding: 8px 10px !important; gap: 8px !important; }
   .panel-actions .outcome-title { font-size: 12px !important; }
   .panel-actions .outcome-body { font-size: 10.5px !important; }

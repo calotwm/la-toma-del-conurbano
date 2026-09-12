@@ -71,39 +71,26 @@ export default function ActionBar(props) {
               ? <div className="bastion-s" style={{ color: 'var(--muted)' }}>Desde <b style={{ color: '#fff' }}>{tName(sel.o)}</b> ({oT.troops}) — elegí un territorio lindero enemigo o neutral.</div>
               : <div className="bastion-s" style={{ color: 'var(--muted)' }}><b style={{ color: '#fff' }}>{tName(sel.o)}</b> ataca a <b style={{ color: 'var(--warn)' }}>{tName(sel.t)}</b> ({tT.troops}){sel.t === 'capital' ? ' — ¡LA JOYA!' : ''}</div>}
           <div style={{ flex: 1 }}></div>
-          {sel && sel.o && sel.t && (
-            <button className="btn-red tirar-subhud" disabled={dn == null || dn > maxD} style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
-              <span className="mat" style={{ fontSize: 15 }}>casino</span><span className="btn-label">Atacar</span>
-            </button>
-          )}
           <button className="btn-dark" style={{ padding: '8px 14px', borderRadius: 8, fontSize: 12, display: 'flex', alignItems: 'center', gap: 6 }} onClick={() => setSel(null)}>
             <span className="mat" style={{ fontSize: 15 }}>close</span><span className="btn-label">Quitar selección</span>
           </button>
         </div>
 
-        <div className="action-row">
+        <div className="action-uniform-row">
+          {sel && sel.o && sel.t && opts.filter(n => n >= minD).map(n => (
+            <button key={n} className={'uniform-btn btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
+          ))}
           {sel && sel.o && sel.t && (
-            <div className="action-group action-group-dice">
-              <span className="action-row-label">DADOS:</span>
-              {opts.filter(n => n >= minD).map(n => (
-                <button key={n} className={'btn-red' + (dn === n ? ' sel' : '')} onClick={() => setDn(n)}>{n}</button>
-              ))}
-              <button className="btn-red tirar-inline" disabled={dn == null || dn > maxD} style={{ padding: '8px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", fontWeight: 900, fontSize: 12, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 6 }} onClick={onAttack}>
-                <span className="mat" style={{ fontSize: 16 }}>casino</span><span className="btn-label">TIRAR</span>
-              </button>
-              <span className="action-row-sep"/>
-            </div>
+            <button className="uniform-btn btn-red" disabled={dn == null || dn > maxD} title="Atacar" onClick={onAttack}>
+              <span className="mat">casino</span>
+            </button>
           )}
-          <div className="action-group action-group-final">
-            <button className="btn-dark" style={{ padding: '10px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onToFortify}>
-              <span className="mat" style={{ fontSize: 18, color: 'var(--tertiary)' }}>swap_horiz</span>
-              <span className="btn-label lbl-full">Cortar ataque → reagrupar</span><span className="btn-label lbl-short">Cortar</span>
-            </button>
-            <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-              <span className="mat" style={{ fontSize: 18 }}>forward</span>
-              <span className="btn-label lbl-full">Terminar turno</span><span className="btn-label lbl-short">Terminar</span>
-            </button>
-          </div>
+          <button className="uniform-btn btn-dark" title="Cortar ataque → reagrupar" onClick={onToFortify}>
+            <span className="mat">swap_horiz</span>
+          </button>
+          <button className="uniform-btn btn-red" title="Terminar turno" onClick={onEndTurn}>
+            <span className="mat">forward</span>
+          </button>
         </div>
 
         {lastBattleChip()}
@@ -135,25 +122,20 @@ export default function ActionBar(props) {
         </button>
       </div>
 
-      <div className="action-row">
+      <div className="action-uniform-row">
         {sel && sel.o && sel.t && (
-          <div className="action-group action-group-dice">
-            <span className="action-row-label">MOVER:</span>
-            <button className="btn-dark" onClick={() => setAmt(Math.max(1, amt - 1))}>−</button>
-            <b style={{ fontSize: 18, width: 34, textAlign: 'center', color: 'var(--celeste)' }}>{amt}</b>
-            <button className="btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
-            <button className="btn-gold" disabled={amt < 1 || amt > maxA} style={{ padding: '9px 16px', borderRadius: 8, fontFamily: "'Syne', sans-serif", fontWeight: 900, textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 8 }} onClick={onFortify}>
-              <span className="mat" style={{ fontSize: 17 }}>local_shipping</span><span className="btn-label">Mover</span>
+          <>
+            <button className="uniform-btn btn-dark" onClick={() => setAmt(Math.max(1, amt - 1))}>−</button>
+            <div className="uniform-amt">{amt}</div>
+            <button className="uniform-btn btn-dark" onClick={() => setAmt(Math.min(maxA, amt + 1))}>+</button>
+            <button className="uniform-btn btn-gold" disabled={amt < 1 || amt > maxA} title="Mover" onClick={onFortify}>
+              <span className="mat">local_shipping</span>
             </button>
-            <span className="action-row-sep"/>
-          </div>
+          </>
         )}
-        <div className="action-group action-group-final">
-          <button className="btn-red" style={{ padding: '10px 18px', borderRadius: 8, fontFamily: "'Syne', sans-serif", textTransform: 'uppercase', fontWeight: 900, display: 'flex', alignItems: 'center', gap: 8 }} onClick={onEndTurn}>
-            <span className="mat" style={{ fontSize: 18 }}>forward</span>
-            <span className="btn-label lbl-full">Terminar turno</span><span className="btn-label lbl-short">Terminar</span>
-          </button>
-        </div>
+        <button className="uniform-btn btn-red" title="Terminar turno" onClick={onEndTurn}>
+          <span className="mat">forward</span>
+        </button>
       </div>
 
       {lastBattleChip()}
