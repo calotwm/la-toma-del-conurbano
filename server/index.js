@@ -26,6 +26,22 @@ const httpServer = createServer(app);
 const io = new Server(httpServer);
 const store = new RoomStore();
 
+// chat GENERAL: uno solo para todo el server, entre cualquiera conectado (no por sala) —
+// separado del chat de cada partida, que vive en room.chat (server/rooms.js)
+const GLOBAL_CHAT_MAX = 300;
+const globalChat = [];
+function addGlobalChat(socket, text) {
+  const room = store.bySocket(socket.id);
+  const slot = room && room.slots.find(s => s.socketId === socket.id);
+  const name = slot ? slot.name : 'Anónimo';
+  const t = String(text || '').trim().slice(0, 300);
+  if (!t) return null;
+  const msg = { by: socket.id, name, text: t, ts: Date.now() };
+  globalChat.push(msg);
+  if (globalChat.length > GLOBAL_CHAT_MAX) globalChat.splice(0, globalChat.length - GLOBAL_CHAT_MAX);
+  return msg;
+}
+
 app.get('/healthz', (req, res) => res.json({ ok: true, rooms: store.rooms.size }));
 
 // en producción, este mismo server sirve el build de Vite (dist/)
@@ -106,6 +122,15 @@ io.on('connection', (socket) => {
   socket.on('chat:sync', ({ code } = {}) => {
     const r = store.get(code);
     if (r) socket.emit('chat:history', { chat: r.chat });
+  });
+
+  // chat general: mismo mecanismo, pero para TODOS los conectados al server, no solo la sala
+  socket.on('chat:sendGlobal', ({ text } = {}) => {
+    const msg = addGlobalChat(socket, text);
+    if (msg) io.emit('chat:globalNew', { message: msg });
+  });
+  socket.on('chat:syncGlobal', () => {
+    socket.emit('chat:globalHistory', { chat: globalChat });
   });
 
   socket.on('disconnect', () => {

@@ -163,6 +163,14 @@ main.game { flex: 1; min-height: 0; max-width: 1760px; margin: 0 auto; padding: 
   border-bottom: 1px solid #2d3852; padding-bottom: 8px;
 }
 .chat-section-hdr .mat { font-size: 16px; }
+.chat-section-tabs { display: flex; gap: 6px; flex: none; margin-bottom: 2px; }
+.chat-section-tabs button {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 5px;
+  padding: 6px 8px; border-radius: 8px; background: var(--surface2); border: 1px solid var(--line);
+  color: var(--muted); font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: .5px;
+}
+.chat-section-tabs button .mat { font-size: 14px; }
+.chat-section-tabs button.on { background: rgba(56,189,248,.12); border-color: var(--celeste); color: var(--celeste); }
 .chat-panel { display: flex; flex-direction: column; flex: 1; min-height: 0; gap: 8px; }
 .chat-zone-picker { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; flex: none; }
 .chat-zone-picker-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }

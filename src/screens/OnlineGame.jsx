@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PHRASES, ADJ, TIDS, pick } from '../data.js';
 import { rollDice, ownersCount, totalTroops, tName, playerName, MISSION_DEFS } from '../engine.js';
 import { Sound } from '../sound.js';
-import { getSocket, disconnectSocket, syncChat, sendChat } from '../net.js';
+import { getSocket, disconnectSocket, syncChat, sendChat, syncGlobalChat, sendGlobalChat } from '../net.js';
 import MapView from '../components/MapView.jsx';
 import PlayerPanel from '../components/PlayerPanel.jsx';
 import ActionBar from '../components/ActionBar.jsx';
@@ -30,6 +30,8 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
   const [flash, setFlash] = useState(false);
   const [mobileDrawer, setMobileDrawer] = useState(null);
   const [chat, setChat] = useState([]);
+  const [globalChat, setGlobalChat] = useState([]);
+  const [chatTab, setChatTab] = useState('match');
   const [myZone, setMyZone] = useState('capital');
   const [soundOn, setSoundOn] = useState(true);
   const [connLost, setConnLost] = useState(false);
@@ -64,17 +66,28 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
       if (!message) return;
       setChat(prev => [...prev, message]);
     };
+    // chat general: mismo mecanismo, pero sin filtrar por sala — llega de cualquiera
+    // conectado al server, esté jugando esta partida o esperando/jugando otra
+    const onGlobalHistory = ({ chat: h } = {}) => { if (Array.isArray(h)) setGlobalChat(h); };
+    const onGlobalNew = ({ message } = {}) => {
+      if (!message) return;
+      setGlobalChat(prev => [...prev, message]);
+    };
     s.on('game:state', onState);
     s.on('game:battle', onBattle);
     s.on('disconnect', onDisconnect);
     s.on('connect', onConnect);
     s.on('chat:history', onChatHistory);
     s.on('chat:new', onChatNew);
+    s.on('chat:globalHistory', onGlobalHistory);
+    s.on('chat:globalNew', onGlobalNew);
     syncChat(code); // trae el historial por si nos perdimos algo (reconexión)
+    syncGlobalChat();
     return () => {
       s.off('game:state', onState); s.off('game:battle', onBattle);
       s.off('disconnect', onDisconnect); s.off('connect', onConnect);
       s.off('chat:history', onChatHistory); s.off('chat:new', onChatNew);
+      s.off('chat:globalHistory', onGlobalHistory); s.off('chat:globalNew', onGlobalNew);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -299,8 +312,13 @@ export default function OnlineGame({ initial, youAre, code, onExit }) {
               <LogPanel S={S}/>
             </div>
             <div className="chat-section">
-              <div className="chat-section-hdr"><span className="mat">forum</span>Chat</div>
-              <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
+              <div className="chat-section-tabs">
+                <button className={chatTab === 'match' ? 'on' : ''} onClick={() => setChatTab('match')}><span className="mat">groups</span>Partida</button>
+                <button className={chatTab === 'global' ? 'on' : ''} onClick={() => setChatTab('global')}><span className="mat">public</span>General</button>
+              </div>
+              {chatTab === 'match'
+                ? <ChatPanel chat={chat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendChat(code, myZone, text)}/>
+                : <ChatPanel chat={globalChat} myId={getSocket().id} myZone={myZone} setMyZone={setMyZone} onSend={(text) => sendGlobalChat(text)}/>}
             </div>
           </div>
         </div>

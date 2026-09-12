@@ -40,3 +40,11 @@ export function sendChat(code, zone, text) {
 export function syncChat(code) {
   getSocket().emit('chat:sync', { code });
 }
+
+export function sendGlobalChat(text) {
+  getSocket().emit('chat:sendGlobal', { text });
+}
+
+export function syncGlobalChat() {
+  getSocket().emit('chat:syncGlobal');
+}
